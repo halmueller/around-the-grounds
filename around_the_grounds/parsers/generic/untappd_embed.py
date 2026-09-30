@@ -11,8 +11,8 @@ selectors seen in the wild:
   ``.item-category`` style, ``.item-abv``, ``.brewery``
 - table theme: ``.table-name .item`` name, ``.item-abv``
 
-The ``.item-description`` text, when present, is kept for fresh-hop
-matching (see ``TapEntry.description``).
+The ``.item-description`` text, when present, is kept for matching
+(see ``TapEntry.description``).
 
 Config (``source_type: "untappd-embed"``)::
 

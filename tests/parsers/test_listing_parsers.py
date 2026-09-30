@@ -139,18 +139,39 @@ class TestBuildListings:
         events = build_listings(venue, [TapEntry("Hazy Cowiche")], "html", LOGGER)
         assert [e.title for e in events] == ["Hazy Cowiche"]
 
-    def test_description_counts_for_fresh_hop_only(self) -> None:
+    def test_description_counts_when_name_and_style_do_not(self) -> None:
         venue = Venue("bar", "Bar", "https://example.com")
         entries = [
             TapEntry("One Thousand Deaths", description="FRESH HOP Collab w/ Uprise"),
-            # Festbier words in a description are too loose to trust.
-            TapEntry("Hechizo de Hambre", description="Like a Märzen, but darker"),
+            TapEntry("Fest!", description="Our yearly golden Festbier lager!"),
+            TapEntry("Kerwa", description="Dutchess Ales' Märzen-style lager"),
+            TapEntry("Oktoberbrau", description="Brewed for Oktoberfest"),
         ]
         events = build_listings(venue, entries, "untappd", LOGGER)
         assert [(e.title, e.category) for e in events] == [
-            ("One Thousand Deaths", "fresh-hop")
+            ("One Thousand Deaths", "fresh-hop"),
+            ("Fest!", "festbier"),
+            ("Kerwa", "festbier"),
+            ("Oktoberbrau", "festbier"),
         ]
         assert events[0].description is None  # descriptions are not shown
+
+    def test_season_styles_count_by_name_or_style_only(self) -> None:
+        venue = Venue("bar", "Bar", "https://example.com")
+        entries = [
+            TapEntry("Harvest Lager (ON LUKR FAUCET)", "Heater Allen/Allegory"),
+            TapEntry("Midnight in Bavaria", style="Dunkel Lager"),
+            TapEntry("Weizenbock", style="Bock - Weizenbock"),
+            TapEntry("Dunkelweizen", style="Wheat Beer - Dunkelweizen"),
+            # Descriptions only count for Festbier/Oktoberfest/Märzen/Wiesn.
+            TapEntry("Porter", description="Brewed with Munich Dunkel malt"),
+        ]
+        events = build_listings(venue, entries, "untappd", LOGGER)
+        assert [e.title for e in events if e.category == "festbier"] == [
+            "Harvest Lager (ON LUKR FAUCET)",
+            "Midnight in Bavaria",
+            "Weizenbock",
+        ]
 
     def test_description_cannot_exclude_a_name_match(self) -> None:
         # "fest" is a fresh-hop exclude word (festivals), but only the
@@ -244,7 +265,7 @@ class TestUntappdEmbedMenu:
                 "Fresh Hop Hazealicious (2026)",
                 "Oktoberfresh",
             ],
-            "festbier": ["Oktoberfresh"],
+            "festbier": ["Kerwa Kellerpils", "Oktoberfresh"],
         }
 
     def test_empty_menu(self) -> None:
@@ -433,6 +454,7 @@ class TestSheetTaplist:
         assert fresh_hops[0].description == "Cloudburst · IPA/Pale · 6.8%"
         # Serving sizes are cut from names by name_remove.
         assert [e.title for e in events if e.category == "festbier"] == [
+            "Harvest Lager (ON LUKR FAUCET)",
             "Spider Dance - Festbier",
             "Behind The Rows - Festbier Lager",
         ]

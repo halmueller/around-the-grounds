@@ -132,14 +132,18 @@ skip the 7-day window and stay out of `events.ics`.
 | Repeated HTML items | `"html-taplist"` | `item`, `name`, optional `style`, `brewery`, `abv`, `style_pattern`, `match_whole_item`, `exclude_sections` |
 | Free text, one beer per line | `"text-taplist"` | `line_pattern` with a `(?P<name>…)` group, optional `section_tag`, `include_sections`, `exclude_sections`, `line_tags` (elements that hold entries; default `p`, `li` — set `["h2"]` when beers are headings) |
 
-A parser that supplies beer descriptions (`TapEntry.description`; currently
-`untappd-embed`) lets a beer match **fresh-hop** by its description when its
-name and style don't ("FRESH HOP Collab with Uprise"). Descriptions never
-count for festbier: festbier words turn up in unrelated descriptions.
-
 Listings are sorted into **categories**: `fresh-hop` (fresh/wet hop) and
-`festbier` (Festbier, Oktoberfest/-toberfest, Märzen, Wiesn). An entry
-matching both yields one listing per category, and each listing carries
+`festbier` (Festbier, Oktoberfest/-toberfest, Märzen, Wiesn, plus harvest
+lagers, Dunkels, and Weizenbocks; not Dunkelweizen).
+
+A parser that supplies beer descriptions (`TapEntry.description`;
+`untappd-embed` and `bevwerk`) lets a beer match by its description when its
+name and style don't: fresh/wet hop for `fresh-hop` ("FRESH HOP Collab with
+Uprise"), and Festbier, Oktoberfest, Märzen, or Wiesn for `festbier` ("our
+yearly golden Festbier"). Harvest lager, Dunkel, and Weizenbock count only in
+the name or style.
+
+An entry matching both categories yields one listing per category, and each listing carries
 `category` in `data.json`. Per venue:
 
 | Option | Effect |

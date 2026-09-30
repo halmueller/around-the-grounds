@@ -9,8 +9,13 @@ Built-in categories:
 - ``fresh-hop``: fresh/wet-hop beers. Venues extend it with
   ``listing_include`` / ``listing_exclude`` for beers whose names never say
   "fresh hop".
-- ``festbier``: Oktoberfest-season lagers (Festbier, Oktoberfest, Märzen).
-  Venues extend it with ``festbier_include`` / ``festbier_exclude``.
+- ``festbier``: Oktoberfest-season beers (Festbier, Oktoberfest, Märzen,
+  plus harvest lagers, Dunkels, and Weizenbocks). Venues extend it with
+  ``festbier_include`` / ``festbier_exclude``.
+
+A beer's description (``matches_description``) is checked against a
+narrower list per category: brewers write "FRESH HOP collab…" or "our
+yearly Festbier" there, but also mention Dunkel malt or a harvest.
 """
 
 import re
@@ -28,17 +33,26 @@ DEFAULT_INCLUDE = [r"\b(?:fresh|wet)[\s-]*hop(?:s|ped)?\b"]
 # does not match "Festbier".)
 DEFAULT_EXCLUDE = [r"\bfest(?:ival)?\b"]
 
-FESTBIER_INCLUDE = [
+# Also the patterns checked in descriptions ("our yearly golden Festbier").
+FESTBIER_CORE = [
     r"\bfest[\s-]*b(?:ie|ee)r\b",  # Festbier, Fest Bier, Fest Beer
     r"tober[\s-]*fest",  # Oktoberfest, Octoberfest, Bobtoberfest
     r"\bm(?:ä|ae|a)rzen\b",  # Märzen, Maerzen, Marzen
     r"\bwiesn\b",
 ]
 
-# category -> (include patterns, exclude patterns, config key prefix)
-CATEGORIES: Dict[str, Tuple[List[str], List[str], str]] = {
-    FRESH_HOP: (DEFAULT_INCLUDE, DEFAULT_EXCLUDE, "listing"),
-    FESTBIER: (FESTBIER_INCLUDE, [], "festbier"),
+# Season beers counted by name or style only.
+FESTBIER_INCLUDE = FESTBIER_CORE + [
+    r"\bharvest[\s-]*lager\b",
+    r"\bdunkel\b",  # Dunkel Lager, Munich Dunkel; not Dunkelweizen
+    r"\bweizen[\s-]*bock\b",
+]
+
+# category -> (include patterns, exclude patterns, config key prefix,
+#              include patterns for descriptions)
+CATEGORIES: Dict[str, Tuple[List[str], List[str], str, List[str]]] = {
+    FRESH_HOP: (DEFAULT_INCLUDE, DEFAULT_EXCLUDE, "listing", DEFAULT_INCLUDE),
+    FESTBIER: (FESTBIER_INCLUDE, [], "festbier", FESTBIER_CORE),
 }
 
 
@@ -55,10 +69,13 @@ class ListingMatcher:
         """``default_exclude=False`` keeps festivals, for matching events."""
         if category not in CATEGORIES:
             raise ValueError(f"Unknown listing category {category!r}")
-        base_include, base_exclude, prefix = CATEGORIES[category]
+        base_include, base_exclude, prefix, description_include = CATEGORIES[category]
         self.category = category
         self._include = self._compile(
             base_include + list(include or []), f"{prefix}_include"
+        )
+        self._description_include = self._compile(
+            description_include, f"{prefix}_include"
         )
         defaults = base_exclude if default_exclude else []
         self._exclude = self._compile(
@@ -103,6 +120,18 @@ class ListingMatcher:
         fields = [t for t in texts if t]
         if not any(p.search(t) for p in self._include for t in fields):
             return False
+        return not any(p.search(t) for p in self._exclude for t in fields)
+
+    def matches_description(
+        self, description: Optional[str], *texts: Optional[str]
+    ) -> bool:
+        """Match on a beer's *description* (with the narrower description
+        patterns) when its other *texts* don't; excludes cover all of them."""
+        if not description:
+            return False
+        if not any(p.search(description) for p in self._description_include):
+            return False
+        fields = [t for t in texts if t] + [description]
         return not any(p.search(t) for p in self._exclude for t in fields)
 
     @staticmethod

@@ -255,7 +255,11 @@ class TestHtmlTaplistVenues:
             "Fresh Hop West Coast IPA · 6.5%",
             "Fresh Hop Hazy IPA · 6%",
         ]
-        assert len(events) == 6
+        assert len([e for e in events if e.category == "fresh-hop"]) == 6
+        # The Dunkel counts as a festbier.
+        assert [e.title for e in events if e.category == "festbier"] == [
+            "Midnight in Bavaria"
+        ]
 
     def test_flying_lion_skips_coming_soon(self, html_fixtures_dir: Path) -> None:
         entries = parse_html_taplist(
@@ -271,6 +275,14 @@ class TestHtmlTaplistVenues:
             page(html_fixtures_dir, "taplist_seapine"), CONFIGS["seapine"]
         )
         assert [e.name for e in fresh(entries)] == ["Centy McFreshface Fresh Hop IPA"]
+        # Cans To Go repeats the draft list with prices; it is skipped.
+        assert not any("$" in e.name for e in entries)
+        venue = _SITE_VENUES["seapine-taps"]
+        events = build_listings(venue, entries, "html", LOGGER)
+        # A Helles, listed as a festbier by the venue's festbier_include.
+        assert [e.title for e in events if e.category == "festbier"] == [
+            "Munich Mist Helles Lager"
+        ]
 
     def test_obec(self, html_fixtures_dir: Path) -> None:
         entries = parse_html_taplist(
@@ -452,9 +464,10 @@ class TestTextTaplist:
             )
             async with aiohttp.ClientSession() as session:
                 events = await TextTaplistParser(venue).parse(session)
-        assert [e.title for e in events] == [
-            "Fresh Hop Strata Hazy IPA",
-            "Fresh Hop Lórien Pilsner",
+        assert [(e.title, e.category) for e in events] == [
+            ("Fresh Hop Strata Hazy IPA", "fresh-hop"),
+            ("Ground Provisions Harvest Lager", "festbier"),
+            ("Fresh Hop Lórien Pilsner", "fresh-hop"),
         ]
 
 

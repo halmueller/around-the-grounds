@@ -327,7 +327,13 @@
       "parser_config": {
         "item": "li.accordion-item",
         "name": ".accordion-item__title",
-        "match_whole_item": true
+        "match_whole_item": true,
+        "exclude_sections": [
+          "\\bto go\\b"
+        ],
+        "festbier_include": [
+          "\\bmunich mist\\b"
+        ]
       }
     },
     {

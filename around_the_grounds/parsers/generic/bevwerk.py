@@ -57,6 +57,7 @@ def _tap_entry(tap: Dict[str, Any]) -> Optional[TapEntry]:
         brewery=_clean(producer.get("display_name")) or _clean(producer.get("title")),
         style=_clean(product.get("style")),
         abv=f"{abv}%" if abv and not abv.endswith("%") else abv,
+        description=_clean(product.get("description")),
     )
 
 
