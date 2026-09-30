@@ -189,6 +189,63 @@ class TestSalehsCornerParser:
                     await parser.parse(session)
 
     @pytest.mark.asyncio
+    async def test_parse_cloudflare_challenge(self, parser: SalehsCornerParser) -> None:
+        """Test that a Cloudflare bot challenge is reported as such."""
+        with aioresponses() as m:
+            url_pattern = re.compile(re.escape(parser.BASE_URL) + r".*")
+            m.get(
+                url_pattern,
+                status=403,
+                body="<!DOCTYPE html><html><title>Just a moment...</title></html>",
+                content_type="text/html",
+                headers={"cf-mitigated": "challenge", "cf-ray": "abc123-SEA"},
+            )
+
+            async with aiohttp.ClientSession() as session:
+                with pytest.raises(
+                    ValueError,
+                    match=r"Blocked by Cloudflare bot challenge "
+                    r"\(HTTP 403, cf-ray abc123-SEA\)",
+                ):
+                    await parser.parse(session)
+
+    @pytest.mark.asyncio
+    async def test_parse_cloudflare_challenge_non_403(
+        self, parser: SalehsCornerParser
+    ) -> None:
+        """Test that a challenge is detected even with an unexpected status."""
+        with aioresponses() as m:
+            url_pattern = re.compile(re.escape(parser.BASE_URL) + r".*")
+            m.get(
+                url_pattern,
+                status=200,
+                body="<html>Just a moment...</html>",
+                content_type="text/html",
+                headers={"cf-mitigated": "challenge"},
+            )
+
+            async with aiohttp.ClientSession() as session:
+                with pytest.raises(
+                    ValueError,
+                    match=r"Blocked by Cloudflare bot challenge "
+                    r"\(HTTP 200, cf-ray unknown\)",
+                ):
+                    await parser.parse(session)
+
+    @pytest.mark.asyncio
+    async def test_parse_http_403_without_challenge(
+        self, parser: SalehsCornerParser
+    ) -> None:
+        """Test that a plain 403 (no challenge header) keeps its message."""
+        with aioresponses() as m:
+            url_pattern = re.compile(re.escape(parser.BASE_URL) + r".*")
+            m.get(url_pattern, status=403)
+
+            async with aiohttp.ClientSession() as session:
+                with pytest.raises(ValueError, match=r"Access forbidden \(403\)"):
+                    await parser.parse(session)
+
+    @pytest.mark.asyncio
     async def test_parse_http_429_rate_limit(self, parser: SalehsCornerParser) -> None:
         """Test handling of 429 rate limiting error."""
         with aioresponses() as m:

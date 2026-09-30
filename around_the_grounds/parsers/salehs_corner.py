@@ -50,6 +50,16 @@ class SalehsCornerParser(BaseParser):
 
             # Fetch data from API
             async with session.get(self.BASE_URL, params=params) as response:
+                # Cloudflare marks bot challenges with this header; they come
+                # back as an HTML page (usually 403) and depend on the client's
+                # IP/fingerprint, so name them explicitly for diagnosis.
+                if response.headers.get("cf-mitigated", "").lower() == "challenge":
+                    raise ValueError(
+                        f"Blocked by Cloudflare bot challenge "
+                        f"(HTTP {response.status}, cf-ray "
+                        f"{response.headers.get('cf-ray', 'unknown')}): "
+                        f"{self.BASE_URL}"
+                    )
                 if response.status == 404:
                     raise ValueError(f"API endpoint not found (404): {self.BASE_URL}")
                 elif response.status == 403:
