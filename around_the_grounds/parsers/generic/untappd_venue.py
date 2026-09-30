@@ -50,6 +50,8 @@ def parse_venue_menu(html: str) -> List[TapEntry]:
 
 
 class UntappdVenueParser(BaseParser):
+    PRODUCES_LISTINGS = True
+
     async def parse(self, session: aiohttp.ClientSession) -> List[Event]:
         html = await fetch_listing_text(session, self.venue.url)
         entries = parse_venue_menu(html)

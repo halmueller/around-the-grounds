@@ -104,6 +104,7 @@
         .calendar-link { font-size: 13px; color: var(--accent); }
 
         .notice { font-size: 13px; color: var(--muted); margin-top: 18px; }
+        .notice a { color: inherit; }
         .empty { text-align: center; color: var(--muted); padding: 40px 0; }
         footer { margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); }
         footer p + p { margin-top: 6px; }
@@ -129,6 +130,7 @@
         <p class="notice"><a class="calendar-link" href="events.ics">Subscribe to these events in your calendar</a></p>
     </section>
 
+    <p class="notice" id="quiet" hidden></p>
     <p class="notice" id="errors" hidden></p>
 
     <footer>
@@ -261,6 +263,21 @@ fetch('data.json')
         }
 
         const errors = data.errors || [];
+
+        // Places we checked that have no fresh hops on right now. Venues that
+        // failed are left out here; the errors line below names them.
+        const quiet = (data.listing_venues || []).filter(v =>
+            !venues.has(v.key) && !errors.some(msg => String(msg).includes(v.name)));
+        if (quiet.length) {
+            const el = document.getElementById('quiet');
+            el.hidden = false;
+            el.innerHTML = 'Checked, no fresh hops on right now: ' + quiet.map(v =>
+                safeUrl(v.url)
+                    ? `<a href="${esc(v.url)}" target="_blank" rel="noopener">${esc(v.name)}</a>`
+                    : esc(v.name)
+            ).join(', ') + '.';
+        }
+
         if (errors.length) {
             const el = document.getElementById('errors');
             el.hidden = false;

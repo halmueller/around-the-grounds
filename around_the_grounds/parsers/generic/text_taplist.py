@@ -12,10 +12,13 @@ Config (``source_type: "text-taplist"``; the venue ``url`` is fetched)::
       "line_pattern": "^(?P<name>[^:]+):\\\\s*(?P<style>.+)$",  # needs name
       "section_tag": "h2",                  # optional
       "include_sections": ["^MAIN BAR$"],    # optional, regexes
-      "exclude_sections": ["closed"]         # optional, regexes
+      "exclude_sections": ["closed"],        # optional, regexes
+      "line_tags": ["h2"]                    # optional; default ["p", "li"]
     }
 
-Optional named groups: ``style``, ``abv``, ``brewery``.
+Optional named groups: ``style``, ``abv``, ``brewery``. ``line_tags`` names
+the elements whose lines can be entries; by default headings only divide the
+page, but some sites (Bizarre) put each beer in a heading.
 """
 
 import re
@@ -34,6 +37,7 @@ from .listing_common import (
 )
 
 _BLOCKS = ["h1", "h2", "h3", "h4", "h5", "h6", "p", "li"]
+_DEFAULT_LINE_TAGS = ["p", "li"]
 
 
 def _compile(patterns: Any, key: str) -> List[Pattern[str]]:
@@ -79,6 +83,7 @@ def parse_text_taplist(html: str, config: Dict[str, Any]) -> List[TapEntry]:
     section_tag = config.get("section_tag")
     includes = _compile(config.get("include_sections"), "include_sections")
     excludes = _compile(config.get("exclude_sections"), "exclude_sections")
+    line_tags = set(config.get("line_tags") or _DEFAULT_LINE_TAGS)
 
     section = ""
     entries = []
@@ -86,8 +91,8 @@ def parse_text_taplist(html: str, config: Dict[str, Any]) -> List[TapEntry]:
         if tag == section_tag:
             section = line
             continue
-        if tag in _BLOCKS[:6]:
-            continue  # other headings are never entries
+        if tag not in line_tags:
+            continue
         if includes and not any(p.search(section) for p in includes):
             continue
         if any(p.search(section) for p in excludes):
@@ -111,6 +116,8 @@ def parse_text_taplist(html: str, config: Dict[str, Any]) -> List[TapEntry]:
 
 
 class TextTaplistParser(BaseParser):
+    PRODUCES_LISTINGS = True
+
     async def parse(self, session: aiohttp.ClientSession) -> List[Event]:
         config = self.venue.parser_config or {}
         html = await fetch_listing_text(session, self.venue.url)

@@ -99,6 +99,8 @@ def parse_sheet_rows(csv_text: str, config: Dict[str, Any]) -> List[TapEntry]:
 
 
 class SheetTaplistParser(BaseParser):
+    PRODUCES_LISTINGS = True
+
     async def parse(self, session: aiohttp.ClientSession) -> List[Event]:
         config = self.venue.parser_config or {}
         sheet_id = config.get("sheet_id")

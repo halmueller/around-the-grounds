@@ -93,6 +93,8 @@ def parse_embed_menu(html: str) -> List[TapEntry]:
 
 
 class UntappdEmbedParser(BaseParser):
+    PRODUCES_LISTINGS = True
+
     async def parse(self, session: aiohttp.ClientSession) -> List[Event]:
         config = self.venue.parser_config or {}
         try:

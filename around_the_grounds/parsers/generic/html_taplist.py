@@ -116,6 +116,7 @@ def parse_html_taplist(html: str, config: Dict[str, Any]) -> List[TapEntry]:
 
 
 class HtmlTaplistParser(BaseParser):
+    PRODUCES_LISTINGS = True
     PRESET: Dict[str, Any] = {}
 
     def config(self) -> Dict[str, Any]:

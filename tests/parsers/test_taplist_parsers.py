@@ -49,6 +49,8 @@ CONFIGS: Dict[str, Dict[str, Any]] = {
         "fremont_columbia_city": "fremont-columbia-city-taps",
         "lucky": "lucky-envelope-taps",
         "georgetown": "georgetown-taps",
+        "bizarre": "bizarre-taps",
+        "obec": "obec-taps",
     }.items()
 }
 
@@ -257,6 +259,15 @@ class TestHtmlTaplistVenues:
         )
         assert [e.name for e in fresh(entries)] == ["Centy McFreshface Fresh Hop IPA"]
 
+    def test_obec(self, html_fixtures_dir: Path) -> None:
+        entries = parse_html_taplist(
+            page(html_fixtures_dir, "taplist_obec"), CONFIGS["obec"]
+        )
+        assert len(entries) == 11
+        assert entries[0].name == "Porter #3"
+        assert entries[0].abv == "5.7%"  # from "... ABV 5.7%" in the description
+        assert fresh(entries) == []  # no fresh hops on the list today
+
     @pytest.mark.asyncio
     async def test_parse_fetches_venue_url(self, html_fixtures_dir: Path) -> None:
         url = "https://www.stoupbrewing.com/ontap/"
@@ -321,6 +332,37 @@ class TestTextTaplist:
         assert "Bodhizafa IPA" in names
         assert not any(n.startswith("4oz") for n in names)  # price lines
         assert [e.name for e in fresh(entries)] == ["The Brother's Roy Fresh Hop IPA"]
+
+    def test_bizarre_headings_are_entries(self, html_fixtures_dir: Path) -> None:
+        entries = parse_text_taplist(
+            page(html_fixtures_dir, "taplist_bizarre"), CONFIGS["bizarre"]
+        )
+        assert len(entries) == 12
+        assert entries[0] == TapEntry(
+            "SKITCH", style="FRESH HOP RICE LAGER", abv="4.2%"
+        )
+        # Section headings like "GUEST ALCOHOLIC BEVERAGES:" are not beers.
+        assert not any("GUEST" in e.name for e in entries)
+
+    def test_bizarre_fresh_hoppy_counts(self, html_fixtures_dir: Path) -> None:
+        venue = Venue(
+            "bizarre-taps",
+            "Bizarre",
+            "https://x.com",
+            "text-taplist",
+            CONFIGS["bizarre"],
+        )
+        entries = parse_text_taplist(
+            page(html_fixtures_dir, "taplist_bizarre"), CONFIGS["bizarre"]
+        )
+        events = build_listings(venue, entries, "html", LOGGER)
+        # "EXTRA FRESH HOPPY TABLE BEER" needs the venue's listing_include.
+        assert [e.title for e in events] == ["SKITCH", "GARLANDS", "ZIP ZINGER"]
+
+    def test_headings_are_not_entries_by_default(self) -> None:
+        html = "<h2>Fresh Hop A</h2><p>Fresh Hop B</p>"
+        config = {"line_pattern": "^(?P<name>.+)$"}
+        assert [e.name for e in parse_text_taplist(html, config)] == ["Fresh Hop B"]
 
     def test_excluded_sections(self) -> None:
         html = "<h2>Main</h2><p>Fresh Hop A</p><h2>Closed</h2><p>Fresh Hop B</p>"

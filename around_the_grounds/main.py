@@ -24,6 +24,7 @@ except ImportError:
 from .config.loader import load_all_sites, load_site_config, load_site_from_path
 from .config.settings import get_git_repository_url
 from .models import Event, SiteConfig, Venue
+from .parsers import ParserRegistry
 from .scrapers.coordinator import ScraperCoordinator, ScrapingError
 from .utils.github_auth import _sanitize_url
 from .utils.haiku_generator import HaikuGenerator
@@ -252,7 +253,7 @@ async def generate_web_data(
         except Exception as e:
             logger.warning("Haiku generation failed: %s", e, exc_info=True)
 
-    return {
+    web_data = {
         "events": web_events,
         "updated": datetime.now(timezone.utc).isoformat(),
         "total_events": len(web_events),
@@ -266,6 +267,26 @@ async def generate_web_data(
         "errors": unique_error_messages,
         "haiku": description,
     }
+    # Tap-list sites also list every venue they check, so a page can say
+    # which places had nothing matching. Omitted when there are none, so
+    # other sites' data.json is unchanged.
+    listing_venues = _listing_venues(site) if site else []
+    if listing_venues:
+        web_data["listing_venues"] = listing_venues
+    return web_data
+
+
+def _listing_venues(site: SiteConfig) -> List[dict]:
+    """Venues of *site* whose parser emits listings, in config order."""
+    venues = []
+    for venue in site.venues:
+        try:
+            parser_class = ParserRegistry.get_parser(venue)
+        except ValueError:
+            continue
+        if getattr(parser_class, "PRODUCES_LISTINGS", False):
+            venues.append({"key": venue.key, "name": venue.name, "url": venue.url})
+    return venues
 
 
 async def deploy_to_web(

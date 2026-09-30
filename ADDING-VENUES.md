@@ -123,10 +123,14 @@ skip the 7-day window and stay out of `events.ics`.
 | Craftpeak/Arryved "What's On Tap" module | `"craftpeak-wot"` | none (preset) |
 | DigitalPour embedded menu (`fbpage.digitalpour.com/?companyID=…&locationID=…`) | `"digitalpour"` | `company_id`, `location_id` |
 | Repeated HTML items | `"html-taplist"` | `item`, `name`, optional `style`, `brewery`, `abv`, `style_pattern`, `match_whole_item`, `exclude_sections` |
-| Free text, one beer per line | `"text-taplist"` | `line_pattern` with a `(?P<name>…)` group, optional `section_tag`, `include_sections`, `exclude_sections` |
+| Free text, one beer per line | `"text-taplist"` | `line_pattern` with a `(?P<name>…)` group, optional `section_tag`, `include_sections`, `exclude_sections`, `line_tags` (elements that hold entries; default `p`, `li` — set `["h2"]` when beers are headings) |
 
 Every listing venue can also set `listing_include` / `listing_exclude`
 (regexes that extend the default fresh-hop pattern) and `timezone`.
+
+A site with listing venues also gets `listing_venues` (key, name, url) in
+`data.json`; the `fresh-hop` template uses it to name places that were
+checked but have nothing matching. Other sites' `data.json` is unchanged.
 
 - Point at the venue's **current** tap list, not a beer catalog or a packaged
   "available beer" page — and check a multi-location brewery's page is for the

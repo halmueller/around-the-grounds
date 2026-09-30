@@ -10,8 +10,10 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from around_the_grounds.config.loader import load_site_config
 from around_the_grounds.main import generate_web_data
 from around_the_grounds.models import Event, Venue
+from around_the_grounds.parsers.registry import ParserRegistry
 from around_the_grounds.scrapers.coordinator import ScraperCoordinator
 from around_the_grounds.temporal.activities import (
     DeploymentActivities,
@@ -92,6 +94,48 @@ class TestWebData:
     async def test_listing_carries_kind(self) -> None:
         data = await generate_web_data([_listing()])
         assert data["events"][0]["kind"] == "listing"
+
+
+class TestListingVenues:
+    @pytest.mark.asyncio
+    async def test_tap_list_site_lists_its_listing_venues(self) -> None:
+        site = load_site_config("seattle-fall-beers")
+        data = await generate_web_data([], site=site)
+
+        keys = [v["key"] for v in data["listing_venues"]]
+        assert "fair-isle-taps" in keys
+        assert all(key.endswith("-taps") for key in keys)  # no event sources
+        assert keys == [v.key for v in site.venues if v.key.endswith("-taps")]
+        fair_isle = data["listing_venues"][keys.index("fair-isle-taps")]
+        assert fair_isle == {
+            "key": "fair-isle-taps",
+            "name": "Fair Isle Brewing (Ballard)",
+            "url": "https://fairislebrewing.com/location/taproom/",
+        }
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize(
+        "site_key", ["ballard-food-trucks", "park-slope-music", "childrens-events"]
+    )
+    async def test_other_sites_are_unchanged(self, site_key: str) -> None:
+        data = await generate_web_data([], site=load_site_config(site_key))
+        assert "listing_venues" not in data
+
+    def test_only_tap_list_parsers_produce_listings(self) -> None:
+        listing_types = {
+            "untappd-embed",
+            "untappd-venue",
+            "sheet-taplist",
+            "html-taplist",
+            "craftpeak-wot",
+            "digitalpour",
+            "text-taplist",
+        }
+        for source_type, parser in ParserRegistry._generic.items():
+            assert parser.PRODUCES_LISTINGS == (
+                source_type in listing_types
+            ), source_type
+        assert not any(p.PRODUCES_LISTINGS for p in ParserRegistry._specific.values())
 
 
 class TestCalendarFeed:

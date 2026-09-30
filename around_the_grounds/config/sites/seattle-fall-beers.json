@@ -37,6 +37,22 @@
       }
     },
     {
+      "key": "bizarre-taps",
+      "name": "Bizarre Brewing (Magnolia)",
+      "url": "https://www.bizarrebrewing.com/on-tap-and-to-go",
+      "source_type": "text-taplist",
+      "parser_config": {
+        "note": "Beers are h2 headings: NAME - STYLE - ABV%. Bizarre calls fresh-hop beers \"fresh hoppy\".",
+        "line_tags": [
+          "h2"
+        ],
+        "line_pattern": "^(?P<name>.+?)\\s+[-–]\\s+(?P<style>.+?)\\s+[-–]\\s+(?P<abv>\\d+(?:\\.\\d+)?%)$",
+        "listing_include": [
+          "fresh hoppy"
+        ]
+      }
+    },
+    {
       "key": "chucks-central-district-taps",
       "name": "Chuck's Hop Shop (Central District)",
       "url": "https://www.chuckshopshop.com/taplistcd",
@@ -121,19 +137,6 @@
       }
     },
     {
-      "key": "fremont-taps",
-      "name": "Fremont Brewing (Fremont)",
-      "url": "https://www.fremontbrewing.com/taplist",
-      "source_type": "text-taplist",
-      "parser_config": {
-        "section_tag": "h2",
-        "include_sections": [
-          "^MAIN BAR$"
-        ],
-        "line_pattern": "^(?P<name>[^:$]{2,60}?)(?::\\s*(?P<style>.+))?$"
-      }
-    },
-    {
       "key": "fremont-columbia-city-taps",
       "name": "Fremont Brewing (Columbia City)",
       "url": "https://www.fremontbrewing.com/taplist",
@@ -142,6 +145,19 @@
         "section_tag": "h2",
         "include_sections": [
           "^Columbia City"
+        ],
+        "line_pattern": "^(?P<name>[^:$]{2,60}?)(?::\\s*(?P<style>.+))?$"
+      }
+    },
+    {
+      "key": "fremont-taps",
+      "name": "Fremont Brewing (Fremont)",
+      "url": "https://www.fremontbrewing.com/taplist",
+      "source_type": "text-taplist",
+      "parser_config": {
+        "section_tag": "h2",
+        "include_sections": [
+          "^MAIN BAR$"
         ],
         "line_pattern": "^(?P<name>[^:$]{2,60}?)(?::\\s*(?P<style>.+))?$"
       }
@@ -205,6 +221,17 @@
       "source_type": "text-taplist",
       "parser_config": {
         "line_pattern": "^\\d+\\.\\s*(?P<name>.+?)\\s*\\((?P<abv>\\d+(?:\\.\\d+)?%)\\s*ABV\\)\\s*$"
+      }
+    },
+    {
+      "key": "obec-taps",
+      "name": "Obec Brewing (Ballard)",
+      "url": "https://obecbrewing.com/our-beer/",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "item": ".bt_bb_menu_item",
+        "name": ".bt_bb_menu_item_title",
+        "match_whole_item": true
       }
     },
     {
