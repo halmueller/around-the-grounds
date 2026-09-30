@@ -6,6 +6,7 @@ turns them into ``kind="listing"`` events.
 """
 
 import logging
+import re
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Dict, Iterable, List, Optional
@@ -19,6 +20,14 @@ from ...utils.timezone_utils import now_in_site_timezone_naive
 
 DEFAULT_TIMEZONE = "America/Los_Angeles"
 
+# "6.5% ABV" first (so "5.4% ABV 35 IBU" is not read as 35), then
+# "ABV: 6.80%" / "ABV | 6 | %", then a bare "5.9%".
+_ABV_PATTERNS = [
+    re.compile(r"(\d+(?:\.\d+)?)\s*%\s*ABV", re.I),
+    re.compile(r"ABV[:\s|]*(\d+(?:\.\d+)?)\s*%?", re.I),
+    re.compile(r"(\d+(?:\.\d+)?)\s*%"),
+]
+
 
 @dataclass
 class TapEntry:
@@ -26,6 +35,19 @@ class TapEntry:
     brewery: Optional[str] = None
     style: Optional[str] = None
     abv: Optional[str] = None
+    # Extra text (e.g. a description) consulted for matching but not shown.
+    match_text: Optional[str] = None
+
+
+def normalize_abv(text: Optional[str]) -> Optional[str]:
+    """Find an ABV in *text* and format it as "6.8%" (no trailing zeros)."""
+    if not text:
+        return None
+    for pattern in _ABV_PATTERNS:
+        match = pattern.search(text)
+        if match:
+            return f"{float(match.group(1)):g}%"
+    return None
 
 
 async def fetch_listing_text(
@@ -78,7 +100,11 @@ def build_listings(
     extraction_method: str,
     logger: logging.Logger,
 ) -> List[Event]:
-    """Keep matching entries (deduplicated) as listing events."""
+    """Keep matching entries as listing events, dropping exact repeats.
+
+    Style is part of an entry's identity: a venue can pour two beers with
+    the same name (Ravenna's "Wet Season: Amarillo" IPA and Hazy IPA).
+    """
     matcher = ListingMatcher.from_config(venue.parser_config)
     date = listing_date(venue)
     events: List[Event] = []
@@ -86,9 +112,12 @@ def build_listings(
     total = 0
     for entry in entries:
         total += 1
-        if not matcher.matches(entry.name, entry.style):
+        if not matcher.matches(entry.name, entry.style, entry.match_text):
             continue
-        identity = (entry.name.casefold(), (entry.brewery or "").casefold())
+        identity = tuple(
+            (field or "").casefold()
+            for field in (entry.name, entry.brewery, entry.style)
+        )
         if identity in seen:
             continue
         seen.add(identity)

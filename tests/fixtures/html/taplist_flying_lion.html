@@ -1,0 +1,548 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Beers Currently on Tap | Flying Lion Brewing</title>
+</head>
+<body class="beerlist">
+<div class="overlay hidden"></div>
+<div class="modal hidden">
+<div id="modal-inside"></div>
+</div>
+<header class="row" id="header">
+<div>
+<div class="column">
+<a href="https://flyinglionbrewing.com/" id="logo"></a>
+<div class="hamburger" id="menu">
+<span id="line1"></span>
+<span id="line2"></span>
+<span id="line3"></span>
+</div>
+<nav id="nav">
+<div id="nav-links">
+<a class="active" href="https://flyinglionbrewing.com/beer-list.html">Our Beer</a>
+<div class="has-subnav">
+<span class="subnav-header"><a href="https://flyinglionbrewing.com/taproom.html">Taproom</a></span>
+<div class="subnav">
+<a href="https://flyinglionbrewing.com/events.html">Events</a>
+<a href="https://flyinglionbrewing.com/about-flying-lion.html">Story</a>
+</div>
+</div>
+<a href="https://flyinglionbrewing.com/dark-beer-fest.html">Dark Beer Fest</a>
+<a href="https://flyinglionbrewing.com/light-beer-fest.html">Light Beer Fest</a>
+<a href="https://shop.flyinglionbrewing.com/">Order Now</a>
+<a href="https://flyinglionbrewing.com/contact-us.html">Contact</a>
+</div>
+</nav>
+</div>
+</div>
+</header>
+<div id="content">
+<div class="row">
+<div id="launch-modal"></div>
+<div id="beer-board-button-callout">
+<a class="button" href="https://docs.google.com/forms/d/e/1FAIpQLSeFWu4JxCEJR_km_eHRMtIFzm-6hfEoWXsUaZEqpUtVsedY0g/viewform?usp=sharing&amp;ouid=105185793832548212847">Text Me Beer Updates</a>
+</div>
+<div class="column beer-board beer-board-clickable beer-board-half-divided">
+<div class="beer-board-header">
+					On Tap Now <span class="orange">(Click a beer for details)</span>
+</div>
+<div class="beer-divider"></div>
+<div class="beer-board-two">
+<div class="beer-tile" id="BELM" name="BELM">
+<div class="beer-number"><span>1</span></div>
+<div class="beer-name">
+<span class="beer-name">Belma &amp; Louise</span>
+<span class="beer-keywords">crisp, strawberry, tropical</span>
+</div>
+<div class="beer-extras">
+<span class="beer-style">West-Coast<br/>IPA</span>
+<span class="beer-abv">6.6%</span>
+</div>
+</div>
+<div class="beer-modal-details hidden" id="BELM-details">
+<p class="beer-modal-name"><strong>Belma &amp; Louise</strong><br/>
+						West-Coast IPA</p>
+<p class="abv-ibu">6.6% | 46 IBUs</p>
+<p class="beer-modal-hops-malt"><strong>Hops: </strong>Belma</p> <p class="beer-modal-hops-malt"><strong>Malt: </strong>Brewer Select Pilsner, Baronesse Munich, Flaked Oats</p> <p>Fun and always up for an adventure, this American IPA uses Belma hops to bring strawberry and tropical notes with a crisp finish.</p>
+</div>
+<div class="beer-tile" id="TWEA" name="TWEA">
+<div class="beer-number"><span>2</span></div>
+<div class="beer-name">
+<span class="beer-name">Trust Weasel </span>
+<span class="beer-keywords">grapefruit, tangerine, simcoe</span>
+</div>
+<div class="beer-extras">
+<span class="beer-style">IPA</span>
+<span class="beer-abv">6.5%</span>
+</div>
+</div>
+<div class="beer-modal-details hidden" id="TWEA-details">
+<p class="beer-modal-name"><strong>Trust Weasel </strong><br/>
+						IPA</p>
+<p class="abv-ibu">6.5% | 52 IBUs</p>
+<p class="beer-modal-hops-malt"><strong>Hops: </strong>Columbus, Simcoe (Cryo), Centennial, Centennial LupoMAX, Mosaic LupoMAX</p> <p class="beer-modal-hops-malt"><strong>Malt: </strong>Brewer Select Pilsner, Lyon Light Munich, Crystal T50</p> <p>T-dub has never told a lie, broken a mirror, nor walked under a ladder; says its prayers before bed and would feed your prize parrot while you're on vacation.  This IPA is an all around do-gooder.  Focused on massive aroma, TW unselfishly gifts your palate with dank grapefruit and tangerine.</p>
+</div>
+<div class="beer-tile" id="RYST" name="RYST">
+<div class="beer-number"><span>3</span></div>
+<div class="beer-name">
+<span class="beer-name">Rye Stout</span>
+<span class="beer-keywords">crisp, roasty, dry</span>
+</div>
+<div class="beer-extras">
+<span class="beer-style">Stout</span>
+<span class="beer-abv">6%</span>
+</div>
+</div>
+<div class="beer-modal-details hidden" id="RYST-details">
+<p class="beer-modal-name"><strong>Rye Stout</strong><br/>
+						Stout</p>
+<p class="abv-ibu">6% | 37 IBUs</p>
+<p class="beer-modal-hops-malt"><strong>Hops: </strong>Columbus, Centennial, Mt. Hood</p> <p class="beer-modal-hops-malt"><strong>Malt: </strong>Brewer Select Pilsner, Chocolate Malt, Flaked Rye, Roasted Barley, Triticale Munich</p> <p>This is a classic American Stout, full of flavor, character, and with a spicy, crisp addition of Rye. The clean, roasted flavor finishes dry and drinks well year-round.<br/><br/>
+Gold - Washington Beer Awards (2016, 2025), Silver - Washington Beer Awards (2017), Bronze - Washington Beer Awards (2023), Gold - Sip Magazine Best of the NW (2022, 2023), USA Gold - World Beer Awards (2019, 2020, 2021, 2022, 2023, 2024), World's Best - World Beer Awards (2024), USA Bronze - World Beer Awards (2025), 94 pts - Beer Connoisseur</p>
+</div>
+<div class="beer-tile" id="BSTR" name="BSTR">
+<div class="beer-number"><span>4</span></div>
+<div class="beer-name">
+<span class="beer-name">Velvet Uppercut</span>
+<span class="beer-keywords">complex, fruity, smooth</span>
+</div>
+<div class="beer-extras">
+<span class="beer-style">Belgian-Style<br/>Golden Strong</span>
+<span class="beer-abv">9%</span>
+</div>
+</div>
+<div class="beer-modal-details hidden" id="BSTR-details">
+<p class="beer-modal-name"><strong>Velvet Uppercut</strong><br/>
+						Belgian-Style Golden Strong</p>
+<p class="abv-ibu">9% | 37 IBUs</p>
+<p class="beer-modal-hops-malt"><strong>Hops: </strong>Columbus, Perle</p> <p class="beer-modal-hops-malt"><strong>Malt: </strong>Brewer Select Pilsner, Cashup White Wheat Pale, Abbey Malt, Triticale Munich, Baronesse Vienna</p> <p>There I was, enjoying the complex blend of fruity esters and subtle spice, ready to have another of this extraordinarily smooth beer when, POW! I got that Velvet Uppercut.  To be continued....</p>
+</div>
+<div class="beer-tile" id="GPIL" name="GPIL">
+<div class="beer-number"><span>5</span></div>
+<div class="beer-name">
+<span class="beer-name">Hitt’s Hill</span>
+<span class="beer-keywords">traditional, easy, clean</span>
+</div>
+<div class="beer-extras">
+<span class="beer-style">Pilsner</span>
+<span class="beer-abv">4.2%</span>
+</div>
+</div>
+<div class="beer-modal-details hidden" id="GPIL-details">
+<p class="beer-modal-name"><strong>Hitt’s Hill</strong><br/>
+						Pilsner</p>
+<p class="abv-ibu">4.2% | 21 IBUs</p>
+<p class="beer-modal-hops-malt"><strong>Hops: </strong>Columbus, Saaz</p> <p class="beer-modal-hops-malt"><strong>Malt: </strong>Brewer Select Pilsner</p> <p>A classic American lager with craft at its heart.   Locally grown and malted grain, Saaz-hopped and fermented cold. This is a neighborly beer, a homage to the Columbia City neighborhood we call home.</p>
+</div>
+<div class="beer-tile" id="RCHD" name="RCHD">
+<div class="beer-number"><span>6</span></div>
+<div class="beer-name has-sidebar">
+<span class="beer-sidebar">Collab</span>
+<span class="beer-name">Stablehead</span>
+<span class="beer-keywords">w/ Rat City Homebrew Club, cocoa, nutty</span>
+</div>
+<div class="beer-extras">
+<span class="beer-style">Baltic Porter</span>
+<span class="beer-abv">6%</span>
+</div>
+</div>
+<div class="beer-modal-details hidden" id="RCHD-details">
+<p class="beer-modal-name"><strong>Collab: Stablehead</strong><br/>
+						Baltic Porter</p>
+<p class="abv-ibu">6% | 35 IBUs</p>
+<p class="beer-modal-hops-malt"><strong>Hops: </strong>Columbus, Vista (CGX)</p> <p class="beer-modal-hops-malt"><strong>Malt: </strong>Elwha River Spelt Pale, Crystal T50, Pale Chocolate, Roasted Barley, Carafa Special III, Baronesse Vienna, Buzz Pilsner, Steffi Pilsner</p> <p>A clean lager fermentation designed to highlight the rich, nutty character of Spelt malt and the cocoa notes of lightly roasted Barley.  A collaboration with the winner of a Rat City Homebrew Club competition!</p>
+</div>
+<div class="beer-tile" id="FHBI" name="FHBI">
+<div class="beer-number"><span>7</span></div>
+<div class="beer-name">
+<span class="beer-name">Ryezomes</span>
+<span class="beer-keywords">CENTENNIAL, lemon, piney</span>
+</div>
+<div class="beer-extras">
+<span class="beer-style">FRESH HOP<br/>Black IPA</span>
+<span class="beer-abv">6.5%</span>
+</div>
+</div>
+<div class="beer-modal-details hidden" id="FHBI-details">
+<p class="beer-modal-name"><strong>Ryezomes</strong><br/>
+						FRESH HOP Black IPA</p>
+<p class="abv-ibu">6.5% | 40 IBUs</p>
+<p class="beer-modal-hops-malt"><strong>Hops: </strong>Columbus, Centennial (Fresh Cone), Centennial LupoMAX</p> <p class="beer-modal-hops-malt"><strong>Malt: </strong>Brewer Select Pilsner, Hazlet Rye Pale, Flaked Oats, Carafa Special III, Baronesse Munich</p> <p>Rye-zomes is resinous, gorgeous, piney, and all things Centennial.  Fresh notes of aromatic lemon with a hint of tropical fruit, all with a precise, roast finish.  Originally a collab w/ Logan Brewing.</p>
+</div>
+<div class="beer-tile" id="ESBE-N" name="ESBE-N">
+<div class="beer-number"><span>8</span></div>
+<div class="beer-name has-sidebar">
+<span class="beer-sidebar">Nitro</span>
+<span class="beer-name">Extra Special Bitter</span>
+<span class="beer-keywords">woody, bitter, crisp</span>
+</div>
+<div class="beer-extras">
+<span class="beer-style">ESB</span>
+<span class="beer-abv">5%</span>
+</div>
+</div>
+<div class="beer-modal-details hidden" id="ESBE-N-details">
+<p class="beer-modal-name"><strong>Nitro: Extra Special Bitter</strong><br/>
+						ESB</p>
+<p class="abv-ibu">5% | 31 IBUs</p>
+<p class="beer-modal-hops-malt"><strong>Hops: </strong>Columbus, Mt. Hood, Perle</p> <p class="beer-modal-hops-malt"><strong>Malt: </strong>Brewer Select Pilsner, Elwha River Spelt Pale, CaraAroma, Crystal T50, Roasted Barley, Buzz Pilsner</p> <p>Light and pleasantly bitter.  Our ESB leads with woody and fresh bread aromas and finishes with a super refreshing crisp, cocoa-esque finish.  Served on nitro for maximum enjoyment.</p>
+</div>
+<div class="beer-tile" id="BWIT" name="BWIT">
+<div class="beer-number"><span>9</span></div>
+<div class="beer-name">
+<span class="beer-name">Where's Bonnie?</span>
+<span class="beer-keywords">hazy, clove, orange</span>
+</div>
+<div class="beer-extras">
+<span class="beer-style">Belgian-Style<br/>Witbier</span>
+<span class="beer-abv">5.4%</span>
+</div>
+</div>
+<div class="beer-modal-details hidden" id="BWIT-details">
+<p class="beer-modal-name"><strong>Where's Bonnie?</strong><br/>
+						Belgian-Style Witbier</p>
+<p class="abv-ibu">5.4% | 22 IBUs</p>
+<p class="beer-modal-hops-malt"><strong>Hops: </strong>Columbus, Tettnanger, Perle</p> <p class="beer-modal-hops-malt"><strong>Malt: </strong>Brewer Select Pilsner, Cashup White Wheat Pale, Flaked Oats</p> <p>A pale, hazy Witbier, crafted from 50% wheat, and well balanced.  Flaunting subtle Belgian character and lightly spiced with coriander and orange peel, Witbier pairs best with sunshine and daydreams.</p>
+</div>
+<div class="beer-tile" id="FHDP" name="FHDP">
+<div class="beer-number"><span>10</span></div>
+<div class="beer-name has-sidebar">
+<span class="beer-sidebar">Collab</span>
+<span class="beer-name">Jimothy &amp; The Giant Peach</span>
+<span class="beer-keywords">peach, stone fruit, DOLCITA, w/ Postdoc</span>
+</div>
+<div class="beer-extras">
+<span class="beer-style">Fresh Hop<br/>IPA</span>
+<span class="beer-abv">6.1%</span>
+</div>
+</div>
+<div class="beer-modal-details hidden" id="FHDP-details">
+<p class="beer-modal-name"><strong>Collab: Jimothy &amp; The Giant Peach</strong><br/>
+						Fresh Hop IPA</p>
+<p class="abv-ibu">6.1% | 40 IBUs</p>
+<p class="beer-modal-hops-malt"><strong>Hops: </strong>Columbus, Dolcita</p> <p class="beer-modal-hops-malt"><strong>Malt: </strong>Brewer Select Pilsner, Lyon Light Munich, Cashup White Wheat Pale</p> <p>Let the melodic sounds of brewers cussing through a Fresh Hop brew-day ease the muscles in your face.  May your tension melt away with notes of stone fruit, citrus, and caramelized-peaches.</p>
+</div>
+<div class="beer-tile" id="KCVC" name="KCVC">
+<div class="beer-number"><span>11</span></div>
+<div class="beer-name has-sidebar">
+<span class="beer-sidebar">Collab</span>
+<span class="beer-name">Dusty Roller</span>
+<span class="beer-keywords">w/ Volition Brewing, nutty, earthy, corn</span>
+</div>
+<div class="beer-extras">
+<span class="beer-style">Kentucky<br/>Common</span>
+<span class="beer-abv">5%</span>
+</div>
+</div>
+<div class="beer-modal-details hidden" id="KCVC-details">
+<p class="beer-modal-name"><strong>Collab: Dusty Roller</strong><br/>
+						Kentucky Common</p>
+<p class="abv-ibu">5% | 19 IBUs</p>
+<p class="beer-modal-hops-malt"><strong>Hops: </strong>Challenger</p> <p class="beer-modal-hops-malt"><strong>Malt: </strong>Baronesse Pale, Flaked Corn, CaraAroma</p> <p>It's a real blend, this one.  Mostly barley, a little corn, some ale yeast, a bit of lager yeast, PNW hops.  Bready, nutty malt and a bright light-citrus hop aroma with a lingering, earthy finish.  When the sun's out, it really puts the raft in Craft.</p>
+</div>
+<div class="beer-tile" id="OKTB" name="OKTB">
+<div class="beer-number"><span>12</span></div>
+<div class="beer-name">
+<span class="beer-name">Langer Hund</span>
+<span class="beer-keywords">nutty, malty, crisp</span>
+</div>
+<div class="beer-extras">
+<span class="beer-style">Märzen/<br/>Oktoberfest</span>
+<span class="beer-abv">5.2%</span>
+</div>
+</div>
+<div class="beer-modal-details hidden" id="OKTB-details">
+<p class="beer-modal-name"><strong>Langer Hund</strong><br/>
+						Märzen/ Oktoberfest</p>
+<p class="abv-ibu">5.2% | 25 IBUs</p>
+<p class="beer-modal-hops-malt"><strong>Hops: </strong>Columbus, Tettnanger</p> <p class="beer-modal-hops-malt"><strong>Malt: </strong>Brewer Select Pilsner, Lyon Light Munich, Abbey Malt, Caramunich III, Baronesse Munich</p> <p>Our annual Oktoberfest, golden red, crisp, malty and aromatic. This late-summer session-lager is an easy drinker and full of flavor. Best shared in tall glasses with large handles.</p>
+</div>
+<div class="beer-tile" id="HZMC" name="HZMC">
+<div class="beer-number"><span>13</span></div>
+<div class="beer-name">
+<span class="beer-name">Neighborhood Famous</span>
+<span class="beer-keywords">lychee, pineapple, citrus</span>
+</div>
+<div class="beer-extras">
+<span class="beer-style">Hazy<br/>IPA</span>
+<span class="beer-abv">6.4%</span>
+</div>
+</div>
+<div class="beer-modal-details hidden" id="HZMC-details">
+<p class="beer-modal-name"><strong>Neighborhood Famous</strong><br/>
+						Hazy IPA</p>
+<p class="abv-ibu">6.4% | 28 IBUs</p>
+<p class="beer-modal-hops-malt"><strong>Hops: </strong>Mosaic, Citra (Cryo), Citra LupoMAX, Mosaic LupoMAX, Krush</p> <p class="beer-modal-hops-malt"><strong>Malt: </strong>Brewer Select Pilsner, Flaked Oats, Flaked Wheat, Baronesse Barofoam</p> <p>Know that person in the neighborhood that people know as 'the mayor?' Gregarious, familiar, &amp; welcome everywhere? This beer is like that. A mix of classic &amp; new US hops brings heavy aromas of citrus, pineapple, and lychee.</p>
+</div>
+<div class="beer-tile" id="RYIP" name="RYIP">
+<div class="beer-number"><span>14</span></div>
+<div class="beer-name">
+<span class="beer-name">Rye IPA</span>
+<span class="beer-keywords">resinous, citrusy, smooth, dry</span>
+</div>
+<div class="beer-extras">
+<span class="beer-style">West-Coast<br/>IPA</span>
+<span class="beer-abv">6%</span>
+</div>
+</div>
+<div class="beer-modal-details hidden" id="RYIP-details">
+<p class="beer-modal-name"><strong>Rye IPA</strong><br/>
+						West-Coast IPA</p>
+<p class="abv-ibu">6% | 64 IBUs</p>
+<p class="beer-modal-hops-malt"><strong>Hops: </strong>Columbus, Idaho 7 (CGX)</p> <p class="beer-modal-hops-malt"><strong>Malt: </strong>Brewer Select Pilsner, Hazlet Rye Pale, Abbey Malt, Crystal T50</p> <p>The spicy, yet smooth addition of rye contributes nicely to a clean and dry mouthfeel. Our Rye IPA finishes with a resinous, piney, citrusy hop character.</p>
+</div>
+<div class="beer-tile" id="H2CE" name="H2CE">
+<div class="beer-number"><span>15</span></div>
+<div class="beer-name has-sidebar">
+<span class="beer-sidebar">NA Bev</span>
+<span class="beer-name">H2O YEAH</span>
+<span class="beer-keywords">effervescent, hoppy, citrus</span>
+</div>
+<div class="beer-extras">
+<span class="beer-style">Hop<br/>Water</span>
+<span class="beer-abv">0%</span>
+</div>
+</div>
+<div class="beer-modal-details hidden" id="H2CE-details">
+<p class="beer-modal-name"><strong>NA Bev: H2O YEAH</strong><br/>
+						Hop Water</p>
+<p class="abv-ibu">0%</p>
+<p class="beer-modal-hops-malt"><strong>Hops: </strong>Centennial LupoMAX, Columbus</p> <p>It's bright! It's crisp! It's refreshing! It's a simple and carefully balanced blend of Yakima Valley hops and mineral water from the Cedar River watershed.</p>
+</div>
+<div class="beer-tile" id="BELM-C" name="BELM-C">
+<div class="beer-number"><span>16</span></div>
+<div class="beer-name has-sidebar">
+<span class="beer-sidebar">Cask</span>
+<span class="beer-name">Belma &amp; Louise</span>
+<span class="beer-keywords">w/ Fresh Dolcita Hops. strawberry, tropical</span>
+</div>
+<div class="beer-extras">
+<span class="beer-style">West-Coast<br/>IPA</span>
+<span class="beer-abv">6.6%</span>
+</div>
+</div>
+<div class="beer-modal-details hidden" id="BELM-C-details">
+<p class="beer-modal-name"><strong>Cask: Belma &amp; Louise</strong><br/>
+						West-Coast IPA</p>
+<p class="abv-ibu">6.6% | 46 IBUs</p>
+<p class="beer-modal-hops-malt"><strong>Hops: </strong>Belma</p> <p class="beer-modal-hops-malt"><strong>Malt: </strong>Brewer Select Pilsner, Baronesse Munich, Flaked Oats</p> <p>Fun and always up for an adventure, this American IPA uses Belma hops to bring strawberry and tropical notes with a crisp finish.</p>
+</div>
+<div class="beer-tile" id="GWMY" name="GWMY">
+<div class="beer-number"><span>17</span></div>
+<div class="beer-name has-sidebar">
+<span class="beer-sidebar">Cider</span>
+<span class="beer-name">Mystery</span>
+<span class="beer-keywords">apples, pears, semi-sweet</span>
+</div>
+<div class="beer-extras">
+<span class="beer-style">Guest:<br/>Greenwood Cider</span>
+<span class="beer-abv">5.5%</span>
+</div>
+</div>
+<div class="beer-modal-details hidden" id="GWMY-details">
+<p class="beer-modal-name"><strong>Cider: Mystery</strong><br/>
+						Guest: Greenwood Cider</p>
+<p class="abv-ibu">5.5%</p>
+<p>A sessionable blend of apples &amp; pears featuring some varieties that don’t have names, some that may have names, &amp; some whose names we can’t tell you.  Also D'Anjou pears. Semi-sweet.</p>
+</div>
+<div class="beer-tile" id="AF69" name="AF69">
+<div class="beer-number"><span>18</span></div>
+<div class="beer-name has-sidebar">
+<span class="beer-sidebar">Cider</span>
+<span class="beer-name">Traditional Heirloom Cider</span>
+<span class="beer-keywords">blend #69, tannic, dry, citrus</span>
+</div>
+<div class="beer-extras">
+<span class="beer-style">Guest:<br/>Alpenfire Cider</span>
+<span class="beer-abv">6.9%</span>
+</div>
+</div>
+<div class="beer-modal-details hidden" id="AF69-details">
+<p class="beer-modal-name"><strong>Cider: Traditional Heirloom Cider</strong><br/>
+						Guest: Alpenfire Cider</p>
+<p class="abv-ibu">6.9%</p>
+<p class="beer-modal-hops-malt"><strong>Hops: </strong></p> <p>A dry blend of 75% organic Pippins and Fuji with 25% estate Vilberie and Brown Snout. On the dry side of but so easy to drink, bright citrus up front with a tannic &amp; woody finish.</p>
+</div>
+<div class="beer-tile" id="SRNB" name="SRNB">
+<div class="beer-number"><span>19</span></div>
+<div class="beer-name has-sidebar">
+<span class="beer-sidebar">Wine</span>
+<span class="beer-name">Sage Rat Carbonic Nebbiolo</span>
+<span class="beer-keywords">organic, light red, minerally</span>
+</div>
+<div class="beer-extras">
+<span class="beer-style">100%<br/>Nebbiolo</span>
+<span class="beer-abv">12.7%</span>
+</div>
+</div>
+<div class="beer-modal-details hidden" id="SRNB-details">
+<p class="beer-modal-name"><strong>Wine: Sage Rat Carbonic Nebbiolo</strong><br/>
+						100% Nebbiolo</p>
+<p class="abv-ibu">12.7%</p>
+<p class="beer-modal-hops-malt"><strong>Hops: </strong></p> <p>100% Nebbiolo sourced from Perrault Vineyard from Rattlesnake Hills AVA.  Aged 7 months in neutral oak.  Farmed organically.</p>
+</div>
+<div class="beer-tile" id="TCBB" name="TCBB">
+<div class="beer-number"><span>20</span></div>
+<div class="beer-name has-sidebar">
+<span class="beer-sidebar">NA Bev</span>
+<span class="beer-name">Blackberry Ginger Beer</span>
+<span class="beer-keywords">bright, fresh, purple</span>
+</div>
+<div class="beer-extras">
+<span class="beer-style">Guest:<br/>Timber Ginger</span>
+<span class="beer-abv">0%</span>
+</div>
+</div>
+<div class="beer-modal-details hidden" id="TCBB-details">
+<p class="beer-modal-name"><strong>NA Bev: Blackberry Ginger Beer</strong><br/>
+						Guest: Timber Ginger</p>
+<p class="abv-ibu">0%</p>
+<p class="beer-modal-hops-malt"><strong>Hops: </strong></p> <p>Timber Ginger NA ginger beer with blackberries.  Bright and fresh with a strong ginger bite.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="column beer-board coming-soon beer-board-third-divided">
+<div class="beer-board-header">
+				Coming Soon
+			</div>
+<div class="beer-divider beer-divider-1"></div>
+<div class="beer-divider beer-divider-2"></div>
+<div class="beer-board-three">
+<div class="beer-tile beer-tile-no-number">
+<div class="beer-number"></div>
+<div class="beer-name">
+<span class="beer-name">Lite Bright</span>
+<span class="beer-keywords">straw, birch, for you and me</span>
+</div>
+<div class="beer-extras">
+</div>
+</div>
+<div class="beer-tile beer-tile-no-number">
+<div class="beer-number"></div>
+<div class="beer-name">
+<span class="beer-name">Imperial Rye Stout (12th Anniversary!)</span>
+<span class="beer-keywords">complex, dry, vanilla</span>
+</div>
+<div class="beer-extras">
+</div>
+</div>
+<div class="beer-tile beer-tile-no-number">
+<div class="beer-number"></div>
+<div class="beer-name">
+<span class="beer-name">Imperial Sweet Potato Porter</span>
+<span class="beer-keywords">earthy, roasted, tobacco</span>
+</div>
+<div class="beer-extras">
+</div>
+</div>
+<div class="beer-tile beer-tile-no-number">
+<div class="beer-number"></div>
+<div class="beer-name has-sidebar">
+<span class="beer-sidebar">Cask</span>
+<span class="beer-name">Jimothy &amp; The Giant Peach</span>
+<span class="beer-keywords">peach, stone fruit, DOLCITA, w/ Postdoc</span>
+</div>
+<div class="beer-extras">
+</div>
+</div>
+<div class="beer-tile beer-tile-no-number">
+<div class="beer-number"></div>
+<div class="beer-name">
+<span class="beer-name">Export Stout</span>
+<span class="beer-keywords">toffee, dark ,full</span>
+</div>
+<div class="beer-extras">
+</div>
+</div>
+<div class="beer-tile beer-tile-no-number">
+<div class="beer-number"></div>
+<div class="beer-name">
+<span class="beer-name">Larry, Curly and Moesaic</span>
+<span class="beer-keywords">dry, tropical, citrusy</span>
+</div>
+<div class="beer-extras">
+</div>
+</div>
+</div>
+</div>
+</div>
+<br/><br/>
+<div class="row">
+<div class="column">
+<div class="col col-1 pad-20">
+<div class="center">
+<h2>Beer Archive</h2>
+<p>Interested in the history of Flying Lion beers? Check out the <a href="https://flyinglionbrewing.com/beer-archive.html">Beer Archive</a>.</p>
+<p> </p>
+</div>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="column">
+<div class="col col-1" id="beerlist-stripe"></div>
+</div>
+</div>
+<div class="row">
+<div class="column">
+<div class="col col-1 pad-30">
+<h2>Flying Lion's Beers</h2>
+<p>As beer artists we enjoy adding our unique twist to traditionally-inspired beers. We find the best beers are built with balance and subtle flavors, combined to create a complex yet clean palate. As a brewery with a hankering for dark beers, Flying Lion has an affinity for strong, distinctive, and bold flavors. We’re sure you’ll find something you love, whether it’s our classic Pacific Northwest IPAs, our award-winning Rye Stout, or anything in between!</p>
+<p>Flying Lion Brewing offers an unpretentious attitude towards craft beer. Our beer is held to a high standard, is always interesting, and is varied enough to be universally approachable. With a set list of year-round standbys as well as a selection of constantly rotating taps, Flying Lion is worth traveling for but also a wonderful place to make regular and frequent visits!</p>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="column">
+<div class="col col-1 pad-30">
+<h2>Flying Lion Wholesale</h2>
+<p>Got taps or a beer fridge?  Need kegs or cans? We self-distribute our beers to Seattle-area wholesale customers. <a href="https://flyinglionbrewing.com/contact-us.html?wholesale">Contact us</a> for availability.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="spread"></div>
+<div class="content" id="footer">
+<footer class="row">
+<div class="column">
+<div class="col col-2">
+<div class="col col-2-3 ralign pad-20">
+<h3>Always Welcome</h3>
+<ul>
+<li>Families</li>
+<li>Dogs</li>
+<li>Food</li>
+</ul>
+<ul id="social">
+<li><a href="https://www.facebook.com/flyinglionbrewing" id="facebook"></a></li>
+<li><a href="https://www.instagram.com/flyinglionbrewing/" id="instagram"></a></li>
+<li><a href="https://twitter.com/flyinglionbeer" id="twitter"></a></li>
+</ul>
+</div>
+<div class="col col-3 ralign pad-20">
+<h3>Hours</h3>
+<ul>
+<li>Mo<span>12pm-12am</span></li>
+<li>Tu<span>12pm-12am</span></li>
+<li>We<span>12pm-12am</span></li>
+<li>Th<span>12pm-12am</span></li>
+<li>Fr<span>12pm-12am</span></li>
+<li>Sa<span>12pm-12am</span></li>
+<li>Su<span>12pm-12am</span></li>
+</ul>
+</div>
+</div>
+<div class="col col-2 pad-20">
+<div id="map">
+<p>5041 Rainier Avenue S, Seattle, WA 98118</p>
+<p><a href="tel:2066599912">206-659-9912</a></p>
+</div>
+</div>
+</div>
+</footer>
+</div>
+</body>
+</html>

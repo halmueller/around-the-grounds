@@ -6,9 +6,13 @@ from .channel_marker import ChannelMarkerParser
 from .chucks_greenwood import ChucksGreenwoodParser
 from .generic import (
     AjaxParser,
+    CraftpeakWotParser,
+    DigitalPourParser,
     HtmlSelectorParser,
+    HtmlTaplistParser,
     JsonLdParser,
     SheetTaplistParser,
+    TextTaplistParser,
     UntappdEmbedParser,
     UntappdVenueParser,
     WordPressParser,
@@ -33,6 +37,10 @@ class ParserRegistry:
         "untappd-embed": UntappdEmbedParser,
         "untappd-venue": UntappdVenueParser,
         "sheet-taplist": SheetTaplistParser,
+        "html-taplist": HtmlTaplistParser,
+        "craftpeak-wot": CraftpeakWotParser,
+        "digitalpour": DigitalPourParser,
+        "text-taplist": TextTaplistParser,
     }
 
     # Specific parsers — selected by venue.key (takes precedence over generic)
