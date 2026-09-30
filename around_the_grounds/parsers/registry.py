@@ -7,6 +7,7 @@ from .chucks_greenwood import ChucksGreenwoodParser
 from .generic import (
     AjaxParser,
     BevwerkParser,
+    CanvaParser,
     CraftpeakWotParser,
     DigitalPourParser,
     HtmlSelectorParser,
@@ -43,6 +44,7 @@ class ParserRegistry:
         "craftpeak-wot": CraftpeakWotParser,
         "digitalpour": DigitalPourParser,
         "bevwerk": BevwerkParser,
+        "canva": CanvaParser,
         "text-taplist": TextTaplistParser,
         "squarespace-events": SquarespaceEventsParser,
     }

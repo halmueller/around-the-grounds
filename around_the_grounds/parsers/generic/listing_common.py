@@ -59,16 +59,18 @@ async def fetch_listing_text(
     url: str,
     params: Optional[Dict[str, Any]] = None,
     json_body: Optional[Any] = None,
+    headers: Optional[Dict[str, str]] = None,
 ) -> str:
     """Fetch *url* politely and return its body, raising ValueError on failure.
 
     With *json_body*, POSTs it as JSON (for GraphQL APIs) instead of a GET.
+    *headers* override the session's for this request.
     """
     await listing_throttle.wait(url)
     if json_body is None:
-        request = session.get(url, params=params)
+        request = session.get(url, params=params, headers=headers)
     else:
-        request = session.post(url, params=params, json=json_body)
+        request = session.post(url, params=params, json=json_body, headers=headers)
     try:
         async with request as response:
             # Cloudflare marks bot challenges with this header; name them

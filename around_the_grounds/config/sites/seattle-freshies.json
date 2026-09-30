@@ -300,14 +300,23 @@
       }
     },
     {
+      "key": "old-stove-pike-place-taps",
+      "name": "Old Stove Brewing (Pike Place)",
+      "url": "https://www.oldstove.com/pikeplace",
+      "source_type": "canva",
+      "parser_config": {
+        "note": "The Pike Place Draft List is a Canva design embedded on the page; Canva needs a browser User-Agent.",
+        "design_url": "https://www.canva.com/design/DAHA7yux_ks/Eu2izPaTaz2oVobeD7A2OQ/view?embed"
+      }
+    },
+    {
       "key": "old-stove-ship-canal-taps",
       "name": "Old Stove Brewing (Ship Canal)",
-      "url": "https://www.oldstove.com/menu?menu=menu-1",
-      "source_type": "html-taplist",
+      "url": "https://www.oldstove.com/shipcanal",
+      "source_type": "canva",
       "parser_config": {
-        "item": "[data-hook=\"item.root\"]",
-        "name": "[data-hook=\"item.name\"]",
-        "style_pattern": "IBU\\s*/?\\s*(.+?)(?:\\s+-\\s|\\s+\\d+\\s*oz\\b|\\s+\\$|$)"
+        "note": "The Ship Canal menu is a Canva design embedded on the page (the Wix menu for Ship Canal is stale); Canva needs a browser User-Agent.",
+        "design_url": "https://www.canva.com/design/DAGL_6sCqgk/RwWKO0dsreJDygS14JON4A/view?embed"
       }
     },
     {

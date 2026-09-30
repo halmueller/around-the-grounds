@@ -180,7 +180,7 @@ around_the_grounds/
 │   │   ├── ballard-food-trucks.json   # Ballard food trucks (9 venues, deploy_subdir="public")
 │   │   ├── park-slope-music.json      # Park Slope music venues (2 venues, deploy to repo root)
 │   │   ├── childrens-events.json      # Brooklyn children's events (2 venues, deploy to repo root)
-│   │   └── seattle-freshies.json    # Seattle fresh-hop tap lists (37 listing venues + 6
+│   │   └── seattle-freshies.json    # Seattle fresh-hop tap lists (38 listing venues + 6
 │   │                                  #   fresh-hop event sources; no target_repo → preview-only)
 │   ├── loader.py                  # Site config loader (load_site_config, load_all_sites)
 │   ├── haiku_prompt.txt           # Weather-grounded haiku prompt template (Ballard-specific)
@@ -204,6 +204,7 @@ around_the_grounds/
 │   │   ├── sheet_taplist.py       # SheetTaplistParser (public Google Sheet tab as CSV)
 │   │   ├── html_taplist.py        # HtmlTaplistParser + CraftpeakWot / DigitalPour presets
 │   │   ├── bevwerk.py             # BevwerkParser (Bevwerk website-menu GraphQL API)
+│   │   ├── canva.py               # CanvaParser (Canva design draft lists; browser User-Agent)
 │   │   ├── text_taplist.py        # TextTaplistParser (one beer per line, regex-picked)
 │   │   └── squarespace_events.py  # SquarespaceEventsParser (collection ?format=json)
 │   ├── stoup_ballard.py           # Stoup Brewing parser (venue-specific)
@@ -295,7 +296,7 @@ tests/                             # Comprehensive test suite (799 tests)
     - `HtmlSelectorParser`: Extracts events via CSS selectors (`source_type: "html"`)
     - `AjaxParser`: Fetches from JSON API endpoints (`source_type: "ajax"`)
     - `JsonLdParser`: Extracts events from schema.org JSON-LD blocks (`source_type: "json-ld"`)
-    - **Tap-list ("listing") parsers** for sites that show what is available now rather than dated events: `untappd-embed`, `untappd-venue`, `sheet-taplist`, `html-taplist`, `craftpeak-wot`, `digitalpour`, `bevwerk`, `text-taplist`. They keep entries accepted by `utils/listing_matcher.py` in one or more categories (`fresh-hop`, `festbier`; extendable per venue) and emit `Event(kind="listing", category=...)`, which bypasses the coordinator's 7-day window, is excluded from `events.ics`, and carries `"kind"` in `data.json`/Temporal payloads only when non-default. Any event source can opt into `event_filter` (coordinator keeps only fresh-hop events, festivals included) and `event_window_days` (look further ahead than 7 days); both travel in `parser_config`, so the Temporal path honors them too. See [ADDING-VENUES.md](./ADDING-VENUES.md)
+    - **Tap-list ("listing") parsers** for sites that show what is available now rather than dated events: `untappd-embed`, `untappd-venue`, `sheet-taplist`, `html-taplist`, `craftpeak-wot`, `digitalpour`, `bevwerk`, `canva`, `text-taplist`. They keep entries accepted by `utils/listing_matcher.py` in one or more categories (`fresh-hop`, `festbier`; extendable per venue) and emit `Event(kind="listing", category=...)`, which bypasses the coordinator's 7-day window, is excluded from `events.ics`, and carries `"kind"` in `data.json`/Temporal payloads only when non-default. Any event source can opt into `event_filter` (coordinator keeps only fresh-hop events, festivals included) and `event_window_days` (look further ahead than 7 days); both travel in `parser_config`, so the Temporal path honors them too. See [ADDING-VENUES.md](./ADDING-VENUES.md)
   - **Venue-specific parsers** (9 for Ballard food trucks): StoupBallard, BaleBreaker, Obec, UrbanFamily, WheeliePop, ChucksGreenwood, SalehsCorner, ChannelMarker, LuckyEnvelope
 - **Registry**: Two-tier lookup — by `venue.key` (specific) then by `venue.source_type` (generic)
 - **Scrapers**: Async coordinator with concurrent processing, retry logic, and error isolation
