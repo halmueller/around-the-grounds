@@ -256,7 +256,8 @@ public_templates/                  # Per-site web interface templates
     ├── app.js
     ├── styles.css
     ├── sitemap.xml                #   static; lists the four pages under public_url
-    └── robots.txt                 #   allows all, points at sitemap.xml
+    ├── robots.txt                 #   allows all, points at sitemap.xml
+    └── og-image.png               #   Open Graph card; source + render.py in deploy/og-image/
 
 public/                            # Generated files (git-ignored)
 ├── data.json                      # Generated web data

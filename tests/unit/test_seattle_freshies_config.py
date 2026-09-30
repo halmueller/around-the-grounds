@@ -1,5 +1,8 @@
 """Guards for the seattle-freshies site config."""
 
+import html
+import re
+import struct
 from pathlib import Path
 from xml.etree import ElementTree
 
@@ -126,3 +129,35 @@ def test_robots_points_at_sitemap(site: SiteConfig) -> None:
     robots = (TEMPLATES / "fresh-hop" / "robots.txt").read_text()
     assert f"Sitemap: {site.public_url}/sitemap.xml" in robots.splitlines()
     assert "Disallow: /" not in robots.splitlines()
+
+
+@pytest.mark.parametrize(
+    "page, path",
+    [
+        ("index.html", ""),
+        ("festbier.html", "festbier.html"),
+        ("bars.html", "bars.html"),
+        ("events.html", "events.html"),
+    ],
+)
+def test_open_graph_tags(site: SiteConfig, page: str, path: str) -> None:
+    head = (TEMPLATES / "fresh-hop" / page).read_text().split("</head>")[0]
+    meta = dict(re.findall(r'<meta property="(og:[\w:]+)" content="([^"]*)">', head))
+    url = f"{site.public_url}/{path}"
+    assert meta["og:url"] == url
+    assert f'<link rel="canonical" href="{url}">' in head
+    title = re.search(r"<title>(.*?)</title>", head)
+    assert title and html.unescape(meta["og:title"]) == html.unescape(title.group(1))
+    description = re.search(r'<meta name="description" content="([^"]*)">', head)
+    assert description and meta["og:description"] == description.group(1)
+    # Crawlers need an absolute image URL for a file the template ships.
+    assert meta["og:image"] == f"{site.public_url}/og-image.png"
+    assert (meta["og:image:width"], meta["og:image:height"]) == ("1200", "630")
+    assert '<meta name="twitter:card" content="summary_large_image">' in head
+
+
+def test_open_graph_image_is_1200_by_630_png() -> None:
+    data = (TEMPLATES / "fresh-hop" / "og-image.png").read_bytes()
+    assert data[:8] == b"\x89PNG\r\n\x1a\n"
+    width, height = struct.unpack(">II", data[16:24])
+    assert (width, height) == (1200, 630)
