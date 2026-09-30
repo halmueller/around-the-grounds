@@ -203,11 +203,11 @@ For a site served by a plain web server rather than a git-backed host,
 `--output-dir` publishes the site's files straight into a document root:
 
 ```bash
-uv run around-the-grounds --site seattle-fall-beers --output-dir /var/www/seattlefallbeers.com
+uv run around-the-grounds --site seattle-freshies --output-dir /var/www/seattlefreshies.com
 ```
 
 Each file is replaced atomically; files the site doesn't produce are left
 alone; and if every venue fails nothing is written, so the last good copy
-stays up. No GitHub App credentials are needed. `seattle-fall-beers` runs this
+stays up. No GitHub App credentials are needed. `seattle-freshies` runs this
 way, hourly from cron on a DigitalOcean droplet with Apache — see
 [deploy/digitalocean/README.md](./deploy/digitalocean/README.md).

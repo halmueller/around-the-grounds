@@ -1,9 +1,9 @@
 {
-  "key": "seattle-fall-beers",
-  "name": "Seattle Autumn Beers",
+  "key": "seattle-freshies",
+  "name": "Seattle Freshies",
   "template": "fresh-hop",
   "timezone": "America/Los_Angeles",
-  "public_url": "https://seattlefallbeers.com",
+  "public_url": "https://seattlefreshies.com",
   "generate_description": false,
   "venues": [
     {

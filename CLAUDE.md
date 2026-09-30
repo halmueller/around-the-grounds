@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Around the Grounds is a multi-site event aggregator platform. Each site is defined by a JSON config file in `config/sites/` — no new parser code is needed unless the site uses an unsupported platform. This repo is jointly maintained: it produces the original ballardfoodtrucks.com (Vercel-backed, deploys to the `public/` subdir of a dedicated target repo) as well as jredding's Brooklyn music and children's-events sites (GitHub Pages–backed, deploy to the target repo root), and Hal's Seattle Autumn Beers fresh-hop/festbier tap-list site (site key `seattle-fall-beers`, seattlefallbeers.com; published with `--output-dir` from cron, no target repo). These setups coexist via per-site config.
+Around the Grounds is a multi-site event aggregator platform. Each site is defined by a JSON config file in `config/sites/` — no new parser code is needed unless the site uses an unsupported platform. This repo is jointly maintained: it produces the original ballardfoodtrucks.com (Vercel-backed, deploys to the `public/` subdir of a dedicated target repo) as well as jredding's Brooklyn music and children's-events sites (GitHub Pages–backed, deploy to the target repo root), and Hal's Seattle Freshies fresh-hop/festbier tap-list site (site key `seattle-freshies`, seattlefreshies.com; published with `--output-dir` from cron, no target repo). These setups coexist via per-site config.
 
 > **If you're merging the multi-site merge into an existing checkout**, read [MIGRATION.md](./MIGRATION.md) first. It covers per-maintainer migration notes, recommended post-pull hygiene, and the remaining latent follow-up work (per-site haiku prompts, per-site weather location, the `extraction_method` template shim, the `scrape_single_venue` timezone gap). The earlier follow-ups for unifying the Temporal deploy path and retiring `breweries.json` are now done.
 
@@ -40,7 +40,7 @@ uv run around-the-grounds --site childrens-events   # Run another site
 uv run around-the-grounds --site all                # Run all configured sites
 uv run around-the-grounds --config /path/to/config.json  # Use custom config (~60s)
 uv run around-the-grounds --preview    # Generate local preview files (~60s)
-uv run around-the-grounds --site seattle-fall-beers --output-dir /var/www/site  # Publish into a web root (atomic; keeps last good copy if every venue fails)
+uv run around-the-grounds --site seattle-freshies --output-dir /var/www/site  # Publish into a web root (atomic; keeps last good copy if every venue fails)
 uv run around-the-grounds --deploy     # Run and deploy to GitHub Pages (~90s total)
 
 # With AI features enabled (vision analysis + haiku generation)
@@ -180,7 +180,7 @@ around_the_grounds/
 │   │   ├── ballard-food-trucks.json   # Ballard food trucks (9 venues, deploy_subdir="public")
 │   │   ├── park-slope-music.json      # Park Slope music venues (2 venues, deploy to repo root)
 │   │   ├── childrens-events.json      # Brooklyn children's events (2 venues, deploy to repo root)
-│   │   └── seattle-fall-beers.json    # Seattle fresh-hop tap lists (29 listing venues + 5
+│   │   └── seattle-freshies.json    # Seattle fresh-hop tap lists (29 listing venues + 5
 │   │                                  #   fresh-hop event sources; no target_repo → preview-only)
 │   ├── loader.py                  # Site config loader (load_site_config, load_all_sites)
 │   ├── haiku_prompt.txt           # Weather-grounded haiku prompt template (Ballard-specific)
@@ -248,7 +248,7 @@ public_templates/                  # Per-site web interface templates
 │   └── index.html
 ├── kids/                          # Brooklyn children's events template
 │   └── index.html
-└── fresh-hop/                     # Seattle Autumn Beers: 4 pages sharing app.js + styles.css
+└── fresh-hop/                     # Seattle Freshies: 4 pages sharing app.js + styles.css
     ├── index.html                 #   fresh hops at breweries
     ├── festbier.html              #   festbiers/Oktoberfests/Märzens at breweries
     ├── bars.html                  #   both, at bottle shops & bars (venue_type "bar")
@@ -298,7 +298,7 @@ tests/                             # Comprehensive test suite (799 tests)
 - **Calendar Feed**: `utils/ics_generator.py:build_ics(web_data)` renders the same `web_data` dict the templates consume into an RFC 5545 feed at `events.ics`. It reads `web_data` rather than `List[Event]` because the Temporal `deploy_to_git` activity only receives the dict. Times are emitted in UTC (no VTIMEZONE needed); events with no published hours become all-day entries; UIDs are derived (sha1 of site/venue/date/title) since `Event` has no ID. **`DTSTAMP` is intentionally derived from the event, not `datetime.now()`** — a "now" value would make the file differ on every run and defeat the no-op deploy short-circuit
 - **Web Interface**: Per-site templates in `public_templates/<template>/` deployed to the site's configured host (GitHub Pages or Vercel-via-GitHub)
 - **Web Deployment**: Two git strategies selected by `SiteConfig.deploy_subdir` — see Deployment Strategies below. `deploy_subdir` is validated before authentication (relative, no parent traversal, never `.git`), re-checked against the resolved clone path so a committed symlink cannot redirect writes, and staged with a literal pathspec. Preview and deploy share `_write_site_output` so both emit identical files
-- **Scheduling**: Google Cloud Run Jobs with Cloud Scheduler (jredding's sites) OR a self-hosted Temporal worker (Ballard site) OR cron + `--output-dir` on a web host (Seattle Autumn Beers; see `deploy/digitalocean/`). Both paths read the same `SiteConfig` and call the same `main.py:_deploy_with_github_auth` for git operations
+- **Scheduling**: Google Cloud Run Jobs with Cloud Scheduler (jredding's sites) OR a self-hosted Temporal worker (Ballard site) OR cron + `--output-dir` on a web host (Seattle Freshies; see `deploy/digitalocean/`). Both paths read the same `SiteConfig` and call the same `main.py:_deploy_with_github_auth` for git operations
 - **Tests**: 799 tests covering all scenarios including generic parsers, error handling, vision analysis, haiku generation, weather fetching, multi-site deploy configuration, the Temporal `load_site` / `generate_web_data` / `deploy_to_git` activity contracts, end-to-end `FoodTruckWorkflow` runs against a real local Temporal server (venue isolation, cancellation, replay of recorded histories in `tests/fixtures/temporal/`), real-Git deployment into temporary bare repositories, and a Playwright browser check of all three templates (`tests/browser/check_templates.mjs`, skipped when Node + Playwright are unavailable)
 
 ## Deployment Strategies

@@ -1,4 +1,4 @@
-# Deploying seattlefallbeers.com on a DigitalOcean droplet (Apache)
+# Deploying seattlefreshies.com on a DigitalOcean droplet (Apache)
 
 The droplet scrapes the tap lists itself, hourly from cron, and publishes the
 site straight into an Apache document root with `--output-dir`. No git host,
@@ -13,14 +13,14 @@ for this site).
 - Files the site doesn't produce (`robots.txt`, certbot's `.well-known/`) are
   left alone.
 
-Commands below use `fallbeers` as the site user and the fork's
+Commands below use `freshies` as the site user and the fork's
 `feature/fresh-hop-site` branch; adjust as needed.
 
 ## 1. Site user, uv and the code
 
 ```bash
-sudo adduser --disabled-password --gecos "" fallbeers
-sudo -iu fallbeers
+sudo adduser --disabled-password --gecos "" freshies
+sudo -iu freshies
 
 curl -LsSf https://astral.sh/uv/install.sh | sh     # installs to ~/.local/bin
 exec bash -l                                          # pick up the new PATH
@@ -37,7 +37,7 @@ Datacenter IPs are more likely than home connections to get bot challenges
 live:
 
 ```bash
-uv run --no-sync around-the-grounds --site seattle-fall-beers --preview; echo "exit $?"
+uv run --no-sync around-the-grounds --site seattle-freshies --preview; echo "exit $?"
 python3 - <<'EOF'
 import json
 d = json.load(open("public/data.json"))
@@ -46,7 +46,7 @@ print(len(listings), "fresh-hop beers at", len({e["venue_key"] for e in listings
 print(len(d["events"]) - len(listings), "events")
 print("errors:", d["errors"] or "none")
 EOF
-grep -i "cloudflare\|403\|429" -m 20 <(uv run --no-sync around-the-grounds --site seattle-fall-beers --verbose 2>&1) || echo "no blocks logged"
+grep -i "cloudflare\|403\|429" -m 20 <(uv run --no-sync around-the-grounds --site seattle-freshies --verbose 2>&1) || echo "no blocks logged"
 ```
 
 Compare with a run on your Mac. Any venue named in `errors` is unreachable
@@ -55,31 +55,31 @@ from the droplet.
 ## 3. Document root and first publish
 
 ```bash
-sudo mkdir -p /var/www/seattlefallbeers.com
-sudo chown fallbeers:fallbeers /var/www/seattlefallbeers.com
-sudo -iu fallbeers ~/around-the-grounds/deploy/digitalocean/run.sh
-ls -l /var/www/seattlefallbeers.com     # index.html, data.json, events.ics
+sudo mkdir -p /var/www/seattlefreshies.com
+sudo chown freshies:freshies /var/www/seattlefreshies.com
+sudo -iu freshies ~/around-the-grounds/deploy/digitalocean/run.sh
+ls -l /var/www/seattlefreshies.com     # index.html, data.json, events.ics
 ```
 
 ## 4. Apache
 
 ```bash
-sudo cp ~fallbeers/around-the-grounds/deploy/digitalocean/seattlefallbeers.com.conf \
+sudo cp ~freshies/around-the-grounds/deploy/digitalocean/seattlefreshies.com.conf \
     /etc/apache2/sites-available/
 sudo a2enmod headers
-sudo a2ensite seattlefallbeers.com
+sudo a2ensite seattlefreshies.com
 sudo apachectl configtest && sudo systemctl reload apache2
-curl -s -H "Host: seattlefallbeers.com" http://localhost/data.json | head -c 300; echo
+curl -s -H "Host: seattlefreshies.com" http://localhost/data.json | head -c 300; echo
 ```
 
 ## 5. DNS and HTTPS
 
-At the registrar, point `seattlefallbeers.com` and `www` at the droplet
+At the registrar, point `seattlefreshies.com` and `www` at the droplet
 (A records; AAAA too if the droplet has IPv6). Once `dig +short
-seattlefallbeers.com` returns the droplet's address:
+seattlefreshies.com` returns the droplet's address:
 
 ```bash
-sudo certbot --apache -d seattlefallbeers.com -d www.seattlefallbeers.com
+sudo certbot --apache -d seattlefreshies.com -d www.seattlefreshies.com
 ```
 
 Choose the HTTP→HTTPS redirect. Certbot renews on its own timer.
@@ -87,15 +87,15 @@ Choose the HTTP→HTTPS redirect. Certbot renews on its own timer.
 ## 6. Hourly refresh
 
 ```bash
-sudo -iu fallbeers
+sudo -iu freshies
 mkdir -p ~/logs
 crontab -e          # paste the line from deploy/digitalocean/crontab.example
 exit
-sed 's/SITEUSER/fallbeers/g' ~fallbeers/around-the-grounds/deploy/digitalocean/logrotate.conf \
-    | sudo tee /etc/logrotate.d/seattle-fall-beers
+sed 's/SITEUSER/freshies/g' ~freshies/around-the-grounds/deploy/digitalocean/logrotate.conf \
+    | sudo tee /etc/logrotate.d/seattle-freshies
 ```
 
-After the next :07, check `~fallbeers/logs/seattle-fall-beers.log`:
+After the next :07, check `~freshies/logs/seattle-freshies.log`:
 
 | Exit code | Meaning |
 |-----------|---------|
@@ -110,7 +110,7 @@ set `HEALTHCHECK_URL` in the crontab to be emailed if runs stop or fail.
 ## Updating
 
 ```bash
-sudo -iu fallbeers
+sudo -iu freshies
 cd ~/around-the-grounds && git pull && uv sync --no-dev
 ```
 

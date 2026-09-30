@@ -1,4 +1,4 @@
-"""Guards for the seattle-fall-beers site config."""
+"""Guards for the seattle-freshies site config."""
 
 from pathlib import Path
 
@@ -13,12 +13,12 @@ TEMPLATES = Path(__file__).resolve().parents[2] / "public_templates"
 
 @pytest.fixture(scope="module")
 def site() -> SiteConfig:
-    return load_site_config("seattle-fall-beers")
+    return load_site_config("seattle-freshies")
 
 
 def test_site_basics(site: SiteConfig) -> None:
-    assert site.name == "Seattle Autumn Beers"
-    assert site.public_url == "https://seattlefallbeers.com"
+    assert site.name == "Seattle Freshies"
+    assert site.public_url == "https://seattlefreshies.com"
     assert site.generate_description is False  # the haiku prompt is Ballard's
     assert (TEMPLATES / site.template / "index.html").is_file()
 
@@ -105,6 +105,6 @@ def test_template_has_the_three_pages() -> None:
         # Author credit in the pinned bottom bar; every page links every tab.
         assert html.count('<a href="https://halmueller.com">Hal Mueller</a>') == 1
         assert html.count('href="https://www.linkedin.com/in/halmueller/"') == 1
-        assert "Seattle Autumn Beers" in html
+        assert "Seattle Freshies" in html
         for href in ('"./"', '"festbier.html"', '"bars.html"', '"events.html"'):
             assert f"href={href}" in html, (page, href)

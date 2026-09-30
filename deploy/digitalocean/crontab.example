@@ -2,4 +2,4 @@
 # Hourly, at 7 minutes past, to stay off the top of the hour.
 # Optional: uncomment and set your healthchecks.io check URL.
 # HEALTHCHECK_URL=https://hc-ping.com/your-check-uuid
-7 * * * * $HOME/around-the-grounds/deploy/digitalocean/run.sh >> $HOME/logs/seattle-fall-beers.log 2>&1
+7 * * * * $HOME/around-the-grounds/deploy/digitalocean/run.sh >> $HOME/logs/seattle-freshies.log 2>&1

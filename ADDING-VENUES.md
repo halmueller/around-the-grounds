@@ -110,7 +110,7 @@ Edit the appropriate file in `around_the_grounds/config/sites/`:
 
 ### Tap-list ("listing") venues
 
-Sites like `seattle-fall-beers` list what is available *now* (beers on tap)
+Sites like `seattle-freshies` list what is available *now* (beers on tap)
 rather than dated events. These parsers read a venue's live tap list, keep the
 entries the fresh-hop matcher accepts, and emit `kind="listing"` events, which
 skip the 7-day window and stay out of `events.ics`.

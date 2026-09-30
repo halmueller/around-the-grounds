@@ -100,7 +100,7 @@ class TestWebData:
 class TestListingVenues:
     @pytest.mark.asyncio
     async def test_tap_list_site_lists_its_listing_venues(self) -> None:
-        site = load_site_config("seattle-fall-beers")
+        site = load_site_config("seattle-freshies")
         data = await generate_web_data([], site=site)
 
         keys = [v["key"] for v in data["listing_venues"]]
@@ -116,7 +116,7 @@ class TestListingVenues:
 
     @pytest.mark.asyncio
     async def test_venue_type_is_passed_through(self) -> None:
-        site = load_site_config("seattle-fall-beers")
+        site = load_site_config("seattle-freshies")
         data = await generate_web_data([], site=site)
         by_key = {v["key"]: v for v in data["listing_venues"]}
         assert by_key["chucks-greenwood-taps"]["type"] == "bar"

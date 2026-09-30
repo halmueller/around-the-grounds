@@ -18,8 +18,8 @@ VENUES = [Venue(f"v{i}-taps", f"Venue {i}", f"https://v{i}.example") for i in ra
 
 def _site() -> SiteConfig:
     return SiteConfig(
-        key="seattle-fall-beers",
-        name="Seattle Autumn Beers",
+        key="seattle-freshies",
+        name="Seattle Freshies",
         template="fresh-hop",
         timezone="America/Los_Angeles",
         venues=VENUES,
@@ -48,7 +48,7 @@ def _publish(events: List[Event], errors: List[ScrapingError], root: Path) -> bo
 
 @pytest.fixture
 def web_root(tmp_path: Path) -> Path:
-    root = tmp_path / "seattlefallbeers.com"
+    root = tmp_path / "seattlefreshies.com"
     root.mkdir()
     (root / "robots.txt").write_text("User-agent: *\n")
     (root / ".well-known" / "acme-challenge").mkdir(parents=True)
@@ -119,13 +119,13 @@ class TestCli:
         return code
 
     def test_publishes_the_selected_site(self, tmp_path: Path) -> None:
-        argv = ["--site", "seattle-fall-beers", "--output-dir", str(tmp_path)]
+        argv = ["--site", "seattle-freshies", "--output-dir", str(tmp_path)]
         assert self._run(argv) == 0
         assert len(self.publish_calls) == 1
         assert self.publish_calls[0].args[3] == tmp_path
 
     def test_failed_publish_is_exit_1(self, tmp_path: Path) -> None:
-        argv = ["--site", "seattle-fall-beers", "--output-dir", str(tmp_path)]
+        argv = ["--site", "seattle-freshies", "--output-dir", str(tmp_path)]
         assert self._run(argv, published=False) == 1
 
     def test_rejects_multiple_sites(self, tmp_path: Path, capsys: Any) -> None:

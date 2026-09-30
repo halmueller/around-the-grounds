@@ -36,7 +36,7 @@ LOGGER = logging.getLogger(__name__)
 
 # Venue configs come from the real site config, so these fixture tests also
 # check the published configuration.
-_SITE_VENUES = {v.key: v for v in load_site_config("seattle-fall-beers").venues}
+_SITE_VENUES = {v.key: v for v in load_site_config("seattle-freshies").venues}
 CONFIGS: Dict[str, Dict[str, Any]] = {
     name: dict(_SITE_VENUES[key].parser_config or {})
     for name, key in {

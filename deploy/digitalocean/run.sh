@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# Refresh seattlefallbeers.com: scrape the tap lists and publish the site into
+# Refresh seattlefreshies.com: scrape the tap lists and publish the site into
 # the Apache document root. Run hourly from cron as the site's user; see
 # README.md. Overridable via environment: REPO_DIR, WEB_ROOT, LOCK_FILE,
 # HEALTHCHECK_URL (optional healthchecks.io ping URL).
 set -uo pipefail
 
 REPO_DIR="${REPO_DIR:-$HOME/around-the-grounds}"
-WEB_ROOT="${WEB_ROOT:-/var/www/seattlefallbeers.com}"
-LOCK_FILE="${LOCK_FILE:-/tmp/seattle-fall-beers.lock}"
+WEB_ROOT="${WEB_ROOT:-/var/www/seattlefreshies.com}"
+LOCK_FILE="${LOCK_FILE:-/tmp/seattle-freshies.lock}"
 
 # Published files must be world-readable for Apache.
 umask 022
@@ -22,7 +22,7 @@ echo "$(date "+%Y-%m-%dT%H:%M:%S%z") starting refresh"
 # `uv sync` after pulls.
 flock -n -E 75 "$LOCK_FILE" \
     uv run --no-sync around-the-grounds \
-        --site seattle-fall-beers --output-dir "$WEB_ROOT"
+        --site seattle-freshies --output-dir "$WEB_ROOT"
 status=$?
 # Exit codes: 0 clean, 2 some venues failed (site still published),
 # 1 nothing published (every venue failed or a write error; last copy kept),

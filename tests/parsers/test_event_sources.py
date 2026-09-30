@@ -1,4 +1,4 @@
-"""Tests for the fresh-hop event sources of seattle-fall-beers. Fixtures are
+"""Tests for the fresh-hop event sources of seattle-freshies. Fixtures are
 live pages saved on 2026-09-29: Georgetown Brewing's event list, Stoup's
 events page and Fremont's Squarespace events collection (JSON)."""
 
@@ -24,7 +24,7 @@ from around_the_grounds.parsers.generic.squarespace_events import (
 from around_the_grounds.scrapers.coordinator import ScraperCoordinator
 from around_the_grounds.utils.host_throttle import listing_throttle
 
-VENUES = {v.key: v for v in load_site_config("seattle-fall-beers").venues}
+VENUES = {v.key: v for v in load_site_config("seattle-freshies").venues}
 # 8 PM Sept 29 Pacific, when the fixtures were saved.
 NOW = "2026-09-30 03:00:00"
 
