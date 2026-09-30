@@ -11,6 +11,9 @@ selectors seen in the wild:
   ``.item-category`` style, ``.item-abv``, ``.brewery``
 - table theme: ``.table-name .item`` name, ``.item-abv``
 
+The ``.item-description`` text, when present, is kept for fresh-hop
+matching (see ``TapEntry.description``).
+
 Config (``source_type: "untappd-embed"``)::
 
     "parser_config": {"location_id": 3026, "theme_id": 8580}
@@ -73,6 +76,19 @@ def _style(item: Tag) -> Optional[str]:
     return style.lstrip("- ") or None
 
 
+def _description(item: Tag) -> Optional[str]:
+    node = item.select_one(".item-description")
+    if node is None:
+        return None
+    # Drop the "More Info" / "Less Info" toggle links around the text.
+    for toggle in node.select(".ut-more, .ut-less"):
+        toggle.decompose()
+    text = " ".join(node.get_text(" ", strip=True).split())
+    # Themes without toggle classes leave the link text in.
+    text = text.replace("More Info ▸", "").replace("Less Info ▴", "").strip()
+    return text or None
+
+
 def parse_embed_menu(html: str) -> List[TapEntry]:
     soup = BeautifulSoup(html, "html.parser")
     entries = []
@@ -87,6 +103,7 @@ def parse_embed_menu(html: str) -> List[TapEntry]:
                 brewery=_text(item, ".brewery"),
                 style=_style(item),
                 abv=abv.replace(" ABV", "") if abv else None,
+                description=_description(item),
             )
         )
     return entries

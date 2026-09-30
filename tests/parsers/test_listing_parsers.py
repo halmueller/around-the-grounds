@@ -5,6 +5,7 @@ The Growler Guys; and Chuck's Hop Shop's Greenwood / Central District sheets."""
 
 import logging
 import re
+from dataclasses import replace
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Iterator
@@ -15,6 +16,7 @@ import pytest
 from aioresponses import aioresponses
 from freezegun import freeze_time
 
+from around_the_grounds.config.loader import load_site_config
 from around_the_grounds.models import Venue
 from around_the_grounds.parsers.generic.listing_common import TapEntry, build_listings
 from around_the_grounds.parsers.generic.sheet_taplist import (
@@ -137,6 +139,27 @@ class TestBuildListings:
         events = build_listings(venue, [TapEntry("Hazy Cowiche")], "html", LOGGER)
         assert [e.title for e in events] == ["Hazy Cowiche"]
 
+    def test_description_counts_for_fresh_hop_only(self) -> None:
+        venue = Venue("bar", "Bar", "https://example.com")
+        entries = [
+            TapEntry("One Thousand Deaths", description="FRESH HOP Collab w/ Uprise"),
+            # Festbier words in a description are too loose to trust.
+            TapEntry("Hechizo de Hambre", description="Like a Märzen, but darker"),
+        ]
+        events = build_listings(venue, entries, "untappd", LOGGER)
+        assert [(e.title, e.category) for e in events] == [
+            ("One Thousand Deaths", "fresh-hop")
+        ]
+        assert events[0].description is None  # descriptions are not shown
+
+    def test_description_cannot_exclude_a_name_match(self) -> None:
+        # "fest" is a fresh-hop exclude word (festivals), but only the
+        # description says it, and the name already matched.
+        venue = Venue("bar", "Bar", "https://example.com")
+        entry = TapEntry("Fresh Hop Pale", description="Brewed for Fresh Hop Fest")
+        events = build_listings(venue, [entry], "untappd", LOGGER)
+        assert [e.title for e in events] == ["Fresh Hop Pale"]
+
 
 class TestUntappdEmbedDecoding:
     def test_decodes_menu_html(self, fixtures_dir: Path) -> None:
@@ -161,7 +184,8 @@ class TestUntappdEmbedMenu:
 
         assert len(entries) == 50
         aqua = next(e for e in entries if e.name == "Aqua Seafoam Shame")
-        assert aqua == TapEntry(
+        assert aqua.description  # kept for fresh-hop matching
+        assert replace(aqua, description=None) == TapEntry(
             "Aqua Seafoam Shame", "Cloudburst Brewing", "Fresh Hop Hazy IPA", "6.8%"
         )
         # Tap numbers ("9.") are not part of the name.
@@ -183,7 +207,45 @@ class TestUntappdEmbedMenu:
         entries = parse_embed_menu(html)
 
         assert len(entries) == 20
-        assert entries[0] == TapEntry("Looming Specter", abv="5.5%")
+        assert replace(entries[0], description=None) == TapEntry(
+            "Looming Specter", abv="5.5%"
+        )
+
+    def test_descriptions_without_toggle_links(self, fixtures_dir: Path) -> None:
+        html = decode_embed_html(_embed_script(fixtures_dir, "beveridge_place"))
+        entries = parse_embed_menu(html)
+
+        deaths = next(e for e in entries if e.name == "One Thousand Deaths")
+        assert deaths.style == "IPA - American"
+        assert deaths.description is not None
+        assert deaths.description.startswith("FRESH HOP Collab with Uprise")
+        assert not any(
+            "More Info" in (e.description or "") or "Less Info" in (e.description or "")
+            for e in entries
+        )
+
+    def test_beveridge_place_fresh_hops_found_by_description(
+        self, fixtures_dir: Path
+    ) -> None:
+        html = decode_embed_html(_embed_script(fixtures_dir, "beveridge_place"))
+        venue = next(
+            v
+            for v in load_site_config("seattle-freshies").venues
+            if v.key == "beveridge-place-taps"
+        )
+        events = build_listings(venue, parse_embed_menu(html), "untappd", LOGGER)
+        by_category = {
+            c: [e.title for e in events if e.category == c]
+            for c in ("fresh-hop", "festbier")
+        }
+        assert by_category == {
+            "fresh-hop": [
+                "One Thousand Deaths",
+                "Fresh Hop Hazealicious (2026)",
+                "Oktoberfresh",
+            ],
+            "festbier": ["Oktoberfresh"],
+        }
 
     def test_empty_menu(self) -> None:
         assert parse_embed_menu("<div class='ut-menu'></div>") == []

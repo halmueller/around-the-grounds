@@ -17,6 +17,17 @@
       }
     },
     {
+      "key": "beveridge-place-taps",
+      "name": "Beveridge Place Pub (West Seattle)",
+      "url": "https://beveridgeplacepub.com/tap-list/",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 30360,
+        "theme_id": 116970,
+        "venue_type": "bar"
+      }
+    },
+    {
       "key": "beer-junction-taps",
       "name": "The Beer Junction (West Seattle)",
       "url": "https://www.thebeerjunction.com/tap-list",

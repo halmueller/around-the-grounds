@@ -15,7 +15,7 @@ import aiohttp
 
 from ...models import Event, Venue
 from ...utils.host_throttle import listing_throttle
-from ...utils.listing_matcher import ListingMatcher
+from ...utils.listing_matcher import FRESH_HOP, ListingMatcher
 from ...utils.timezone_utils import now_in_site_timezone_naive
 
 DEFAULT_TIMEZONE = "America/Los_Angeles"
@@ -37,6 +37,10 @@ class TapEntry:
     abv: Optional[str] = None
     # Extra text (e.g. a description) consulted for matching but not shown.
     match_text: Optional[str] = None
+    # The beer's description, consulted only for fresh-hop and only when the
+    # other fields don't match: brewers write "FRESH HOP collab…" there, while
+    # festbier words turn up in unrelated descriptions ("like a Märzen").
+    description: Optional[str] = None
 
 
 def normalize_abv(text: Optional[str]) -> Optional[str]:
@@ -124,7 +128,12 @@ def build_listings(
         total += 1
         details = [d for d in (entry.brewery, entry.style, entry.abv) if d]
         for matcher in matchers:
-            if not matcher.matches(entry.name, entry.style, entry.match_text):
+            fields = (entry.name, entry.style, entry.match_text)
+            if not matcher.matches(*fields) and not (
+                matcher.category == FRESH_HOP
+                and entry.description
+                and matcher.matches(*fields, entry.description)
+            ):
                 continue
             identity = tuple(
                 (field or "").casefold()
