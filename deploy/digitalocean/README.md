@@ -107,6 +107,20 @@ After the next :07, check `~freshies/logs/seattle-freshies.log`:
 Optional: create a check at healthchecks.io (hourly, with a grace period) and
 set `HEALTHCHECK_URL` in the crontab to be emailed if runs stop or fail.
 
+## Changes to the Apache config
+
+Certbot copied the `:80` host into
+`/etc/apache2/sites-available/seattlefreshies.com-le-ssl.conf` when it set up
+HTTPS, and added the redirect to the `:80` file. Later changes to
+`seattlefreshies.com.conf` in the repo reach neither file on their own. Copy
+the changed lines into **both** files by hand (keep certbot's redirect and SSL
+lines), then:
+
+```bash
+sudo apachectl configtest && sudo systemctl reload apache2
+curl -sI https://seattlefreshies.com/ | grep -i "strict-transport\|referrer\|content-type"
+```
+
 ## Analytics (optional)
 
 The pages load `analytics.js`, which turns on TelemetryDeck only when
