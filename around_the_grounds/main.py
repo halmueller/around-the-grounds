@@ -359,7 +359,9 @@ def _write_calendar_file(target_dir: Path, web_data: dict) -> bool:
         ics_bytes = build_ics(web_data)
         with open(target_dir / "events.ics", "wb") as f:
             f.write(ics_bytes)
-        print(f"📅 Generated events.ics with {web_data.get('total_events', 0)} events")
+        # Count what the feed holds: listings (beers on tap) are left out.
+        count = ics_bytes.count(b"BEGIN:VEVENT")
+        print(f"📅 Generated events.ics with {count} event{'' if count == 1 else 's'}")
         return True
     except Exception as e:
         logger.warning("Calendar feed generation failed: %s", e, exc_info=True)

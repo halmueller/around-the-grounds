@@ -6,12 +6,13 @@ does not change."""
 
 import logging
 from datetime import datetime, timedelta
+from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from around_the_grounds.config.loader import load_site_config
-from around_the_grounds.main import generate_web_data
+from around_the_grounds.main import _write_calendar_file, generate_web_data
 from around_the_grounds.models import Event, Venue
 from around_the_grounds.parsers.generic.listing_common import TapEntry, build_listings
 from around_the_grounds.parsers.registry import ParserRegistry
@@ -189,6 +190,17 @@ class TestCalendarFeed:
         events = vevents(make_web_data([listing, show]))
 
         assert [str(e["SUMMARY"]) for e in events] == ["Woodshop BBQ"]
+
+    def test_log_counts_only_calendar_events(
+        self, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        listing = make_web_event(title="Fresh Hop Crikey", kind="listing")
+        shows = [make_web_event(title=t) for t in ("Woodshop BBQ", "Trivia")]
+
+        assert _write_calendar_file(tmp_path, make_web_data([listing, *shows]))
+
+        assert "events.ics with 2 events" in capsys.readouterr().out
+        assert (tmp_path / "events.ics").read_bytes().count(b"BEGIN:VEVENT") == 2
 
 
 class TestTemporalPayloads:
