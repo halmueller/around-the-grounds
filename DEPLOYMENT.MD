@@ -196,3 +196,18 @@ cp .env.example .env
 uv run python -m around_the_grounds.temporal.starter --temporal-address production:7233 --deploy
 # Warning: --temporal-address is deprecated, use TEMPORAL_ADDRESS environment variable
 ```
+
+### Alternative: Scrape and Publish on a Web Host (`--output-dir`)
+
+For a site served by a plain web server rather than a git-backed host,
+`--output-dir` publishes the site's files straight into a document root:
+
+```bash
+uv run around-the-grounds --site seattle-fall-beers --output-dir /var/www/seattlefallbeers.com
+```
+
+Each file is replaced atomically; files the site doesn't produce are left
+alone; and if every venue fails nothing is written, so the last good copy
+stays up. No GitHub App credentials are needed. `seattle-fall-beers` runs this
+way, hourly from cron on a DigitalOcean droplet with Apache — see
+[deploy/digitalocean/README.md](./deploy/digitalocean/README.md).

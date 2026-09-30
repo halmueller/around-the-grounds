@@ -40,6 +40,7 @@ uv run around-the-grounds --site childrens-events   # Run another site
 uv run around-the-grounds --site all                # Run all configured sites
 uv run around-the-grounds --config /path/to/config.json  # Use custom config (~60s)
 uv run around-the-grounds --preview    # Generate local preview files (~60s)
+uv run around-the-grounds --site seattle-fall-beers --output-dir /var/www/site  # Publish into a web root (atomic; keeps last good copy if every venue fails)
 uv run around-the-grounds --deploy     # Run and deploy to GitHub Pages (~90s total)
 
 # With AI features enabled (vision analysis + haiku generation)
@@ -292,7 +293,7 @@ tests/                             # Comprehensive test suite (799 tests)
 - **Calendar Feed**: `utils/ics_generator.py:build_ics(web_data)` renders the same `web_data` dict the templates consume into an RFC 5545 feed at `events.ics`. It reads `web_data` rather than `List[Event]` because the Temporal `deploy_to_git` activity only receives the dict. Times are emitted in UTC (no VTIMEZONE needed); events with no published hours become all-day entries; UIDs are derived (sha1 of site/venue/date/title) since `Event` has no ID. **`DTSTAMP` is intentionally derived from the event, not `datetime.now()`** — a "now" value would make the file differ on every run and defeat the no-op deploy short-circuit
 - **Web Interface**: Per-site templates in `public_templates/<template>/` deployed to the site's configured host (GitHub Pages or Vercel-via-GitHub)
 - **Web Deployment**: Two git strategies selected by `SiteConfig.deploy_subdir` — see Deployment Strategies below. `deploy_subdir` is validated before authentication (relative, no parent traversal, never `.git`), re-checked against the resolved clone path so a committed symlink cannot redirect writes, and staged with a literal pathspec. Preview and deploy share `_write_site_output` so both emit identical files
-- **Scheduling**: Google Cloud Run Jobs with Cloud Scheduler (jredding's sites) OR a self-hosted Temporal worker (Ballard site). Both paths read the same `SiteConfig` and call the same `main.py:_deploy_with_github_auth` for git operations
+- **Scheduling**: Google Cloud Run Jobs with Cloud Scheduler (jredding's sites) OR a self-hosted Temporal worker (Ballard site) OR cron + `--output-dir` on a web host (Seattle Fall Beers; see `deploy/digitalocean/`). Both paths read the same `SiteConfig` and call the same `main.py:_deploy_with_github_auth` for git operations
 - **Tests**: 799 tests covering all scenarios including generic parsers, error handling, vision analysis, haiku generation, weather fetching, multi-site deploy configuration, the Temporal `load_site` / `generate_web_data` / `deploy_to_git` activity contracts, end-to-end `FoodTruckWorkflow` runs against a real local Temporal server (venue isolation, cancellation, replay of recorded histories in `tests/fixtures/temporal/`), real-Git deployment into temporary bare repositories, and a Playwright browser check of all three templates (`tests/browser/check_templates.mjs`, skipped when Node + Playwright are unavailable)
 
 ## Deployment Strategies

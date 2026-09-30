@@ -1,0 +1,5 @@
+# Crontab for the site user (install with `crontab -e` as that user).
+# Hourly, at 7 minutes past, to stay off the top of the hour.
+# Optional: uncomment and set your healthchecks.io check URL.
+# HEALTHCHECK_URL=https://hc-ping.com/your-check-uuid
+7 * * * * $HOME/around-the-grounds/deploy/digitalocean/run.sh >> $HOME/logs/seattle-fall-beers.log 2>&1

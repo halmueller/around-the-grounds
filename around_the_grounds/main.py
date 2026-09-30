@@ -653,6 +653,69 @@ async def preview_locally(
         return False
 
 
+def _replace_tree(staging: Path, target: Path) -> None:
+    """Move every file under *staging* into *target*, one atomic rename each.
+
+    Files already in *target* that the site does not produce (robots.txt,
+    .htaccess, certbot's .well-known/) are left alone.
+    """
+    for source in sorted(staging.rglob("*")):
+        if source.is_dir():
+            continue
+        destination = target / source.relative_to(staging)
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        os.replace(source, destination)
+
+
+async def publish_to_directory(
+    events: List[Event],
+    errors: Optional[List[ScrapingError]],
+    site: SiteConfig,
+    output_dir: Path,
+) -> bool:
+    """Write the site into *output_dir* (e.g. a web server's document root).
+
+    The site is built in a hidden staging directory inside *output_dir* (same
+    filesystem) and each file is then swapped in with ``os.replace``, so
+    visitors never see a half-written ``data.json``. When every venue failed,
+    nothing is written and the last good copy stays up.
+    """
+    import shutil
+    import tempfile
+
+    failed = {error.venue.key for error in errors or []}
+    if site.venues and failed >= {venue.key for venue in site.venues}:
+        print(f"⏭️  Not publishing: every venue failed; keeping {output_dir} as is")
+        return False
+
+    staging: Optional[Path] = None
+    try:
+        output_dir = output_dir.resolve()
+        if not output_dir.is_dir():
+            print(f"❌ Output directory does not exist: {output_dir}")
+            return False
+        template_dir = _resolve_template_dir(site.template)
+        if not template_dir.exists():
+            print(f"❌ Template directory not found: {template_dir}")
+            return False
+
+        error_messages = [error.to_user_message() for error in errors or []]
+        error_messages = list(dict.fromkeys(error_messages))
+        web_data = await generate_web_data(events, error_messages, site)
+
+        staging = Path(tempfile.mkdtemp(prefix=".atg-staging-", dir=output_dir))
+        _write_site_output(staging, template_dir, web_data)
+        _replace_tree(staging, output_dir)
+        print(f"✅ Published {len(events)} events to {output_dir}")
+        return True
+    except Exception as e:
+        print(f"❌ Error publishing to {output_dir}: {e}")
+        return False
+    finally:
+        if staging is not None:
+            shutil.rmtree(staging, ignore_errors=True)
+
+
 async def scrape_site(site: SiteConfig) -> tuple:
     """Scrape events for a given site config."""
     if not site.venues:
@@ -699,6 +762,11 @@ async def async_main(args: argparse.Namespace) -> int:
             print("❌ Default site 'ballard-food-trucks' not found")
             return 1
 
+    output_dir = getattr(args, "output_dir", None)
+    if output_dir and len(sites) != 1:
+        print("❌ --output-dir publishes one site; choose it with --site")
+        return 1
+
     # Exit code contract (consumed by Cloud Run Jobs / Cloud Scheduler):
     #   1 = any site scraped nothing, or a requested deploy/preview failed
     #   2 = every site produced output but at least one venue failed
@@ -729,6 +797,12 @@ async def async_main(args: argparse.Namespace) -> int:
         if args.preview:
             previewed = await preview_locally(events, errors, site=site)
             output_ok = output_ok and previewed
+
+        if output_dir:
+            published = await publish_to_directory(
+                events, errors, site, Path(output_dir)
+            )
+            output_ok = output_ok and published
 
         if (errors and not events) or not output_ok:
             any_failure = True
@@ -777,6 +851,13 @@ def main(argv: Optional[List[str]] = None) -> int:
         "-p",
         action="store_true",
         help="Generate web files locally in public/ directory for preview",
+    )
+    parser.add_argument(
+        "--output-dir",
+        help=(
+            "Publish the site's files into this existing directory (e.g. a web "
+            "server document root), replacing each file atomically"
+        ),
     )
 
     args = parser.parse_args(argv)
