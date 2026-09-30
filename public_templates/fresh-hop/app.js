@@ -146,8 +146,11 @@ function renderListingsPage(data, venueInfo, listingsEl, summaryEl) {
         }
         venues.get(e.venue_key).beers.push(e);
     });
+    // Within a venue, beers go alphabetically (case-insensitive, "2" before "10").
+    const byTitle = new Intl.Collator('en', { sensitivity: 'base', numeric: true });
     venues.forEach(v => {
-        v.search = [v.name, ...v.beers.map(b => `${b.title} ${b.description || ''}`)]
+        v.beers.sort((a, b) => byTitle.compare(a.title, b.title));
+        v.search =[v.name, ...v.beers.map(b => `${b.title} ${b.description || ''}`)]
             .join(' ').toLowerCase();
     });
 
