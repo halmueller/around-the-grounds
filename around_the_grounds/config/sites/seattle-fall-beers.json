@@ -11,21 +11,30 @@
       "name": "Bale Breaker × Yonder (Ballard)",
       "url": "https://www.bbycballard.com/current-taplist",
       "source_type": "untappd-embed",
-      "parser_config": {"location_id": 36760, "theme_id": 142569}
+      "parser_config": {
+        "location_id": 36760,
+        "theme_id": 142569
+      }
     },
     {
       "key": "beer-junction-taps",
       "name": "The Beer Junction (West Seattle)",
       "url": "https://www.thebeerjunction.com/tap-list",
       "source_type": "untappd-embed",
-      "parser_config": {"location_id": 3026, "theme_id": 8580}
+      "parser_config": {
+        "location_id": 3026,
+        "theme_id": 8580
+      }
     },
     {
       "key": "beer-star-taps",
       "name": "Beer Star (White Center)",
       "url": "https://www.beerstarusa.com/tap-list",
       "source_type": "digitalpour",
-      "parser_config": {"company_id": "590e40cc5e002c09f467f375", "location_id": 1}
+      "parser_config": {
+        "company_id": "590e40cc5e002c09f467f375",
+        "location_id": 1
+      }
     },
     {
       "key": "chucks-central-district-taps",
@@ -36,7 +45,11 @@
         "sheet_id": "1zzW5XS9vlHdsW04pb8uXN_BIJ08HWc6XYFqVCu1ZDCo",
         "sheet_name": "CD",
         "header_contains": "Central District",
-        "columns": {"name": 2, "style": 1, "abv": 9},
+        "columns": {
+          "name": 2,
+          "style": 1,
+          "abv": 9
+        },
         "brewery_separator": ":",
         "skip_prefix": "-"
       }
@@ -50,7 +63,11 @@
         "sheet_id": "1zzW5XS9vlHdsW04pb8uXN_BIJ08HWc6XYFqVCu1ZDCo",
         "sheet_name": "GW",
         "header_contains": "Greenwood",
-        "columns": {"name": 2, "style": 1, "abv": 9},
+        "columns": {
+          "name": 2,
+          "style": 1,
+          "abv": 9
+        },
         "brewery_separator": ":",
         "skip_prefix": "-"
       }
@@ -64,7 +81,11 @@
         "sheet_id": "1zzW5XS9vlHdsW04pb8uXN_BIJ08HWc6XYFqVCu1ZDCo",
         "sheet_name": "SP",
         "header_contains": "Seward Park",
-        "columns": {"name": 2, "style": 1, "abv": 9},
+        "columns": {
+          "name": 2,
+          "style": 1,
+          "abv": 9
+        },
         "brewery_separator": ":",
         "skip_prefix": "-"
       }
@@ -106,7 +127,9 @@
       "source_type": "text-taplist",
       "parser_config": {
         "section_tag": "h2",
-        "include_sections": ["^MAIN BAR$"],
+        "include_sections": [
+          "^MAIN BAR$"
+        ],
         "line_pattern": "^(?P<name>[^:$]{2,60}?)(?::\\s*(?P<style>.+))?$"
       }
     },
@@ -117,7 +140,9 @@
       "source_type": "text-taplist",
       "parser_config": {
         "section_tag": "h2",
-        "include_sections": ["^Columbia City"],
+        "include_sections": [
+          "^Columbia City"
+        ],
         "line_pattern": "^(?P<name>[^:$]{2,60}?)(?::\\s*(?P<style>.+))?$"
       }
     },
@@ -129,7 +154,9 @@
       "parser_config": {
         "note": "The Fresh Sheet is updated by hand, not in real time.",
         "section_tag": "h2",
-        "include_sections": ["^Fresh Sheet"],
+        "include_sections": [
+          "^Fresh Sheet"
+        ],
         "line_pattern": "^(?P<name>[^:*]{3,80}?):\\s+\\S"
       }
     },
@@ -144,7 +171,10 @@
       "name": "Hellbent Brewing (Lake City)",
       "url": "https://hellbentbrewingcompany.com/beer/",
       "source_type": "untappd-embed",
-      "parser_config": {"location_id": 126, "theme_id": 301}
+      "parser_config": {
+        "location_id": 126,
+        "theme_id": 301
+      }
     },
     {
       "key": "holy-mountain-interbay-taps",
@@ -163,7 +193,10 @@
       "name": "Latona Pub (Green Lake)",
       "url": "https://www.latonapub.com/tap-list",
       "source_type": "untappd-embed",
-      "parser_config": {"location_id": 16927, "theme_id": 63533}
+      "parser_config": {
+        "location_id": 16927,
+        "theme_id": 63533
+      }
     },
     {
       "key": "lucky-envelope-taps",
@@ -179,7 +212,10 @@
       "name": "The Pine Box (Capitol Hill)",
       "url": "https://www.pineboxbar.com/ontap",
       "source_type": "untappd-embed",
-      "parser_config": {"location_id": 45275, "theme_id": 170957}
+      "parser_config": {
+        "location_id": 45275,
+        "theme_id": 170957
+      }
     },
     {
       "key": "ravenna-taps",
@@ -198,14 +234,20 @@
       "name": "Reuben's Brews (Ballard)",
       "url": "https://reubensbrews.com/location/ballard-taproom/",
       "source_type": "html-taplist",
-      "parser_config": {"item": "a.tap-list-beer", "name": ".the-tl-beer-name"}
+      "parser_config": {
+        "item": "a.tap-list-beer",
+        "name": ".the-tl-beer-name"
+      }
     },
     {
       "key": "reubens-downtown-taps",
       "name": "Reuben's Brews (Downtown)",
       "url": "https://reubensbrews.com/location/downtown-seattle/",
       "source_type": "html-taplist",
-      "parser_config": {"item": "a.tap-list-beer", "name": ".the-tl-beer-name"}
+      "parser_config": {
+        "item": "a.tap-list-beer",
+        "name": ".the-tl-beer-name"
+      }
     },
     {
       "key": "seapine-taps",
@@ -223,20 +265,91 @@
       "name": "Stoup Brewing (Ballard)",
       "url": "https://www.stoupbrewing.com/ontap/",
       "source_type": "html-taplist",
-      "parser_config": {"item": "div.beer-on-tap-detail", "name": ".beer-title-info h2"}
+      "parser_config": {
+        "item": "div.beer-on-tap-detail",
+        "name": ".beer-title-info h2"
+      }
     },
     {
       "key": "urban-family-taps",
       "name": "Urban Family Brewing (Ballard)",
       "url": "https://urbanfamilybrewing.com/on-tap/",
       "source_type": "untappd-embed",
-      "parser_config": {"location_id": 12896, "theme_id": 47706}
+      "parser_config": {
+        "location_id": 12896,
+        "theme_id": 47706
+      }
     },
     {
       "key": "watershed-taps",
       "name": "Watershed Pub & Kitchen (Northgate)",
       "url": "https://untappd.com/v/watershed-pub-and-kitchen/1494601",
       "source_type": "untappd-venue"
+    },
+    {
+      "key": "fremont-events",
+      "name": "Fremont Brewing (Fremont)",
+      "url": "https://www.fremontbrewing.com/fremont-ubg-events",
+      "source_type": "squarespace-events",
+      "parser_config": {
+        "event_filter": true,
+        "event_window_days": 60
+      }
+    },
+    {
+      "key": "fremont-columbia-city-events",
+      "name": "Fremont Brewing (Columbia City)",
+      "url": "https://www.fremontbrewing.com/columbia-city-ubg-events",
+      "source_type": "squarespace-events",
+      "parser_config": {
+        "event_filter": true,
+        "event_window_days": 60
+      }
+    },
+    {
+      "key": "georgetown-event-list",
+      "name": "Georgetown Brewing",
+      "url": "https://georgetownbeer.com/",
+      "source_type": "html",
+      "parser_config": {
+        "event_filter": true,
+        "event_window_days": 60,
+        "note": "Georgetown's list of events pouring its beer; the host venue is in the description. Seattle-tagged items only.",
+        "event_container": "article.article-event-item[data-tags*=\"Seattle\"]",
+        "title_selector": ".article__title",
+        "date_selector": "time.article-event-date",
+        "date_attribute": "datetime",
+        "description_selector": ".article-location",
+        "timezone": "America/Los_Angeles"
+      }
+    },
+    {
+      "key": "stoup-ballard-events",
+      "name": "Stoup Brewing (Ballard)",
+      "url": "https://www.stoupbrewing.com/stoup-events/",
+      "source_type": "html",
+      "parser_config": {
+        "event_filter": true,
+        "event_window_days": 60,
+        "event_container": ".location-events[data-location=\"ballard\"] a.event",
+        "title_selector": ".event-title",
+        "date_selector": ".date-date",
+        "time_selector": ".event-time"
+      }
+    },
+    {
+      "key": "stoup-capitol-hill-events",
+      "name": "Stoup Brewing (Capitol Hill)",
+      "url": "https://www.stoupbrewing.com/stoup-events/",
+      "source_type": "html",
+      "parser_config": {
+        "event_filter": true,
+        "event_window_days": 60,
+        "event_container": ".location-events[data-location=\"capitol-hill\"] a.event",
+        "title_selector": ".event-title",
+        "date_selector": ".date-date",
+        "time_selector": ".event-time"
+      }
     }
   ]
 }

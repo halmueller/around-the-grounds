@@ -12,6 +12,7 @@ from .generic import (
     HtmlTaplistParser,
     JsonLdParser,
     SheetTaplistParser,
+    SquarespaceEventsParser,
     TextTaplistParser,
     UntappdEmbedParser,
     UntappdVenueParser,
@@ -41,6 +42,7 @@ class ParserRegistry:
         "craftpeak-wot": CraftpeakWotParser,
         "digitalpour": DigitalPourParser,
         "text-taplist": TextTaplistParser,
+        "squarespace-events": SquarespaceEventsParser,
     }
 
     # Specific parsers — selected by venue.key (takes precedence over generic)

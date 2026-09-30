@@ -25,16 +25,19 @@ class ListingMatcher:
         self,
         include: Optional[Sequence[str]] = None,
         exclude: Optional[Sequence[str]] = None,
+        default_exclude: bool = True,
     ) -> None:
+        """``default_exclude=False`` keeps festivals, for matching events."""
         self._include = self._compile(
             DEFAULT_INCLUDE + list(include or []), "listing_include"
         )
-        self._exclude = self._compile(
-            DEFAULT_EXCLUDE + list(exclude or []), "listing_exclude"
-        )
+        defaults = DEFAULT_EXCLUDE if default_exclude else []
+        self._exclude = self._compile(defaults + list(exclude or []), "listing_exclude")
 
     @classmethod
-    def from_config(cls, parser_config: Optional[Dict[str, Any]]) -> "ListingMatcher":
+    def from_config(
+        cls, parser_config: Optional[Dict[str, Any]], default_exclude: bool = True
+    ) -> "ListingMatcher":
         """Build a matcher from a venue's ``parser_config``.
 
         ``listing_include`` and ``listing_exclude`` may each be a pattern or a
@@ -44,6 +47,7 @@ class ListingMatcher:
         return cls(
             include=cls._as_list(config.get("listing_include")),
             exclude=cls._as_list(config.get("listing_exclude")),
+            default_exclude=default_exclude,
         )
 
     def matches(self, *texts: Optional[str]) -> bool:

@@ -40,3 +40,20 @@ def test_venues_use_generic_listing_parsers(site: SiteConfig) -> None:
 def test_bale_breaker_is_the_seattle_taproom_not_yakima(site: SiteConfig) -> None:
     bale_breaker = [v for v in site.venues if "bale-breaker" in v.key]
     assert [v.parser_config["location_id"] for v in bale_breaker] == [36760]
+
+
+def test_event_sources_filter_for_fresh_hop_and_look_ahead(site: SiteConfig) -> None:
+    event_sources = [
+        v for v in site.venues if v.source_type in ("html", "squarespace-events")
+    ]
+    assert {v.key for v in event_sources} == {
+        "fremont-events",
+        "fremont-columbia-city-events",
+        "georgetown-event-list",
+        "stoup-ballard-events",
+        "stoup-capitol-hill-events",
+    }
+    for venue in event_sources:
+        config = venue.parser_config or {}
+        assert config.get("event_filter") is True, venue.key
+        assert config.get("event_window_days", 0) > 7, venue.key

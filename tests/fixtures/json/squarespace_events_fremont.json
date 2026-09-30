@@ -1,0 +1,84 @@
+{
+ "items": [
+  {
+   "id": "6aaaf0a3ed5bf90e0100833c",
+   "title": "Fremont Brewing Oktoberfest Party",
+   "startDate": 1790445600924,
+   "endDate": 1790481600924,
+   "fullUrl": "/fremont-ubg-events/fremont-brewing-oktoberfest-party",
+   "excerpt": "",
+   "body": "<div class=\"sqs-layout sqs-grid-12 columns-12\" data-layout-label=\"Post Body\" data-type=\"item\" data-updated-on=\"1789587744850\" id=\"item-6aaaf0a3ed5bf90e0100833c\"><div class=\"row sqs-row\"><div class=\"col sqs-col-12 span-12\"><div class=\"sqs-block html-block sqs-block-html\" data-block-type=\"2\" data-sqsp-block=\"text\" id=\"block-1f211acb936f3f314ef1\"><div class=\"sqs-block-content\">\n\n<div class=\"sqs-html-content\" data-sqsp-text-block-content>\n  <p class=\"\" style=\"white-space:pre-wrap;\">Join us for a celebration of all things beer. Wear your finest Oktoberfest attire, participate in our stein holding c",
+   "location": {
+    "mapZoom": 12.0,
+    "mapLat": 40.7207559,
+    "mapLng": -74.0007613,
+    "markerLat": 40.7207559,
+    "markerLng": -74.0007613,
+    "addressTitle": "",
+    "addressLine1": "",
+    "addressLine2": "",
+    "addressCountry": ""
+   }
+  },
+  {
+   "id": "6aaaf1ef7dc1530a8cd9b272",
+   "title": "Fresh Hop Releases",
+   "startDate": 1790359200298,
+   "endDate": 1790395200298,
+   "fullUrl": "/fremont-ubg-events/fresh-hop-season",
+   "excerpt": "",
+   "body": "<div class=\"sqs-layout sqs-grid-12 columns-12\" data-layout-label=\"Post Body\" data-type=\"item\" data-updated-on=\"1789588183524\" id=\"item-6aaaf1ef7dc1530a8cd9b272\"><div class=\"row sqs-row\"><div class=\"col sqs-col-12 span-12\"><div class=\"sqs-block html-block sqs-block-html\" data-block-type=\"2\" data-sqsp-block=\"text\" id=\"block-e022ce0c00d6aa7ca70e\"><div class=\"sqs-block-content\">\n\n<div class=\"sqs-html-content\" data-sqsp-text-block-content>\n  <p class=\"\" style=\"white-space:pre-wrap;\">Next up in our fresh hop line up\u2026 (Drum roll please) <br>Fresh Hop Lush and with fresh Citra hops from Perrault Farms",
+   "location": {
+    "mapZoom": 12.0,
+    "mapLat": 40.7207559,
+    "mapLng": -74.0007613,
+    "markerLat": 40.7207559,
+    "markerLng": -74.0007613,
+    "addressTitle": "",
+    "addressLine1": "",
+    "addressLine2": "",
+    "addressCountry": ""
+   }
+  },
+  {
+   "id": "6aaaefbff009a44bfdb0fe79",
+   "title": "Don Pepe Ice Cream Co.",
+   "startDate": 1789848000278,
+   "endDate": 1789858800278,
+   "fullUrl": "/fremont-ubg-events/don-pepe-ice-cream-co",
+   "excerpt": "",
+   "body": "<div class=\"sqs-layout sqs-grid-12 columns-12\" data-layout-label=\"Post Body\" data-type=\"item\" data-updated-on=\"1789587596268\" id=\"item-6aaaefbff009a44bfdb0fe79\"><div class=\"row sqs-row\"><div class=\"col sqs-col-12 span-12\"><div class=\"sqs-block html-block sqs-block-html\" data-block-type=\"2\" data-sqsp-block=\"text\" id=\"block-e28afe505b73d83c564d\"><div class=\"sqs-block-content\">\n\n<div class=\"sqs-html-content\" data-sqsp-text-block-content>\n  <p class=\"\" style=\"white-space:pre-wrap;\">Fun fact: Stouts and ice cream make the best pairing! </p>\n</div>\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n  \n  \n\n\n\n</div></div></div></di",
+   "location": {
+    "mapZoom": 12.0,
+    "mapLat": 40.7207559,
+    "mapLng": -74.0007613,
+    "markerLat": 40.7207559,
+    "markerLng": -74.0007613,
+    "addressTitle": "",
+    "addressLine1": "",
+    "addressLine2": "",
+    "addressCountry": ""
+   }
+  },
+  {
+   "id": "6aaaf1369e9a254fff3b73e1",
+   "title": "Field to Ferment Release",
+   "startDate": 1788976800989,
+   "endDate": 1789012800989,
+   "fullUrl": "/fremont-ubg-events/geqd9mjm62jbhyppddvbqtvjsf4qaw",
+   "excerpt": "",
+   "body": "<div class=\"sqs-layout sqs-grid-12 columns-12\" data-layout-label=\"Post Body\" data-type=\"item\" data-updated-on=\"1789587886898\" id=\"item-6aaaf1369e9a254fff3b73e1\"><div class=\"row sqs-row\"><div class=\"col sqs-col-12 span-12\"><div class=\"sqs-block html-block sqs-block-html\" data-block-type=\"2\" data-sqsp-block=\"text\" id=\"block-72646cb7c5c9d6fca4da\"><div class=\"sqs-block-content\">\n\n<div class=\"sqs-html-content\" data-sqsp-text-block-content>\n  <p class=\"\" style=\"white-space:pre-wrap;\">FRESH HOP SEASON IS UPON US! First in our impressive line up is tried and true Field to Ferment. Brewed with the fres",
+   "location": {
+    "mapZoom": 12.0,
+    "mapLat": 40.7207559,
+    "mapLng": -74.0007613,
+    "markerLat": 40.7207559,
+    "markerLng": -74.0007613,
+    "addressTitle": "",
+    "addressLine1": "",
+    "addressLine2": "",
+    "addressCountry": ""
+   }
+  }
+ ]
+}

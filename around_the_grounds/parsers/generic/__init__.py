@@ -3,6 +3,7 @@ from .html_selector import HtmlSelectorParser
 from .html_taplist import CraftpeakWotParser, DigitalPourParser, HtmlTaplistParser
 from .json_ld import JsonLdParser
 from .sheet_taplist import SheetTaplistParser
+from .squarespace_events import SquarespaceEventsParser
 from .text_taplist import TextTaplistParser
 from .untappd_embed import UntappdEmbedParser
 from .untappd_venue import UntappdVenueParser
@@ -20,4 +21,5 @@ __all__ = [
     "CraftpeakWotParser",
     "DigitalPourParser",
     "TextTaplistParser",
+    "SquarespaceEventsParser",
 ]

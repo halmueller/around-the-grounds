@@ -11,6 +11,11 @@ from typing import Any, Dict, List, Optional
 import aiohttp
 from bs4 import BeautifulSoup, Tag
 
+try:
+    from zoneinfo import ZoneInfo  # type: ignore
+except ImportError:
+    from backports.zoneinfo import ZoneInfo  # type: ignore
+
 from ...models import Event, Venue
 from ..base import BaseParser
 
@@ -32,6 +37,9 @@ class HtmlSelectorParser(BaseParser):
         time_selector: Optional[str] = config.get("time_selector")
         desc_selector: Optional[str] = config.get("description_selector")
         date_format: str = config.get("date_format", "auto")
+        # Optional: convert timezone-aware dates (e.g. ISO "...Z" attributes)
+        # to this zone so a late-evening UTC timestamp keeps its local day.
+        tz_name: Optional[str] = config.get("timezone")
 
         soup = await self.fetch_page(session, self.venue.url)
 
@@ -55,7 +63,7 @@ class HtmlSelectorParser(BaseParser):
                 date_format=date_format,
             )
             if event:
-                events.append(event)
+                events.append(self._localize(event, tz_name) if tz_name else event)
 
         self.logger.info(
             f"HtmlSelectorParser: {len(events)} events from {self.venue.url}"
@@ -120,6 +128,21 @@ class HtmlSelectorParser(BaseParser):
         except Exception as e:
             self.logger.debug(f"Error parsing container: {e}")
             return None
+
+    @staticmethod
+    def _localize(event: Event, tz_name: str) -> Event:
+        """Convert the event's timezone-aware datetimes to naive *tz_name* time."""
+        zone = ZoneInfo(tz_name)
+
+        def local(value: Optional[datetime]) -> Optional[datetime]:
+            if value is None or value.tzinfo is None:
+                return value
+            return value.astimezone(zone).replace(tzinfo=None)
+
+        event.date = local(event.date) or event.date
+        event.start_time = local(event.start_time)
+        event.end_time = local(event.end_time)
+        return event
 
     def _parse_date(self, text: str, date_format: str) -> Optional[datetime]:
         """Parse a date string using the configured format or dateutil auto-parse."""

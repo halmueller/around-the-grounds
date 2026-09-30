@@ -136,6 +136,24 @@ Every listing venue can also set `listing_include` / `listing_exclude`
 - Requests to a shared host are spaced 5s apart; Cloudflare challenges are
   reported by name.
 
+### Filtering and looking further ahead (any event source)
+
+These `parser_config` options work with every event parser (`html`,
+`json-ld`, `wordpress`, `ajax`, `squarespace-events`, …):
+
+| Option | Effect |
+|--------|--------|
+| `"event_filter": true` | Keep only events whose title/description match the fresh-hop matcher (festivals are kept; `listing_include` / `listing_exclude` apply) |
+| `"event_window_days": 60` | Keep events up to this many days ahead instead of the default 7 (fests are announced weeks out) |
+| `"timezone": "America/Los_Angeles"` | `html` parser only: convert timezone-aware dates (e.g. ISO `...Z` attributes) to local time so evening events keep their day |
+
+`squarespace-events` reads a Squarespace events collection page as JSON
+(`?format=json`); the venue `url` is the collection page. For an aggregated
+list whose items happen elsewhere, put the host venue in the description
+(the `fresh-hop` template shows it with "via <source>"), and use a CSS
+attribute selector to keep only local items, e.g.
+`article.article-event-item[data-tags*="Seattle"]`.
+
 ### 3. Test
 
 ```bash
