@@ -83,6 +83,7 @@ class TestHtmlSelectorParser:
             events = await parser.parse(MagicMock())
 
         from datetime import datetime
+
         assert events[0].date.year == 2025
         assert events[0].date.month == 7
         assert events[0].date.day == 4
@@ -279,6 +280,7 @@ class TestHtmlSelectorParser:
     def test_parse_time_range_start_and_end(self) -> None:
         """_parse_time_range extracts both start and end times."""
         from datetime import datetime
+
         venue = _make_venue()
         parser = HtmlSelectorParser(venue)
         date = datetime(2025, 7, 4)
@@ -292,6 +294,7 @@ class TestHtmlSelectorParser:
     def test_parse_time_range_start_only(self) -> None:
         """_parse_time_range handles single time (no range separator)."""
         from datetime import datetime
+
         venue = _make_venue()
         parser = HtmlSelectorParser(venue)
         date = datetime(2025, 7, 4)
@@ -304,6 +307,7 @@ class TestHtmlSelectorParser:
     def test_parse_time_am(self) -> None:
         """_parse_single_time handles AM times correctly."""
         from datetime import datetime
+
         venue = _make_venue()
         parser = HtmlSelectorParser(venue)
         date = datetime(2025, 7, 4)
@@ -316,6 +320,7 @@ class TestHtmlSelectorParser:
     def test_parse_time_midnight(self) -> None:
         """_parse_single_time handles 12:00 AM as midnight."""
         from datetime import datetime
+
         venue = _make_venue()
         parser = HtmlSelectorParser(venue)
         date = datetime(2025, 7, 4)
@@ -327,6 +332,7 @@ class TestHtmlSelectorParser:
     def test_parse_time_noon(self) -> None:
         """_parse_single_time handles 12:00 PM as noon."""
         from datetime import datetime
+
         venue = _make_venue()
         parser = HtmlSelectorParser(venue)
         date = datetime(2025, 7, 4)
@@ -379,3 +385,89 @@ class TestHtmlSelectorParser:
         assert end is not None
         assert end.hour == 23
         assert end.minute == 0
+
+    @pytest.mark.parametrize(
+        "text,expected",
+        [
+            ("1-7pm", ((13, 0), (19, 0))),  # am/pm carried back from the end
+            ("11-2pm", ((11, 0), (14, 0))),  # start later than end: other half
+            ("6:30-9pm", ((18, 30), (21, 0))),
+            ("5pm-8", ((17, 0), (20, 0))),  # bare end hour takes the start's
+        ],
+    )
+    def test_parse_time_range_period_from_either_side(
+        self, text: str, expected: tuple
+    ) -> None:
+        from datetime import datetime
+
+        parser = HtmlSelectorParser(_make_venue())
+        start, end = parser._parse_time_range(text, datetime(2026, 10, 17))
+        assert start is not None and end is not None
+        assert ((start.hour, start.minute), (end.hour, end.minute)) == expected
+
+    def test_bare_hour_without_any_period_is_not_a_time(self) -> None:
+        from datetime import datetime
+
+        parser = HtmlSelectorParser(_make_venue())
+        assert parser._parse_time_range("1-7", datetime(2026, 10, 17)) == (None, None)
+
+
+EXCERPT_HTML = """
+<html><body>
+  <div class="card">
+    <h1 class="title">Fresh Hop Festival!</h1>
+    <p class="excerpt">Saturday, Oct 17, 1-7pm
+    THIRTY+ wet/fresh hop beers on tap, 30 taps!</p>
+  </div>
+  <div class="card">
+    <h1 class="title">Quiz Night</h1>
+    <p class="excerpt">Join us EVERY Wed at 8pm for two hours of questions!</p>
+  </div>
+</body></html>
+"""
+
+EXCERPT_CONFIG = {
+    "event_container": ".card",
+    "title_selector": ".title",
+    "date_selector": ".excerpt",
+    "date_pattern": r"\b(?:sat|sun)(?:urday|day)?,?\s+([a-z]{3,9}\.?\s+\d{1,2})",
+    "time_selector": ".excerpt",
+    "time_pattern": r"\b\d{1,2}(?::\d{2})?\s*(?:am|pm)?\s*[-–]\s*\d{1,2}\s*(?:am|pm)\b",
+}
+
+
+class TestDateAndTimePatterns:
+    @pytest.mark.asyncio
+    async def test_patterns_pick_date_and_time_out_of_an_excerpt(self) -> None:
+        from datetime import datetime
+
+        parser = HtmlSelectorParser(_make_venue(parser_config=EXCERPT_CONFIG))
+        with patch.object(
+            parser, "fetch_page", return_value=BeautifulSoup(EXCERPT_HTML, "lxml")
+        ):
+            events = await parser.parse(MagicMock())
+
+        # Quiz Night has no date matching date_pattern, so it is skipped.
+        assert [e.title for e in events] == ["Fresh Hop Festival!"]
+        assert events[0].date.date() == datetime(datetime.now().year, 10, 17).date()
+        assert events[0].start_time is not None and events[0].start_time.hour == 13
+        assert events[0].end_time is not None and events[0].end_time.hour == 19
+
+    @pytest.mark.asyncio
+    async def test_time_pattern_without_a_match_leaves_times_empty(self) -> None:
+        config = {**EXCERPT_CONFIG, "time_pattern": r"\bdoors at (\d+pm)"}
+        parser = HtmlSelectorParser(_make_venue(parser_config=config))
+        with patch.object(
+            parser, "fetch_page", return_value=BeautifulSoup(EXCERPT_HTML, "lxml")
+        ):
+            events = await parser.parse(MagicMock())
+
+        assert len(events) == 1
+        assert events[0].start_time is None and events[0].end_time is None
+
+    @pytest.mark.asyncio
+    async def test_invalid_pattern_raises(self) -> None:
+        config = {**EXCERPT_CONFIG, "date_pattern": "(unclosed"}
+        parser = HtmlSelectorParser(_make_venue(parser_config=config))
+        with pytest.raises(ValueError, match="invalid date/time pattern"):
+            await parser.parse(MagicMock())

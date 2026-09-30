@@ -76,6 +76,12 @@ Edit the appropriate file in `around_the_grounds/config/sites/`:
 }
 ```
 
+When the date or hours share an element with other text (Beveridge Place's
+"Saturday, Oct 17, 1-7pm THIRTY+ fresh hop beers…"), add `date_pattern` and/or
+`time_pattern`: a regex whose first group (or whole match) is the part to
+parse. Items with no date match are skipped. A time range borrows am/pm from
+whichever end has it ("1-7pm" is 1–7 pm).
+
 **AJAX/JSON API example** (`source_type: "ajax"`):
 ```json
 {

@@ -54,6 +54,7 @@ def test_event_sources_filter_for_fresh_hop_and_look_ahead(site: SiteConfig) -> 
         "fremont-events",
         "fremont-columbia-city-events",
         "georgetown-event-list",
+        "beveridge-place-events",
         "stoup-ballard-events",
         "stoup-capitol-hill-events",
     }

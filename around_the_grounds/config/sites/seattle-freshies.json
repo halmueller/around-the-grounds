@@ -367,13 +367,30 @@
       "parser_config": {
         "event_filter": true,
         "event_window_days": 60,
-        "note": "Georgetown's list of events pouring its beer; the host venue is in the description. Seattle-tagged items only.",
-        "event_container": "article.article-event-item[data-tags*=\"Seattle\"]",
+        "note": "Georgetown's list of events pouring its beer; the host venue is in the description. Seattle-tagged items only, minus Beveridge Place Pub, which is read from its own events page (beveridge-place-events).",
+        "event_container": "article.article-event-item[data-tags*=\"Seattle\"]:not(:has(.article-location:-soup-contains(\"Beveridge Place\")))",
         "title_selector": ".article__title",
         "date_selector": "time.article-event-date",
         "date_attribute": "datetime",
         "description_selector": ".article-location",
         "timezone": "America/Los_Angeles"
+      }
+    },
+    {
+      "key": "beveridge-place-events",
+      "name": "Beveridge Place Pub",
+      "url": "https://beveridgeplacepub.com/events/",
+      "source_type": "html",
+      "parser_config": {
+        "event_filter": true,
+        "event_window_days": 60,
+        "note": "WordPress (Elementor) event cards; the date and hours start the card's excerpt, e.g. 'Saturday, Oct 17, 1-7pm'. Cards without a date (weekly quiz, monthly book club) are skipped.",
+        "event_container": ".premium-blog-content-wrapper-inner",
+        "title_selector": ".premium-blog-entry-title",
+        "date_selector": ".premium-blog-post-content",
+        "date_pattern": "\\b(?:mon|tues?|wed(?:nes)?|thu(?:rs)?|fri|sat(?:ur)?|sun)(?:day)?,?\\s+([a-z]{3,9}\\.?\\s+\\d{1,2}(?:,\\s*\\d{4})?)",
+        "time_selector": ".premium-blog-post-content",
+        "time_pattern": "\\b\\d{1,2}(?::\\d{2})?\\s*(?:am|pm)?\\s*[-–]\\s*\\d{1,2}(?::\\d{2})?\\s*(?:am|pm)\\b"
       }
     },
     {

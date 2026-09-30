@@ -1,6 +1,7 @@
 """Tests for the fresh-hop event sources of seattle-freshies. Fixtures are
-live pages saved on 2026-09-29: Georgetown Brewing's event list, Stoup's
-events page and Fremont's Squarespace events collection (JSON)."""
+live pages saved on 2026-09-29 and 2026-09-30: Georgetown Brewing's event
+list, Beveridge Place Pub's events page, Stoup's events page, and Fremont's
+Squarespace events collection (JSON)."""
 
 import json
 from datetime import datetime, timezone
@@ -60,12 +61,14 @@ class TestGeorgetownEventList:
                 events = await HtmlSelectorParser(venue).parse(session)
 
         # 6 of the 13 items are tagged Seattle; Yakima's festival is not.
-        assert len(events) == 6
+        # Beveridge Place's fest is left out: its own events page lists it.
+        assert len(events) == 5
         assert not any("State Fair Park" in (e.description or "") for e in events)
-        beveridge = next(e for e in events if "Beveridge" in (e.description or ""))
-        assert beveridge.title == "Fresh Hop Fest!"
-        # 2026-10-17T20:00:00Z is 1 PM Pacific, stored naive.
-        assert beveridge.date == datetime(2026, 10, 17, 13, 0)
+        assert not any("Beveridge" in (e.description or "") for e in events)
+        ravenna = next(e for e in events if "Ravenna" in (e.description or ""))
+        assert ravenna.title == "Fresh Hop Fest!"
+        # 2026-10-10T18:00:00Z is 11 AM Pacific, stored naive.
+        assert ravenna.date == datetime(2026, 10, 10, 11, 0)
 
     @freeze_time(NOW)
     @pytest.mark.asyncio
@@ -83,7 +86,6 @@ class TestGeorgetownEventList:
         assert error is None
         assert [(e.date.date().isoformat(), e.description) for e in events] == [
             ("2026-10-10", "Ravenna Brewing, Ravenna"),
-            ("2026-10-17", "Beveridge Place Pub, West Seattle"),
         ]
 
 
@@ -106,6 +108,51 @@ def test_timezone_is_opt_in(fixtures_dir: Path) -> None:
         date_format="auto",
     )
     assert event is not None and event.date.tzinfo is not None
+
+
+class TestBeveridgePlaceEvents:
+    @pytest.fixture
+    def venue(self) -> Venue:
+        return VENUES["beveridge-place-events"]
+
+    @freeze_time(NOW)
+    @pytest.mark.asyncio
+    async def test_reads_the_fest_date_and_hours(
+        self, venue: Venue, fixtures_dir: Path
+    ) -> None:
+        with aioresponses() as m:
+            m.get(
+                venue.url,
+                status=200,
+                body=_html(fixtures_dir, "events_beveridge_place.html"),
+            )
+            async with aiohttp.ClientSession() as session:
+                events = await HtmlSelectorParser(venue).parse(session)
+
+        # The weekly quiz, monthly book club, and drag bingo cards give no date.
+        assert [(e.title, e.start_time, e.end_time) for e in events] == [
+            (
+                "BPP/WBB Fresh Hop Festival!",
+                datetime(2026, 10, 17, 13, 0),
+                datetime(2026, 10, 17, 19, 0),
+            )
+        ]
+
+    @freeze_time(NOW)
+    @pytest.mark.asyncio
+    async def test_coordinator_keeps_the_fest(
+        self, venue: Venue, fixtures_dir: Path
+    ) -> None:
+        with aioresponses() as m:
+            m.get(
+                venue.url,
+                status=200,
+                body=_html(fixtures_dir, "events_beveridge_place.html"),
+            )
+            events, error = await ScraperCoordinator().scrape_one(venue)
+
+        assert error is None
+        assert [e.date.date().isoformat() for e in events] == ["2026-10-17"]
 
 
 class TestStoupEvents:
