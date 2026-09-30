@@ -269,6 +269,16 @@
       "source_type": "craftpeak-wot"
     },
     {
+      "key": "ladd-and-lass-taps",
+      "name": "Ladd & Lass Brewing (University District)",
+      "url": "https://www.laddandlassbrewing.com/ontap",
+      "source_type": "text-taplist",
+      "parser_config": {
+        "note": "Numbered tap list (\"1) Fresh Hop Howdy, Friend\"); style and ABV are on the next line and are not read.",
+        "line_pattern": "^\\d+\\)\\s*(?P<name>.+?)\\s*$"
+      }
+    },
+    {
       "key": "latona-pub-taps",
       "name": "Latona Pub (Green Lake)",
       "url": "https://www.latonapub.com/tap-list",
@@ -286,6 +296,23 @@
       "source_type": "text-taplist",
       "parser_config": {
         "line_pattern": "^\\d+\\.\\s*(?P<name>.+?)\\s*\\((?P<abv>\\d+(?:\\.\\d+)?%)\\s*ABV\\)\\s*$"
+      }
+    },
+    {
+      "key": "machine-house-taps",
+      "name": "Machine House Brewery (Hillman City)",
+      "url": "https://www.machinehousebrewery.com/beer/",
+      "source_type": "text-taplist",
+      "parser_config": {
+        "note": "Each beer is an h5 (optional status tag, name, ABV); only the NOW ON TAP section, not cans or bottles.",
+        "line_tags": [
+          "h5"
+        ],
+        "section_tag": "h3",
+        "include_sections": [
+          "^now on tap$"
+        ],
+        "line_pattern": "^(?:Flagship Ale\\s*)?(?P<name>.+?)\\s*[–-]?\\s*(?P<abv>\\d+(?:\\.\\d+)?%)\\s*ABV$"
       }
     },
     {

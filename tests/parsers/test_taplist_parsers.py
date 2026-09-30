@@ -62,6 +62,8 @@ CONFIGS: Dict[str, Dict[str, Any]] = {
         "stoup_capitol_hill": "stoup-capitol-hill-taps",
         "old_stove_gardens": "old-stove-gardens-taps",
         "die_bierstube": "die-bierstube-taps",
+        "machine_house": "machine-house-taps",
+        "ladd_and_lass": "ladd-and-lass-taps",
     }.items()
 }
 
@@ -467,6 +469,26 @@ class TestTextTaplist:
         ]
         assert [e.title for e in events if e.category == "festbier"] == [
             "BEHIND THE ROWS"
+        ]
+
+    def test_machine_house_now_on_tap_only(self, html_fixtures_dir: Path) -> None:
+        entries = parse_text_taplist(
+            page(html_fixtures_dir, "taplist_machine_house"), CONFIGS["machine_house"]
+        )
+        # Cask, draft, and guest taps; cans and bottles are later sections.
+        assert len(entries) == 11
+        assert entries[0] == TapEntry("Dark Mild", abv="3.7%")  # status tag dropped
+        assert entries[-1].name == "Yonder Cider [cans]"  # trailing dash dropped
+        assert "Totally Fuggled" not in [e.name for e in entries]
+
+    def test_ladd_and_lass_numbered_taps(self, html_fixtures_dir: Path) -> None:
+        entries = parse_text_taplist(
+            page(html_fixtures_dir, "taplist_ladd_and_lass"), CONFIGS["ladd_and_lass"]
+        )
+        assert len(entries) == 13
+        assert [e.name for e in fresh(entries)] == [
+            "Fresh Hop Howdy, Friend",
+            "Fresh Hop Cloud Sipper",
         ]
 
     def test_headings_are_not_entries_by_default(self) -> None:
