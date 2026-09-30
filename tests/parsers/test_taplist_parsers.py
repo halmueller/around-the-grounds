@@ -59,6 +59,8 @@ CONFIGS: Dict[str, Dict[str, Any]] = {
         "bizarre": "bizarre-taps",
         "obec": "obec-taps",
         "growler_guys": "growler-guys-taps",
+        "stoup_capitol_hill": "stoup-capitol-hill-taps",
+        "old_stove_gardens": "old-stove-gardens-taps",
     }.items()
 }
 
@@ -292,6 +294,38 @@ class TestHtmlTaplistVenues:
         assert entries[0].name == "Porter #3"
         assert entries[0].abv == "5.7%"  # from "... ABV 5.7%" in the description
         assert fresh(entries) == []  # no fresh hops on the list today
+
+    def test_stoup_location_page(self, html_fixtures_dir: Path) -> None:
+        # Capitol Hill and Kenmore share this layout (Ballard's differs).
+        entries = parse_html_taplist(
+            page(html_fixtures_dir, "taplist_stoup_capitol_hill"),
+            CONFIGS["stoup_capitol_hill"],
+        )
+        assert len(entries) == 24
+        assert [(e.name, e.abv) for e in fresh(entries)] == [
+            ("Citra Fresh Hop Fiend IPA (2026) - Perrault Farms", "6.8%"),
+            ("Simcoe Fresh Hop Fiend 2026 (Perrault Farms)", "6.7%"),
+            ("Dolcita Fresh Hop Fiend Hazy IPA-Perrault Farms", "6.3%"),
+        ]
+
+    def test_old_stove_wix_menu(self, html_fixtures_dir: Path) -> None:
+        entries = parse_html_taplist(
+            page(html_fixtures_dir, "taplist_old_stove_gardens"),
+            CONFIGS["old_stove_gardens"],
+        )
+        by_name = {e.name: e for e in entries}
+        # The style comes after IBU in the description line.
+        assert by_name["STRATA FRESH HOP"] == TapEntry(
+            "STRATA FRESH HOP", style="West Coast IPA", abv="7.7%"
+        )
+        assert by_name["THE CLAW"].style == "Smoked Märzen"
+        venue = _SITE_VENUES["old-stove-gardens-taps"]
+        events = build_listings(venue, entries, "html", LOGGER)
+        assert [(e.category, e.title) for e in events] == [
+            ("festbier", "FESTBIER"),
+            ("festbier", "THE CLAW"),
+            ("fresh-hop", "STRATA FRESH HOP"),
+        ]
 
     def test_growler_guys(self, html_fixtures_dir: Path) -> None:
         config = CONFIGS["growler_guys"]

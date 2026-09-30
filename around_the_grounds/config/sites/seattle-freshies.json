@@ -17,17 +17,6 @@
       }
     },
     {
-      "key": "beveridge-place-taps",
-      "name": "Beveridge Place Pub (West Seattle)",
-      "url": "https://beveridgeplacepub.com/tap-list/",
-      "source_type": "untappd-embed",
-      "parser_config": {
-        "location_id": 30360,
-        "theme_id": 116970,
-        "venue_type": "bar"
-      }
-    },
-    {
       "key": "beer-junction-taps",
       "name": "The Beer Junction (West Seattle)",
       "url": "https://www.thebeerjunction.com/tap-list",
@@ -50,6 +39,17 @@
       }
     },
     {
+      "key": "beveridge-place-taps",
+      "name": "Beveridge Place Pub (West Seattle)",
+      "url": "https://beveridgeplacepub.com/tap-list/",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 30360,
+        "theme_id": 116970,
+        "venue_type": "bar"
+      }
+    },
+    {
       "key": "bizarre-taps",
       "name": "Bizarre Brewing (Magnolia)",
       "url": "https://www.bizarrebrewing.com/on-tap-and-to-go",
@@ -63,6 +63,17 @@
         "listing_include": [
           "fresh hoppy"
         ]
+      }
+    },
+    {
+      "key": "broadview-taps",
+      "name": "Broadview Tap House (Broadview)",
+      "url": "https://www.broadviewtaphouse.com/",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 15438,
+        "theme_id": 57577,
+        "venue_type": "bar"
       }
     },
     {
@@ -277,6 +288,29 @@
       }
     },
     {
+      "key": "old-stove-gardens-taps",
+      "name": "Old Stove Brewing (Ballard Gardens)",
+      "url": "https://www.oldstove.com/menu?menu=gardens-drink-menu-new",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "Wix Menus page; ?menu=<slug> renders that menu server-side. The style follows IBU in each item's description line.",
+        "item": "[data-hook=\"item.root\"]",
+        "name": "[data-hook=\"item.name\"]",
+        "style_pattern": "IBU\\s*/?\\s*(.+?)(?:\\s+-\\s|\\s+\\d+\\s*oz\\b|\\s+\\$|$)"
+      }
+    },
+    {
+      "key": "old-stove-ship-canal-taps",
+      "name": "Old Stove Brewing (Ship Canal)",
+      "url": "https://www.oldstove.com/menu?menu=menu-1",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "item": "[data-hook=\"item.root\"]",
+        "name": "[data-hook=\"item.name\"]",
+        "style_pattern": "IBU\\s*/?\\s*(.+?)(?:\\s+-\\s|\\s+\\d+\\s*oz\\b|\\s+\\$|$)"
+      }
+    },
+    {
       "key": "pine-box-taps",
       "name": "The Pine Box (Capitol Hill)",
       "url": "https://www.pineboxbar.com/ontap",
@@ -337,6 +371,16 @@
       }
     },
     {
+      "key": "single-hill-commons-taps",
+      "name": "Single Hill Commons (Ballard)",
+      "url": "https://singlehillbrewing.com/commons/",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 51329,
+        "theme_id": 177087
+      }
+    },
+    {
       "key": "stoup-ballard-taps",
       "name": "Stoup Brewing (Ballard)",
       "url": "https://www.stoupbrewing.com/ontap/",
@@ -344,6 +388,28 @@
       "parser_config": {
         "item": "div.beer-on-tap-detail",
         "name": ".beer-title-info h2"
+      }
+    },
+    {
+      "key": "stoup-capitol-hill-taps",
+      "name": "Stoup Brewing (Capitol Hill)",
+      "url": "https://www.stoupbrewing.com/capitol-hill/",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "item": "section.template-whats-on-tap-2023-design a.reveal-toggle",
+        "name": ".title",
+        "abv": ".abv"
+      }
+    },
+    {
+      "key": "stoup-kenmore-taps",
+      "name": "Stoup Brewing (Kenmore)",
+      "url": "https://stoupkenmore.com/",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "item": "section.template-whats-on-tap-2023-design a.reveal-toggle",
+        "name": ".title",
+        "abv": ".abv"
       }
     },
     {

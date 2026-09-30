@@ -70,6 +70,7 @@ def test_bottle_shops_and_bars_are_typed(site: SiteConfig) -> None:
         "beer-junction-taps",
         "beer-star-taps",
         "beveridge-place-taps",
+        "broadview-taps",
         "chucks-central-district-taps",
         "chucks-greenwood-taps",
         "chucks-seward-park-taps",
