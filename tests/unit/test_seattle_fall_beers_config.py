@@ -17,7 +17,7 @@ def site() -> SiteConfig:
 
 
 def test_site_basics(site: SiteConfig) -> None:
-    assert site.name == "Seattle Fall Beers"
+    assert site.name == "Seattle Autumn Beers"
     assert site.public_url == "https://seattlefallbeers.com"
     assert site.generate_description is False  # the haiku prompt is Ballard's
     assert (TEMPLATES / site.template / "index.html").is_file()
@@ -57,3 +57,54 @@ def test_event_sources_filter_for_fresh_hop_and_look_ahead(site: SiteConfig) -> 
         config = venue.parser_config or {}
         assert config.get("event_filter") is True, venue.key
         assert config.get("event_window_days", 0) > 7, venue.key
+
+
+def test_bottle_shops_and_bars_are_typed(site: SiteConfig) -> None:
+    bars = {v.key for v in site.venues if (v.parser_config or {}).get("venue_type")}
+    assert bars == {
+        "beer-junction-taps",
+        "beer-star-taps",
+        "chucks-central-district-taps",
+        "chucks-greenwood-taps",
+        "chucks-seward-park-taps",
+        "growler-guys-taps",
+        "latona-pub-taps",
+        "pine-box-taps",
+        "watershed-taps",
+    }
+    assert {(v.parser_config or {}).get("venue_type") for v in site.venues} == {
+        "bar",
+        None,
+    }
+
+
+def test_template_has_the_three_pages() -> None:
+    for page in (
+        "index.html",
+        "festbier.html",
+        "bars.html",
+        "events.html",
+        "app.js",
+        "styles.css",
+    ):
+        assert (TEMPLATES / "fresh-hop" / page).is_file(), page
+    for page, data_page in (
+        ("index.html", "freshhop"),
+        ("festbier.html", "festbier"),
+        ("bars.html", "bars"),
+        ("events.html", "events"),
+    ):
+        html = (TEMPLATES / "fresh-hop" / page).read_text()
+        assert f'data-page="{data_page}"' in html
+        # Source link goes to Hal's fork; the original project is credited by name.
+        assert '<a href="https://github.com/halmueller/around-the-grounds">' in html
+        assert (
+            '<a href="https://github.com/steveandroulakis/around-the-grounds">'
+            "Around the Grounds</a>"
+        ) in html
+        # Author credit in the pinned bottom bar; every page links every tab.
+        assert html.count('<a href="https://halmueller.com">Hal Mueller</a>') == 1
+        assert html.count('href="https://www.linkedin.com/in/halmueller/"') == 1
+        assert "Seattle Autumn Beers" in html
+        for href in ('"./"', '"festbier.html"', '"bars.html"', '"events.html"'):
+            assert f"href={href}" in html, (page, href)

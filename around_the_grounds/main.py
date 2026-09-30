@@ -231,6 +231,8 @@ async def generate_web_data(
         # unchanged.
         if event.kind != "event":
             web_event["kind"] = event.kind
+        if event.category:
+            web_event["category"] = event.category
         web_events.append(web_event)
 
     unique_error_messages = list(dict.fromkeys(error_messages or []))
@@ -285,7 +287,12 @@ def _listing_venues(site: SiteConfig) -> List[dict]:
         except ValueError:
             continue
         if getattr(parser_class, "PRODUCES_LISTINGS", False):
-            venues.append({"key": venue.key, "name": venue.name, "url": venue.url})
+            entry = {"key": venue.key, "name": venue.name, "url": venue.url}
+            # Optional grouping for templates, e.g. "bar" vs brewery taprooms.
+            venue_type = (venue.parser_config or {}).get("venue_type")
+            if venue_type:
+                entry["type"] = venue_type
+            venues.append(entry)
     return venues
 
 

@@ -194,8 +194,12 @@ class TestDigitalPour:
             async with aiohttp.ClientSession() as session:
                 events = await DigitalPourParser(venue).parse(session)
 
-        assert len(events) == 10
+        assert len([e for e in events if e.category == "fresh-hop"]) == 10
         assert all(e.kind == "listing" for e in events)
+        assert [e.title for e in events if e.category == "festbier"] == [
+            "Oktoberfest",
+            "Flocktoberfest",
+        ]
 
     @pytest.mark.asyncio
     async def test_missing_ids_raise(self) -> None:
@@ -276,7 +280,7 @@ class TestHtmlTaplistVenues:
             m.get(url, status=200, body=page(html_fixtures_dir, "taplist_stoup"))
             async with aiohttp.ClientSession() as session:
                 events = await HtmlTaplistParser(venue).parse(session)
-        assert len(events) == 3
+        assert [e.category for e in events] == ["fresh-hop"] * 3 + ["festbier"]
         assert events[0].description == "6.8%"
 
 
@@ -357,7 +361,14 @@ class TestTextTaplist:
         )
         events = build_listings(venue, entries, "html", LOGGER)
         # "EXTRA FRESH HOPPY TABLE BEER" needs the venue's listing_include.
-        assert [e.title for e in events] == ["SKITCH", "GARLANDS", "ZIP ZINGER"]
+        assert [e.title for e in events if e.category == "fresh-hop"] == [
+            "SKITCH",
+            "GARLANDS",
+            "ZIP ZINGER",
+        ]
+        assert [e.title for e in events if e.category == "festbier"] == [
+            "BEHIND THE ROWS"
+        ]
 
     def test_headings_are_not_entries_by_default(self) -> None:
         html = "<h2>Fresh Hop A</h2><p>Fresh Hop B</p>"

@@ -100,38 +100,42 @@ def build_listings(
     extraction_method: str,
     logger: logging.Logger,
 ) -> List[Event]:
-    """Keep matching entries as listing events, dropping exact repeats.
+    """Keep entries matching any of the venue's categories as listing events.
 
-    Style is part of an entry's identity: a venue can pour two beers with
-    the same name (Ravenna's "Wet Season: Amarillo" IPA and Hazy IPA).
+    An entry matching several categories (a "Fresh Hop Festbier") yields one
+    listing per category. Exact repeats are dropped; style is part of an
+    entry's identity because a venue can pour two beers with the same name
+    (Ravenna's "Wet Season: Amarillo" IPA and Hazy IPA).
     """
-    matcher = ListingMatcher.from_config(venue.parser_config)
+    matchers = ListingMatcher.for_venue(venue.parser_config)
     date = listing_date(venue)
     events: List[Event] = []
     seen = set()
     total = 0
     for entry in entries:
         total += 1
-        if not matcher.matches(entry.name, entry.style, entry.match_text):
-            continue
-        identity = tuple(
-            (field or "").casefold()
-            for field in (entry.name, entry.brewery, entry.style)
-        )
-        if identity in seen:
-            continue
-        seen.add(identity)
         details = [d for d in (entry.brewery, entry.style, entry.abv) if d]
-        events.append(
-            Event(
-                venue_key=venue.key,
-                venue_name=venue.name,
-                title=entry.name,
-                date=date,
-                description=" · ".join(details) or None,
-                extraction_method=extraction_method,
-                kind="listing",
+        for matcher in matchers:
+            if not matcher.matches(entry.name, entry.style, entry.match_text):
+                continue
+            identity = tuple(
+                (field or "").casefold()
+                for field in (entry.name, entry.brewery, entry.style, matcher.category)
             )
-        )
-    logger.info(f"{venue.name}: {len(events)} matching of {total} tap-list entries")
+            if identity in seen:
+                continue
+            seen.add(identity)
+            events.append(
+                Event(
+                    venue_key=venue.key,
+                    venue_name=venue.name,
+                    title=entry.name,
+                    date=date,
+                    description=" · ".join(details) or None,
+                    extraction_method=extraction_method,
+                    kind="listing",
+                    category=matcher.category,
+                )
+            )
+    logger.info(f"{venue.name}: {len(events)} listings from {total} tap-list entries")
     return events

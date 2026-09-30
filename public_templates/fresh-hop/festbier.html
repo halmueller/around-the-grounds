@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fresh hops · Seattle Autumn Beers</title>
-    <meta name="description" content="Fresh-hop beers on tap right now at Seattle breweries.">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+    <title>Festbiers · Seattle Autumn Beers</title>
+    <meta name="description" content="Festbiers, Oktoberfests and Märzens on tap right now at Seattle breweries.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥨</text></svg>">
     <link rel="stylesheet" href="styles.css">
 </head>
 <!-- index.html, festbier.html, bars.html and events.html share this layout and
      differ only in data-page, title, icon, tagline and the current tab.
      Keep them in step. -->
-<body data-page="freshhop">
+<body data-page="festbier">
 <header class="topbar">
     <div class="bar-inner">
-        <h1><span class="leaf">🌿</span> Seattle Autumn Beers</h1>
+        <h1><span class="leaf">🥨</span> Seattle Autumn Beers</h1>
         <nav class="tabs" aria-label="Lists">
-            <a href="./" aria-current="page">Fresh hops</a>
-            <a href="festbier.html">Festbiers</a>
+            <a href="./">Fresh hops</a>
+            <a href="festbier.html" aria-current="page">Festbiers</a>
             <a href="bars.html">Bottle shops &amp; bars</a>
             <a href="events.html">Events</a>
         </nav>
@@ -25,7 +25,7 @@
 </header>
 
 <div class="container">
-    <p class="tagline">Fresh-hop beers on tap right now at Seattle breweries.</p>
+    <p class="tagline">Festbiers, Oktoberfests and Märzens on tap right now at Seattle breweries.</p>
     <p class="summary" id="summary"></p>
 
     <input class="search" id="search" type="search" placeholder="Search beers, breweries, or places…" aria-label="Search beers, breweries, or places" hidden>

@@ -1,6 +1,6 @@
 {
   "key": "seattle-fall-beers",
-  "name": "Seattle Fall Beers",
+  "name": "Seattle Autumn Beers",
   "template": "fresh-hop",
   "timezone": "America/Los_Angeles",
   "public_url": "https://seattlefallbeers.com",
@@ -23,7 +23,8 @@
       "source_type": "untappd-embed",
       "parser_config": {
         "location_id": 3026,
-        "theme_id": 8580
+        "theme_id": 8580,
+        "venue_type": "bar"
       }
     },
     {
@@ -33,7 +34,8 @@
       "source_type": "digitalpour",
       "parser_config": {
         "company_id": "590e40cc5e002c09f467f375",
-        "location_id": 1
+        "location_id": 1,
+        "venue_type": "bar"
       }
     },
     {
@@ -67,7 +69,9 @@
           "abv": 9
         },
         "brewery_separator": ":",
-        "skip_prefix": "-"
+        "skip_prefix": "-",
+        "venue_type": "bar",
+        "name_remove": "\\s*\\(\\.?\\d[^)]*L\\b[^)]*\\)\\s*$"
       }
     },
     {
@@ -85,7 +89,9 @@
           "abv": 9
         },
         "brewery_separator": ":",
-        "skip_prefix": "-"
+        "skip_prefix": "-",
+        "venue_type": "bar",
+        "name_remove": "\\s*\\(\\.?\\d[^)]*L\\b[^)]*\\)\\s*$"
       }
     },
     {
@@ -103,7 +109,9 @@
           "abv": 9
         },
         "brewery_separator": ":",
-        "skip_prefix": "-"
+        "skip_prefix": "-",
+        "venue_type": "bar",
+        "name_remove": "\\s*\\(\\.?\\d[^)]*L\\b[^)]*\\)\\s*$"
       }
     },
     {
@@ -180,7 +188,10 @@
       "key": "growler-guys-taps",
       "name": "The Growler Guys (Lake City)",
       "url": "https://untappd.com/v/the-growler-guys-seattle-northeast/5527415",
-      "source_type": "untappd-venue"
+      "source_type": "untappd-venue",
+      "parser_config": {
+        "venue_type": "bar"
+      }
     },
     {
       "key": "hellbent-taps",
@@ -211,7 +222,8 @@
       "source_type": "untappd-embed",
       "parser_config": {
         "location_id": 16927,
-        "theme_id": 63533
+        "theme_id": 63533,
+        "venue_type": "bar"
       }
     },
     {
@@ -241,7 +253,8 @@
       "source_type": "untappd-embed",
       "parser_config": {
         "location_id": 45275,
-        "theme_id": 170957
+        "theme_id": 170957,
+        "venue_type": "bar"
       }
     },
     {
@@ -311,7 +324,10 @@
       "key": "watershed-taps",
       "name": "Watershed Pub & Kitchen (Northgate)",
       "url": "https://untappd.com/v/watershed-pub-and-kitchen/1494601",
-      "source_type": "untappd-venue"
+      "source_type": "untappd-venue",
+      "parser_config": {
+        "venue_type": "bar"
+      }
     },
     {
       "key": "fremont-events",

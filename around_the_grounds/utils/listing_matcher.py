@@ -1,21 +1,45 @@
-"""Decide which tap-list entries belong on a listing site (fresh-hop beers).
+"""Decide which tap-list entries belong on a listing site, by category.
 
 Parsers pass every text field they have for an entry (name, style,
-description); the entry matches when any field hits an include pattern and
-no field hits an exclude pattern. Venues can extend both lists through
-``parser_config`` for beers whose names never say "fresh hop".
+description); the entry matches a category when any field hits one of its
+include patterns and no field hits one of its exclude patterns.
+
+Built-in categories:
+
+- ``fresh-hop``: fresh/wet-hop beers. Venues extend it with
+  ``listing_include`` / ``listing_exclude`` for beers whose names never say
+  "fresh hop".
+- ``festbier``: Oktoberfest-season lagers (Festbier, Oktoberfest, Märzen).
+  Venues extend it with ``festbier_include`` / ``festbier_exclude``.
 """
 
 import re
-from typing import Any, Dict, List, Optional, Pattern, Sequence
+from typing import Any, Dict, List, Optional, Pattern, Sequence, Tuple
+
+FRESH_HOP = "fresh-hop"
+FESTBIER = "festbier"
 
 # "fresh hop", "wet-hop", "Freshhop", "Fresh Hops", "wet-hopped". Requiring
 # "hop" right after "fresh"/"wet" keeps out "Fresh Squeezed IPA" and
 # "brewed with fresh Simcoe hops".
 DEFAULT_INCLUDE = [r"\b(?:fresh|wet)[\s-]*hop(?:s|ped)?\b"]
 
-# Fresh-hop festivals show up in tap-list pages alongside the beers.
+# Fresh-hop festivals show up in tap-list pages alongside the beers. ("\bfest\b"
+# does not match "Festbier".)
 DEFAULT_EXCLUDE = [r"\bfest(?:ival)?\b"]
+
+FESTBIER_INCLUDE = [
+    r"\bfest[\s-]*b(?:ie|ee)r\b",  # Festbier, Fest Bier, Fest Beer
+    r"tober[\s-]*fest",  # Oktoberfest, Octoberfest, Bobtoberfest
+    r"\bm(?:ä|ae|a)rzen\b",  # Märzen, Maerzen, Marzen
+    r"\bwiesn\b",
+]
+
+# category -> (include patterns, exclude patterns, config key prefix)
+CATEGORIES: Dict[str, Tuple[List[str], List[str], str]] = {
+    FRESH_HOP: (DEFAULT_INCLUDE, DEFAULT_EXCLUDE, "listing"),
+    FESTBIER: (FESTBIER_INCLUDE, [], "festbier"),
+}
 
 
 class ListingMatcher:
@@ -26,29 +50,54 @@ class ListingMatcher:
         include: Optional[Sequence[str]] = None,
         exclude: Optional[Sequence[str]] = None,
         default_exclude: bool = True,
+        category: str = FRESH_HOP,
     ) -> None:
         """``default_exclude=False`` keeps festivals, for matching events."""
+        if category not in CATEGORIES:
+            raise ValueError(f"Unknown listing category {category!r}")
+        base_include, base_exclude, prefix = CATEGORIES[category]
+        self.category = category
         self._include = self._compile(
-            DEFAULT_INCLUDE + list(include or []), "listing_include"
+            base_include + list(include or []), f"{prefix}_include"
         )
-        defaults = DEFAULT_EXCLUDE if default_exclude else []
-        self._exclude = self._compile(defaults + list(exclude or []), "listing_exclude")
+        defaults = base_exclude if default_exclude else []
+        self._exclude = self._compile(
+            defaults + list(exclude or []), f"{prefix}_exclude"
+        )
 
     @classmethod
     def from_config(
-        cls, parser_config: Optional[Dict[str, Any]], default_exclude: bool = True
+        cls,
+        parser_config: Optional[Dict[str, Any]],
+        default_exclude: bool = True,
+        category: str = FRESH_HOP,
     ) -> "ListingMatcher":
-        """Build a matcher from a venue's ``parser_config``.
+        """Build a matcher for *category* from a venue's ``parser_config``.
 
-        ``listing_include`` and ``listing_exclude`` may each be a pattern or a
-        list of patterns; they extend the defaults rather than replace them.
+        ``<prefix>_include`` / ``<prefix>_exclude`` (``listing_*`` for fresh
+        hop, ``festbier_*`` for festbier) may each be a pattern or a list of
+        patterns; they extend the defaults rather than replace them.
         """
+        if category not in CATEGORIES:
+            raise ValueError(f"Unknown listing category {category!r}")
+        prefix = CATEGORIES[category][2]
         config = parser_config or {}
         return cls(
-            include=cls._as_list(config.get("listing_include")),
-            exclude=cls._as_list(config.get("listing_exclude")),
+            include=cls._as_list(config.get(f"{prefix}_include")),
+            exclude=cls._as_list(config.get(f"{prefix}_exclude")),
             default_exclude=default_exclude,
+            category=category,
         )
+
+    @classmethod
+    def for_venue(
+        cls, parser_config: Optional[Dict[str, Any]]
+    ) -> List["ListingMatcher"]:
+        """One matcher per category the venue lists (``listing_categories``,
+        default: every built-in category)."""
+        config = parser_config or {}
+        categories = cls._as_list(config.get("listing_categories")) or list(CATEGORIES)
+        return [cls.from_config(config, category=c) for c in categories]
 
     def matches(self, *texts: Optional[str]) -> bool:
         fields = [t for t in texts if t]

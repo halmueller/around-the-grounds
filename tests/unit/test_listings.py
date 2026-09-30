@@ -13,6 +13,7 @@ import pytest
 from around_the_grounds.config.loader import load_site_config
 from around_the_grounds.main import generate_web_data
 from around_the_grounds.models import Event, Venue
+from around_the_grounds.parsers.generic.listing_common import TapEntry, build_listings
 from around_the_grounds.parsers.registry import ParserRegistry
 from around_the_grounds.scrapers.coordinator import ScraperCoordinator
 from around_the_grounds.temporal.activities import (
@@ -114,6 +115,14 @@ class TestListingVenues:
         }
 
     @pytest.mark.asyncio
+    async def test_venue_type_is_passed_through(self) -> None:
+        site = load_site_config("seattle-fall-beers")
+        data = await generate_web_data([], site=site)
+        by_key = {v["key"]: v for v in data["listing_venues"]}
+        assert by_key["chucks-greenwood-taps"]["type"] == "bar"
+        assert "type" not in by_key["stoup-ballard-taps"]
+
+    @pytest.mark.asyncio
     @pytest.mark.parametrize(
         "site_key", ["ballard-food-trucks", "park-slope-music", "childrens-events"]
     )
@@ -136,6 +145,39 @@ class TestListingVenues:
                 source_type in listing_types
             ), source_type
         assert not any(p.PRODUCES_LISTINGS for p in ParserRegistry._specific.values())
+
+
+class TestCategory:
+    def test_category_defaults_to_none(self) -> None:
+        assert Event("k", "Venue", "Show", _now()).category is None
+
+    @pytest.mark.asyncio
+    async def test_category_reaches_data_json_only_when_set(self) -> None:
+        data = await generate_web_data(
+            [_listing(category="festbier"), Event("k", "Venue", "Show", _now())]
+        )
+        assert data["events"][0]["category"] == "festbier"
+        assert "category" not in data["events"][1]
+
+    @pytest.mark.asyncio
+    async def test_category_round_trips_through_activities(self) -> None:
+        payload = ScrapeActivities._serialize_event(_listing(category="festbier"))
+        assert payload["category"] == "festbier"
+        assert "category" not in ScrapeActivities._serialize_event(
+            Event("k", "Venue", "Show", _now())
+        )
+
+        data = await DeploymentActivities().generate_web_data(
+            {"events": [payload], "errors": []}
+        )
+        assert data["events"][0]["category"] == "festbier"
+
+    def test_one_beer_can_be_in_two_categories(self) -> None:
+        venue = Venue("bar", "Bar", "https://example.com")
+        events = build_listings(
+            venue, [TapEntry("Fresh Hop Festbier")], "html", logging.getLogger()
+        )
+        assert [e.category for e in events] == ["fresh-hop", "festbier"]
 
 
 class TestCalendarFeed:

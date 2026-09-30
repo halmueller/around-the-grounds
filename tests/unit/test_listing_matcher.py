@@ -97,3 +97,68 @@ class TestFromConfig:
     def test_non_string_pattern_raises_value_error(self) -> None:
         with pytest.raises(ValueError, match="listing_exclude"):
             ListingMatcher.from_config({"listing_exclude": [42]})
+
+
+class TestFestbierCategory:
+    @pytest.fixture
+    def festbier(self) -> ListingMatcher:
+        return ListingMatcher(category="festbier")
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "Festbier",  # style (Beer Junction, Stoup)
+            "BEHIND THE ROWS - FESTBIER",  # Bizarre
+            "German-Style Festbier",  # Cloudburst
+            "Fest Beer",
+            "Oktoberfest Märzen",  # Obec
+            "Oktoberfest Marzen",
+            "Bobtoberfest",  # Heater Allen, at Beer Junction
+            "Octoberfest Lager",
+            "Maerzen",
+            "Märzen",
+            "Wiesn",
+        ],
+    )
+    def test_festbier_names_match(self, festbier: ListingMatcher, text: str) -> None:
+        assert festbier.matches(text)
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "Fresh Hop Fest!",
+            "Fresh Hop Festival",
+            "Festive Winter Ale",
+            "Fresh Hop IPA",
+        ],
+    )
+    def test_look_alikes_do_not_match(
+        self, festbier: ListingMatcher, text: str
+    ) -> None:
+        assert not festbier.matches(text)
+
+    def test_fresh_hop_festbier_is_both(self, festbier: ListingMatcher) -> None:
+        assert festbier.matches("Fresh Hop Festbier (2026)")
+        assert ListingMatcher().matches("Fresh Hop Festbier (2026)")
+
+    def test_venue_extras_use_their_own_keys(self) -> None:
+        config = {"festbier_include": ["zwickel"], "listing_include": ["cowiche"]}
+        festbier = ListingMatcher.from_config(config, category="festbier")
+        assert festbier.matches("Zwickel Lager")
+        assert not festbier.matches("Hazy Cowiche")
+
+
+class TestVenueCategories:
+    def test_default_is_every_category(self) -> None:
+        assert [m.category for m in ListingMatcher.for_venue({})] == [
+            "fresh-hop",
+            "festbier",
+        ]
+
+    def test_venue_can_limit_categories(self) -> None:
+        matchers = ListingMatcher.for_venue({"listing_categories": ["fresh-hop"]})
+        assert [m.category for m in matchers] == ["fresh-hop"]
+
+    def test_unknown_category_raises(self) -> None:
+        with pytest.raises(ValueError, match="Unknown listing category"):
+            ListingMatcher.for_venue({"listing_categories": ["gose"]})

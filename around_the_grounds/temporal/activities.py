@@ -45,6 +45,8 @@ class ScrapeActivities:
         # workflow histories.
         if event.kind != "event":
             payload["kind"] = event.kind
+        if event.category:
+            payload["category"] = event.category
         return payload
 
     @staticmethod
@@ -137,6 +139,7 @@ class DeploymentActivities:
                 description=event_data.get("description"),
                 extraction_method=event_data.get("extraction_method", "html"),
                 kind=event_data.get("kind", "event"),
+                category=event_data.get("category"),
             )
             reconstructed_events.append(event)
 

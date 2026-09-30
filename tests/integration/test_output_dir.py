@@ -19,7 +19,7 @@ VENUES = [Venue(f"v{i}-taps", f"Venue {i}", f"https://v{i}.example") for i in ra
 def _site() -> SiteConfig:
     return SiteConfig(
         key="seattle-fall-beers",
-        name="Seattle Fall Beers",
+        name="Seattle Autumn Beers",
         template="fresh-hop",
         timezone="America/Los_Angeles",
         venues=VENUES,

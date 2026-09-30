@@ -125,8 +125,18 @@ skip the 7-day window and stay out of `events.ics`.
 | Repeated HTML items | `"html-taplist"` | `item`, `name`, optional `style`, `brewery`, `abv`, `style_pattern`, `match_whole_item`, `exclude_sections` |
 | Free text, one beer per line | `"text-taplist"` | `line_pattern` with a `(?P<name>…)` group, optional `section_tag`, `include_sections`, `exclude_sections`, `line_tags` (elements that hold entries; default `p`, `li` — set `["h2"]` when beers are headings) |
 
-Every listing venue can also set `listing_include` / `listing_exclude`
-(regexes that extend the default fresh-hop pattern) and `timezone`.
+Listings are sorted into **categories**: `fresh-hop` (fresh/wet hop) and
+`festbier` (Festbier, Oktoberfest/-toberfest, Märzen, Wiesn). An entry
+matching both yields one listing per category, and each listing carries
+`category` in `data.json`. Per venue:
+
+| Option | Effect |
+|--------|--------|
+| `listing_include` / `listing_exclude` | Extra fresh-hop patterns (e.g. Bizarre's `"fresh hoppy"`) |
+| `festbier_include` / `festbier_exclude` | Extra festbier patterns |
+| `listing_categories` | Limit the venue to some categories (default: all) |
+| `venue_type` | Grouping for templates: `"bar"` for bottle shops/bars (default: brewery) |
+| `timezone` | Site-local "today" for listing dates |
 
 A site with listing venues also gets `listing_venues` (key, name, url) in
 `data.json`; the `fresh-hop` template uses it to name places that were
@@ -209,7 +219,7 @@ Available templates in `public_templates/`:
 - `food-trucks` — dark theme, food truck oriented
 - `music` — dark theme, music/show oriented
 - `kids` — bright/playful theme, children's event oriented
-- `fresh-hop` — tap-list ("listing") sites: beers grouped by venue with search, plus any dated events
+- `fresh-hop` — tap-list ("listing") sites: four pages sharing `app.js`/`styles.css` under a pinned tab bar — fresh hops at breweries (`index.html`), festbiers at breweries (`festbier.html`), both at bottle shops and bars (`bars.html`, venues with `venue_type: "bar"`), and dated events (`events.html`)
 
 To create a new template, add a directory under `public_templates/` with at least an `index.html`.
 

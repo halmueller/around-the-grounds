@@ -14,7 +14,8 @@ Config (``source_type: "sheet-taplist"``)::
       "header_contains": "Greenwood",       # optional, checked in header row
       "columns": {"name": 2, "style": 1, "abv": 9},  # zero-based; name required
       "brewery_separator": ":",             # optional, splits "Brewery: Beer"
-      "skip_prefix": "-"                    # optional, e.g. kicked kegs
+      "skip_prefix": "-",                   # optional, e.g. kicked kegs
+      "name_remove": "\\s*\\(\\.?\\d.*L\\b.*\\)$"  # optional regex cut from names
     }
 
 Decorative symbols (emoji markers such as 🌿) are stripped from the ends of
@@ -23,6 +24,7 @@ names.
 
 import csv
 import io
+import re
 import unicodedata
 from typing import Any, Dict, List, Optional
 
@@ -62,6 +64,12 @@ def parse_sheet_rows(csv_text: str, config: Dict[str, Any]) -> List[TapEntry]:
         raise ValueError("sheet-taplist needs columns.name in parser_config")
     separator = config.get("brewery_separator")
     skip_prefix = config.get("skip_prefix")
+    try:
+        name_remove = (
+            re.compile(config["name_remove"]) if config.get("name_remove") else None
+        )
+    except re.error as e:
+        raise ValueError(f"Invalid name_remove pattern: {e}") from e
 
     rows = list(csv.reader(io.StringIO(csv_text)))
     if not rows:
@@ -79,6 +87,8 @@ def parse_sheet_rows(csv_text: str, config: Dict[str, Any]) -> List[TapEntry]:
         raw = _cell(row, columns["name"])
         if not raw or (skip_prefix and raw.startswith(skip_prefix)):
             continue
+        if name_remove is not None:
+            raw = name_remove.sub("", raw)
         name = _strip_symbols(raw)
         brewery = None
         if separator and separator in name:

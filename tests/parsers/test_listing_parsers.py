@@ -48,6 +48,7 @@ CHUCKS_CONFIG: Dict[str, Any] = {
     "columns": {"name": 2, "style": 1, "abv": 9},
     "brewery_separator": ":",
     "skip_prefix": "-",
+    "name_remove": r"\s*\(\.?\d[^)]*L\b[^)]*\)\s*$",
 }
 
 
@@ -92,10 +93,12 @@ class TestBuildListings:
 
         events = build_listings(venue, entries, "untappd", LOGGER)
 
-        assert len(events) == 1
+        assert [(e.title, e.category) for e in events] == [
+            ("Fresh Hop IPA", "fresh-hop"),
+            ("Oktoberfest", "festbier"),
+        ]
         event = events[0]
         assert event.kind == "listing"
-        assert event.title == "Fresh Hop IPA"
         assert event.description == "Stoup Brewing · IPA - American · 6.5%"
         assert event.extraction_method == "untappd"
         # Site-local day at midnight, so output is stable within the day.
@@ -208,10 +211,16 @@ class TestUntappdEmbedParser:
             async with aiohttp.ClientSession() as session:
                 events = await UntappdEmbedParser(venue).parse(session)
 
-        assert len(events) == 7
+        fresh_hops = [e for e in events if e.category == "fresh-hop"]
+        assert len(fresh_hops) == 7
         assert all(e.kind == "listing" for e in events)
-        assert events[0].title == "Aqua Seafoam Shame"
-        assert events[0].description == (
+        assert [e.title for e in events if e.category == "festbier"] == [
+            "Bobtoberfest",
+            "Oktoberfest Marzen",
+            "Festbier",
+        ]
+        assert fresh_hops[0].title == "Aqua Seafoam Shame"
+        assert fresh_hops[0].description == (
             "Cloudburst Brewing · Fresh Hop Hazy IPA · 6.8%"
         )
 
@@ -283,8 +292,11 @@ class TestUntappdVenue:
             async with aiohttp.ClientSession() as session:
                 events = await UntappdVenueParser(venue).parse(session)
 
-        assert len(events) == 10
-        assert "Green Rush Fresh Hop IPA (2026)" in [e.title for e in events]
+        fresh_hops = [e.title for e in events if e.category == "fresh-hop"]
+        assert len(fresh_hops) == 10
+        assert "Green Rush Fresh Hop IPA (2026)" in fresh_hops
+        festbiers = [e.title for e in events if e.category == "festbier"]
+        assert festbiers == ["Festbier", "Octorok"]  # Octorok matches by style
 
 
 class TestSheetTaplist:
@@ -319,6 +331,10 @@ class TestSheetTaplist:
         with pytest.raises(ValueError, match="Seward Park"):
             parse_sheet_rows(gw_csv, config)
 
+    def test_invalid_name_remove_raises(self, gw_csv: str) -> None:
+        with pytest.raises(ValueError, match="name_remove"):
+            parse_sheet_rows(gw_csv, dict(CHUCKS_CONFIG, name_remove="("))
+
     def test_name_column_is_required(self, gw_csv: str) -> None:
         with pytest.raises(ValueError, match="columns.name"):
             parse_sheet_rows(gw_csv, {"columns": {"style": 1}})
@@ -350,8 +366,14 @@ class TestSheetTaplist:
 
         assert url.query["sheet"] == "GW"
         assert unquote(url.query["tqx"]) == "out:csv"
-        assert len(events) == 15
-        assert events[0].description == "Cloudburst · IPA/Pale · 6.8%"
+        fresh_hops = [e for e in events if e.category == "fresh-hop"]
+        assert len(fresh_hops) == 15
+        assert fresh_hops[0].description == "Cloudburst · IPA/Pale · 6.8%"
+        # Serving sizes are cut from names by name_remove.
+        assert [e.title for e in events if e.category == "festbier"] == [
+            "Spider Dance - Festbier",
+            "Behind The Rows - Festbier Lager",
+        ]
 
     @pytest.mark.asyncio
     async def test_missing_sheet_config_raises(self) -> None:
