@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Pages of seattlefreshies.com. Keep in step with the pages in this
+     template and the site's public_url. No lastmod: the data changes hourly. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://seattlefreshies.com/</loc></url>
+  <url><loc>https://seattlefreshies.com/festbier.html</loc></url>
+  <url><loc>https://seattlefreshies.com/bars.html</loc></url>
+  <url><loc>https://seattlefreshies.com/events.html</loc></url>
+</urlset>

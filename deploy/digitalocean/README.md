@@ -10,7 +10,7 @@ for this site).
 - If **every** venue fails (e.g. the droplet loses its network), nothing is
   written and the last good copy stays up. Partial failures still publish, and
   the page names the venues it couldn't check.
-- Files the site doesn't produce (`robots.txt`, certbot's `.well-known/`) are
+- Files the site doesn't produce (a Search Console verification file, certbot's `.well-known/`) are
   left alone.
 
 Commands below use `freshies` as the site user and the fork's

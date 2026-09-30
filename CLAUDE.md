@@ -254,7 +254,9 @@ public_templates/                  # Per-site web interface templates
     ├── bars.html                  #   both, at bottle shops & bars (venue_type "bar")
     ├── events.html                #   upcoming fresh-hop events + calendar link
     ├── app.js
-    └── styles.css
+    ├── styles.css
+    ├── sitemap.xml                #   static; lists the four pages under public_url
+    └── robots.txt                 #   allows all, points at sitemap.xml
 
 public/                            # Generated files (git-ignored)
 ├── data.json                      # Generated web data

@@ -50,7 +50,7 @@ def _publish(events: List[Event], errors: List[ScrapingError], root: Path) -> bo
 def web_root(tmp_path: Path) -> Path:
     root = tmp_path / "seattlefreshies.com"
     root.mkdir()
-    (root / "robots.txt").write_text("User-agent: *\n")
+    (root / "google0123abcd.html").write_text("verify")
     (root / ".well-known" / "acme-challenge").mkdir(parents=True)
     (root / ".well-known" / "acme-challenge" / "token").write_text("abc")
     (root / "data.json").write_text('{"old": true}')
@@ -65,12 +65,14 @@ def test_publishes_site_files(web_root: Path) -> None:
     assert data["events"][0]["title"] == "Fresh Hop IPA"
     assert (web_root / "index.html").read_text().startswith("<!DOCTYPE html>")
     assert (web_root / "events.ics").exists()
+    assert (web_root / "sitemap.xml").exists()
+    assert "Sitemap:" in (web_root / "robots.txt").read_text()
 
 
 def test_leaves_unrelated_files_and_no_staging(web_root: Path) -> None:
     _publish(_events(), [], web_root)
 
-    assert (web_root / "robots.txt").read_text() == "User-agent: *\n"
+    assert (web_root / "google0123abcd.html").read_text() == "verify"
     assert (web_root / ".well-known" / "acme-challenge" / "token").read_text() == "abc"
     assert not list(web_root.glob(".atg-staging-*"))
 

@@ -663,8 +663,8 @@ async def preview_locally(
 def _replace_tree(staging: Path, target: Path) -> None:
     """Move every file under *staging* into *target*, one atomic rename each.
 
-    Files already in *target* that the site does not produce (robots.txt,
-    .htaccess, certbot's .well-known/) are left alone.
+    Files already in *target* that the site does not produce (a Search Console
+    verification file, .htaccess, certbot's .well-known/) are left alone.
     """
     for source in sorted(staging.rglob("*")):
         if source.is_dir():

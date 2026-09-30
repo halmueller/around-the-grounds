@@ -1,6 +1,7 @@
 """Guards for the seattle-freshies site config."""
 
 from pathlib import Path
+from xml.etree import ElementTree
 
 import pytest
 
@@ -108,3 +109,20 @@ def test_template_has_the_three_pages() -> None:
         assert "Seattle Freshies" in html
         for href in ('"./"', '"festbier.html"', '"bars.html"', '"events.html"'):
             assert f"href={href}" in html, (page, href)
+
+
+def test_sitemap_lists_every_page(site: SiteConfig) -> None:
+    root = ElementTree.parse(TEMPLATES / "fresh-hop" / "sitemap.xml").getroot()
+    ns = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+    locs = [el.text for el in root.findall("sm:url/sm:loc", ns)]
+    pages = sorted(p.name for p in (TEMPLATES / "fresh-hop").glob("*.html"))
+    expected = [
+        f"{site.public_url}/" + ("" if page == "index.html" else page) for page in pages
+    ]
+    assert sorted(locs) == sorted(expected)
+
+
+def test_robots_points_at_sitemap(site: SiteConfig) -> None:
+    robots = (TEMPLATES / "fresh-hop" / "robots.txt").read_text()
+    assert f"Sitemap: {site.public_url}/sitemap.xml" in robots.splitlines()
+    assert "Disallow: /" not in robots.splitlines()
