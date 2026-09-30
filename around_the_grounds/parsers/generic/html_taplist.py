@@ -9,6 +9,7 @@ Config (``source_type: "html-taplist"``; the venue ``url`` is fetched)::
       "brewery": ".producer",             # optional
       "abv": ".abv",                      # optional; else searched in item text
       "style_pattern": "-\\s*([^,]+),",    # optional: style from item text
+      "name_pattern": "^(?P<name>.+?)\\s*\\(",  # optional: trim the name text
       "match_whole_item": false,          # also match on the item's full text
       "name_fallback_to_style": false,    # unnamed item: use its style as name
       "exclude_sections": ["\\\\bto go\\\\b"]  # skip items under these headings
@@ -84,6 +85,14 @@ def parse_html_taplist(html: str, config: Dict[str, Any]) -> List[TapEntry]:
             style_pattern = re.compile(config["style_pattern"])
         except re.error as e:
             raise ValueError(f"Invalid style_pattern: {e}") from e
+    name_pattern = None
+    if config.get("name_pattern"):
+        try:
+            name_pattern = re.compile(config["name_pattern"])
+        except re.error as e:
+            raise ValueError(f"Invalid name_pattern: {e}") from e
+        if "name" not in name_pattern.groupindex:
+            raise ValueError("name_pattern needs a (?P<name>...) group")
     items = soup.select(config["item"])
     item_ids = {id(item) for item in items}
 
@@ -94,6 +103,12 @@ def parse_html_taplist(html: str, config: Dict[str, Any]) -> List[TapEntry]:
             if any(p.search(heading) for p in excludes):
                 continue
         name = _select_text(item, config["name"])
+        if name and name_pattern is not None:
+            # "Prime Time 45 IBU (5.4%)" → "Prime Time"; a name the pattern
+            # doesn't fit is kept whole.
+            trimmed = name_pattern.search(name)
+            if trimmed and trimmed.group("name").strip():
+                name = trimmed.group("name").strip()
         style = _select_text(item, config.get("style"))
         if style is None and style_pattern is not None:
             found = style_pattern.search(_text(item) or "")

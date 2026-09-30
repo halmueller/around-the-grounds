@@ -130,7 +130,7 @@ skip the 7-day window and stay out of `events.ics`.
 | DigitalPour embedded menu (`fbpage.digitalpour.com/?companyID=…&locationID=…`) | `"digitalpour"` | `company_id`, `location_id` |
 | Bevwerk website menu (`<bw-website-menu-root taplist-id="…">`, e.g. Watershed Pub) | `"bevwerk"` | `taplist_id`; venue `url` is the bar's menu page (not fetched) |
 | Canva design embedded as a draft list (`canva.com/design/…/view?embed`, e.g. Old Stove) | `"canva"` | `design_url` (venue `url` is the page embedding it). Beers are found by layout around each "ABV" line. Sends a browser User-Agent: Canva refuses others |
-| Repeated HTML items | `"html-taplist"` | `item`, `name`, optional `style`, `brewery`, `abv`, `style_pattern`, `match_whole_item`, `exclude_sections` |
+| Repeated HTML items | `"html-taplist"` | `item`, `name`, optional `style`, `brewery`, `abv`, `style_pattern`, `name_pattern`, `match_whole_item`, `exclude_sections` |
 | Free text, one beer per line | `"text-taplist"` | `line_pattern` with a `(?P<name>…)` group, optional `section_tag`, `include_sections`, `exclude_sections`, `line_tags` (elements that hold entries; default `p`, `li` — set `["h2"]` when beers are headings) |
 
 Listings are sorted into **categories**: `fresh-hop` (fresh/wet hop) and

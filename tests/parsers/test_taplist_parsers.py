@@ -62,6 +62,7 @@ CONFIGS: Dict[str, Dict[str, Any]] = {
         "stoup_capitol_hill": "stoup-capitol-hill-taps",
         "old_stove_gardens": "old-stove-gardens-taps",
         "die_bierstube": "die-bierstube-taps",
+        "big_time": "big-time-taps",
         "machine_house": "machine-house-taps",
         "ladd_and_lass": "ladd-and-lass-taps",
     }.items()
@@ -326,6 +327,40 @@ class TestHtmlTaplistVenues:
             "Hacker-Pschorr Oktoberfest",
             "Hofbräu Oktoberfest",
         ]
+
+    def test_big_time_menu_blocks_and_name_pattern(
+        self, html_fixtures_dir: Path
+    ) -> None:
+        entries = parse_html_taplist(
+            page(html_fixtures_dir, "taplist_big_time"), CONFIGS["big_time"]
+        )
+        # Every menu block is read: beer, cider/seltzer, wine, liquor, NA.
+        assert len(entries) == 31
+        by_name = {e.name: e for e in entries}
+        # ABV and IBU are trimmed from the name, before or after the ABV.
+        assert by_name["Prime Time"].abv == "5.4%"
+        assert by_name["Hoponessa IPA"].abv == "6%"
+        # A name the pattern doesn't fit is kept whole.
+        assert "Pinot Noir - CA" in by_name
+        venue = _SITE_VENUES["big-time-taps"]
+        events = build_listings(venue, entries, "html", LOGGER)
+        assert [(e.category, e.title, e.description) for e in events] == [
+            ("fresh-hop", "Citra Pants Fresh Hop", "6.6%"),
+        ]
+
+    def test_name_pattern_needs_name_group(self) -> None:
+        with pytest.raises(ValueError, match="name_pattern needs"):
+            parse_html_taplist(
+                "<div class=b>X</div>",
+                {"item": ".b", "name": ".b", "name_pattern": "^(.+)$"},
+            )
+
+    def test_invalid_name_pattern(self) -> None:
+        with pytest.raises(ValueError, match="Invalid name_pattern"):
+            parse_html_taplist(
+                "<div class=b>X</div>",
+                {"item": ".b", "name": ".b", "name_pattern": "(?P<name>"},
+            )
 
     def test_old_stove_wix_menu(self, html_fixtures_dir: Path) -> None:
         entries = parse_html_taplist(
