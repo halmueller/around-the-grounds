@@ -17,11 +17,14 @@ The ``.item-description`` text, when present, is kept for matching
 Config (``source_type: "untappd-embed"``)::
 
     "parser_config": {"location_id": 3026, "theme_id": 8580}
+
+An embed can hold several menus as tabs (Postdoc's REDMOND and KENMORE);
+``"menu_name"`` reads only the tab with that title.
 """
 
 import json
 import re
-from typing import List, Optional
+from typing import Any, List, Optional
 
 import aiohttp
 from bs4 import BeautifulSoup, Tag
@@ -89,10 +92,23 @@ def _description(item: Tag) -> Optional[str]:
     return text or None
 
 
-def parse_embed_menu(html: str) -> List[TapEntry]:
+def parse_embed_menu(html: str, menu_name: Optional[str] = None) -> List[TapEntry]:
+    """Entries from the embed's menu HTML; with *menu_name*, only from the
+    tab of that name (one embed can carry several taprooms' menus)."""
     soup = BeautifulSoup(html, "html.parser")
+    scope: Any = soup
+    if menu_name:
+        wanted = menu_name.strip().casefold()
+        tabs = [
+            tab
+            for tab in soup.select(".tab-content")
+            if (_text(tab, ".menu-title") or "").casefold() == wanted
+        ]
+        if not tabs:
+            raise ValueError(f"Untappd embed has no menu named {menu_name!r}")
+        scope = tabs[0]
     entries = []
-    for item in soup.select(".menu-item"):
+    for item in scope.select(".menu-item"):
         name = _name(item)
         if not name:
             continue
@@ -126,7 +142,7 @@ class UntappdEmbedParser(BaseParser):
             ) from e
 
         script = await fetch_listing_text(session, url)
-        entries = parse_embed_menu(decode_embed_html(script))
+        entries = parse_embed_menu(decode_embed_html(script), config.get("menu_name"))
         if not entries:
             # An empty menu is legitimate but rare; a theme change is likelier.
             self.logger.warning(f"{self.venue.name}: no menu items in {url}")

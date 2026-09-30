@@ -343,6 +343,28 @@
       }
     },
     {
+      "key": "postdoc-kenmore-taps",
+      "name": "Postdoc Brewing (Kenmore)",
+      "url": "https://www.postdocbrewing.com/taplist",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 31329,
+        "theme_id": 120842,
+        "menu_name": "KENMORE"
+      }
+    },
+    {
+      "key": "postdoc-redmond-taps",
+      "name": "Postdoc Brewing (Redmond)",
+      "url": "https://www.postdocbrewing.com/taplist",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 31329,
+        "theme_id": 120842,
+        "menu_name": "REDMOND"
+      }
+    },
+    {
       "key": "prost-phinney-taps",
       "name": "Prost! (Phinney Ridge)",
       "url": "https://www.prosttavern.net/bier",

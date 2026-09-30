@@ -272,6 +272,24 @@ class TestUntappdEmbedMenu:
             "festbier": ["Kerwa Kellerpils", "Oktoberfresh"],
         }
 
+    def test_menu_name_picks_one_taproom_tab(self, fixtures_dir: Path) -> None:
+        # Postdoc's embed carries REDMOND and KENMORE tabs.
+        html = decode_embed_html(_embed_script(fixtures_dir, "postdoc"))
+        redmond = [e.name for e in parse_embed_menu(html, "REDMOND")]
+        kenmore = [e.name for e in parse_embed_menu(html, "kenmore")]
+        everything = [e.name for e in parse_embed_menu(html)]
+
+        assert redmond and kenmore
+        assert len(redmond) + len(kenmore) == len(everything)
+        assert "Jimothy And the Giant Peach" in redmond
+        assert "Jimothy And the Giant Peach" not in kenmore
+        assert "Kenmore Oktoberfest" in kenmore
+
+    def test_unknown_menu_name_raises(self, fixtures_dir: Path) -> None:
+        html = decode_embed_html(_embed_script(fixtures_dir, "postdoc"))
+        with pytest.raises(ValueError, match="no menu named 'Bothell'"):
+            parse_embed_menu(html, "Bothell")
+
     def test_empty_menu(self) -> None:
         assert parse_embed_menu("<div class='ut-menu'></div>") == []
 

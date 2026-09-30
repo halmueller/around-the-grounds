@@ -123,7 +123,7 @@ skip the 7-day window and stay out of `events.ics`.
 
 | Platform | `source_type` | Config |
 |----------|---------------|--------|
-| Untappd for Business website embed (`PreloadEmbedMenu(container, location, theme)`) | `"untappd-embed"` | `location_id`, `theme_id`; beer descriptions also count for fresh-hop matching |
+| Untappd for Business website embed (`PreloadEmbedMenu(container, location, theme)`) | `"untappd-embed"` | `location_id`, `theme_id`; optional `menu_name` when one embed holds several taprooms' tabs (Postdoc) |
 | Published menu on an `untappd.com/v/<slug>/<id>` venue page | `"untappd-venue"` | venue `url` is the page — untappd.com challenges datacenter IPs (Cloudflare), so prefer the venue's own site when the scraper runs on a server |
 | Public Google Sheet tab (e.g. Chuck's Hop Shop) | `"sheet-taplist"` | `sheet_id`, `sheet_name`, `columns` (`name` required), optional `header_contains`, `brewery_separator`, `skip_prefix` |
 | Craftpeak/Arryved "What's On Tap" module | `"craftpeak-wot"` | none (preset) |
