@@ -117,7 +117,7 @@ def test_template_has_the_three_pages() -> None:
 def test_sitemap_lists_every_page(site: SiteConfig) -> None:
     root = ElementTree.parse(TEMPLATES / "fresh-hop" / "sitemap.xml").getroot()
     ns = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
-    locs = [el.text for el in root.findall("sm:url/sm:loc", ns)]
+    locs = [el.text or "" for el in root.findall("sm:url/sm:loc", ns)]
     pages = sorted(p.name for p in (TEMPLATES / "fresh-hop").glob("*.html"))
     expected = [
         f"{site.public_url}/" + ("" if page == "index.html" else page) for page in pages
@@ -161,3 +161,40 @@ def test_open_graph_image_is_1200_by_630_png() -> None:
     assert data[:8] == b"\x89PNG\r\n\x1a\n"
     width, height = struct.unpack(">II", data[16:24])
     assert (width, height) == (1200, 630)
+
+
+ICON_LINKS = (
+    '<link rel="icon" href="favicon.svg" type="image/svg+xml">',
+    '<link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">',
+    '<link rel="apple-touch-icon" href="apple-touch-icon.png">',
+)
+
+
+@pytest.mark.parametrize(
+    "page", ["index.html", "festbier.html", "bars.html", "events.html"]
+)
+def test_pages_link_the_favicon_files(page: str) -> None:
+    head = (TEMPLATES / "fresh-hop" / page).read_text().split("</head>")[0]
+    for link in ICON_LINKS:
+        assert link in head
+    assert "data:image/svg+xml" not in head  # no leftover inline emoji icon
+
+
+def _png_size(path: Path) -> tuple:
+    data = path.read_bytes()
+    assert data[:8] == b"\x89PNG\r\n\x1a\n", path.name
+    return struct.unpack(">II", data[16:24])
+
+
+def test_favicon_files() -> None:
+    folder = TEMPLATES / "fresh-hop"
+    ElementTree.parse(folder / "favicon.svg")  # well-formed
+    assert _png_size(folder / "favicon-32.png") == (32, 32)
+    assert _png_size(folder / "apple-touch-icon.png") == (180, 180)
+    # ICONDIR header: reserved 0, type 1 (icon), then one 16-byte entry per
+    # size whose first two bytes are width and height.
+    ico = (folder / "favicon.ico").read_bytes()
+    reserved, kind, count = struct.unpack("<HHH", ico[:6])
+    assert (reserved, kind) == (0, 1)
+    sizes = {(ico[6 + 16 * i], ico[7 + 16 * i]) for i in range(count)}
+    assert sizes == {(16, 16), (32, 32), (48, 48)}

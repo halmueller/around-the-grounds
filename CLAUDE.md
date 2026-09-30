@@ -257,7 +257,10 @@ public_templates/                  # Per-site web interface templates
     ├── styles.css
     ├── sitemap.xml                #   static; lists the four pages under public_url
     ├── robots.txt                 #   allows all, points at sitemap.xml
-    └── og-image.png               #   Open Graph card; source + render.py in deploy/og-image/
+    ├── og-image.png               #   Open Graph card (1200x630)
+    ├── favicon.svg                #   hop-cone icon
+    └── favicon-32.png, apple-touch-icon.png, favicon.ico
+                                   #   PNGs/ICO rendered by deploy/images/render.py
 
 public/                            # Generated files (git-ignored)
 ├── data.json                      # Generated web data

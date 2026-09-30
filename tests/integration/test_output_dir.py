@@ -67,6 +67,7 @@ def test_publishes_site_files(web_root: Path) -> None:
     assert (web_root / "events.ics").exists()
     assert (web_root / "sitemap.xml").exists()
     assert "Sitemap:" in (web_root / "robots.txt").read_text()
+    assert (web_root / "favicon.ico").exists()
 
 
 def test_leaves_unrelated_files_and_no_staging(web_root: Path) -> None:
