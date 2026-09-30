@@ -107,6 +107,24 @@ After the next :07, check `~freshies/logs/seattle-freshies.log`:
 Optional: create a check at healthchecks.io (hourly, with a grace period) and
 set `HEALTHCHECK_URL` in the crontab to be emailed if runs stop or fail.
 
+## Analytics (optional)
+
+The pages load `analytics.js`, which turns on TelemetryDeck only when
+`analytics-config.js` in the web root supplies its app ID.
+That file is not in the repo and the build never writes it, so keep it on the
+droplet only:
+
+```bash
+sudo -iu freshies
+cp ~/around-the-grounds/deploy/digitalocean/analytics-config.example.js \
+    /var/www/seattlefreshies.com/analytics-config.js
+nano /var/www/seattlefreshies.com/analytics-config.js    # fill in the app ID
+```
+
+Changes take effect without a publish. Browsers may keep the old copy for up
+to an hour (the `.js` cache header). Until the file exists, the pages request
+it, get a 404, and load no analytics.
+
 ## Updating
 
 ```bash

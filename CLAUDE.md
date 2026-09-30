@@ -256,6 +256,8 @@ public_templates/                  # Per-site web interface templates
     ├── bars.html                  #   both, at bottle shops & bars (venue_type "bar")
     ├── events.html                #   upcoming fresh-hop events + calendar link
     ├── app.js
+    ├── analytics.js               #   TelemetryDeck loader; app ID comes from a server-only
+    │                              #   analytics-config.js (deploy/digitalocean/*.example.js)
     ├── styles.css
     ├── sitemap.xml                #   static; lists the four pages under public_url
     ├── robots.txt                 #   allows all, points at sitemap.xml
