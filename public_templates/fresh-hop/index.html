@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seattle Fall Beers</title>
+    <meta name="description" content="Fresh-hop beers on tap right now at Seattle breweries and bars.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+    <style>
+        :root {
+            --bg: #faf6ef;
+            --card: #ffffff;
+            --text: #2b2118;
+            --muted: #7a6a5a;
+            --border: #e8dccb;
+            --accent: #b4531c;
+            --leaf: #4f7a28;
+            --chip: #f3e9da;
+            --radius: 10px;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #1b1612;
+                --card: #251e18;
+                --text: #f1e8dc;
+                --muted: #b3a38f;
+                --border: #3a2f25;
+                --accent: #e38a4e;
+                --leaf: #9cc46b;
+                --chip: #32281f;
+            }
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.5;
+            color: var(--text);
+            background: var(--bg);
+            padding: 16px;
+        }
+
+        .container { max-width: 820px; margin: 0 auto; }
+
+        header { padding: 8px 0 20px; }
+        h1 { font-size: 1.9rem; letter-spacing: -0.5px; line-height: 1.15; }
+        h1 .leaf { color: var(--leaf); }
+        .tagline { color: var(--muted); margin-top: 6px; font-size: 15px; }
+        .summary { margin-top: 14px; font-size: 14px; }
+        .summary strong { color: var(--accent); }
+
+        .search {
+            width: 100%;
+            margin: 4px 0 18px;
+            padding: 10px 14px;
+            font: inherit;
+            font-size: 15px;
+            color: var(--text);
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+        }
+        .search:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+        .venue {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px 16px;
+            margin-bottom: 12px;
+        }
+        .venue-head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 6px;
+        }
+        .venue-name { font-size: 16px; font-weight: 700; }
+        .venue-count {
+            font-size: 12px;
+            color: var(--muted);
+            background: var(--chip);
+            border-radius: 999px;
+            padding: 1px 8px;
+            margin-left: 6px;
+            font-weight: 500;
+        }
+        .venue-link { font-size: 13px; color: var(--accent); text-decoration: none; white-space: nowrap; }
+        .venue-link:hover { text-decoration: underline; }
+
+        .beer { padding: 8px 0; border-top: 1px dashed var(--border); }
+        .beer:first-of-type { border-top: none; }
+        .beer-name { font-weight: 600; font-size: 15px; }
+        .beer-meta { font-size: 13px; color: var(--muted); margin-top: 1px; }
+
+        h2 { font-size: 1.1rem; margin: 28px 0 10px; }
+        .event { padding: 8px 0; border-top: 1px dashed var(--border); }
+        .event-date { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; }
+
+        .notice { font-size: 13px; color: var(--muted); margin-top: 18px; }
+        .empty { text-align: center; color: var(--muted); padding: 40px 0; }
+        footer { margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); }
+        footer p + p { margin-top: 6px; }
+        footer a { color: var(--accent); }
+        [hidden] { display: none !important; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1><span class="leaf">🌿</span> <span id="site-name">Seattle Fall Beers</span></h1>
+        <p class="tagline">Fresh-hop beers on tap right now at Seattle breweries and bars.</p>
+        <p class="summary" id="summary"></p>
+    </header>
+
+    <input class="search" id="search" type="search" placeholder="Search beers, breweries, or places…" aria-label="Search beers, breweries, or places" hidden>
+
+    <main id="listings"><div class="empty">Loading tap lists…</div></main>
+
+    <section id="events-section" hidden>
+        <h2>Fresh-hop events</h2>
+        <div id="events"></div>
+    </section>
+
+    <p class="notice" id="errors" hidden></p>
+
+    <footer>
+        <p>Lists come straight from each place's own tap list and change fast — check with them before you go.</p>
+        <p id="updated"></p>
+    </footer>
+</div>
+
+<script>
+// Escape text for safe insertion into innerHTML (text nodes and
+// double-quoted attribute values). Scraped strings are data, not markup.
+function esc(value) {
+    return String(value ?? '').replace(/[&<>"']/g, ch => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[ch]);
+}
+
+// Only http(s) links from data.json become hrefs.
+function safeUrl(url) {
+    return /^https?:\/\//i.test(url || '') ? url : '';
+}
+
+function formatDate(dateKey) {
+    return new Date(dateKey + 'T12:00:00Z').toLocaleDateString('en-US', {
+        weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC'
+    });
+}
+
+function plural(n, word) { return `${n} ${word}${n === 1 ? '' : 's'}`; }
+
+function renderVenue(venue, beers) {
+    const link = safeUrl(venue.url)
+        ? `<a class="venue-link" href="${esc(venue.url)}" target="_blank" rel="noopener">Tap list ↗</a>`
+        : '';
+    const items = beers.map(b => `
+        <div class="beer">
+            <div class="beer-name">${esc(b.title)}</div>
+            ${b.description ? `<div class="beer-meta">${esc(b.description)}</div>` : ''}
+        </div>`).join('');
+    return `<section class="venue" data-search="${esc(venue.search)}">
+        <div class="venue-head">
+            <div class="venue-name">${esc(venue.name)}<span class="venue-count">${beers.length}</span></div>
+            ${link}
+        </div>
+        ${items}
+    </section>`;
+}
+
+fetch('data.json')
+    .then(r => r.json())
+    .then(data => {
+        const siteName = data.site_name || 'Seattle Fall Beers';
+        document.getElementById('site-name').textContent = siteName;
+        document.title = siteName;
+        if (data.updated) {
+            document.getElementById('updated').textContent =
+                'Checked ' + new Date(data.updated).toLocaleString('en-US', {
+                    dateStyle: 'medium', timeStyle: 'short', timeZone: data.timezone || 'America/Los_Angeles'
+                }) + ' (' + (data.timezone_label || 'PT') + ').';
+        }
+
+        const all = data.events || [];
+        const listings = all.filter(e => e.kind === 'listing');
+        const events = all.filter(e => e.kind !== 'listing');
+
+        // Group listings by venue, keeping the config order the data arrives in.
+        const venues = new Map();
+        listings.forEach(e => {
+            if (!venues.has(e.venue_key)) {
+                venues.set(e.venue_key, { name: e.venue, url: e.venue_url, beers: [] });
+            }
+            venues.get(e.venue_key).beers.push(e);
+        });
+        venues.forEach(v => {
+            v.search = [v.name, ...v.beers.map(b => `${b.title} ${b.description || ''}`)]
+                .join(' ').toLowerCase();
+        });
+
+        const listingsEl = document.getElementById('listings');
+        const summaryEl = document.getElementById('summary');
+        if (!venues.size) {
+            listingsEl.innerHTML = '<div class="empty">No fresh-hop beers found on tap right now.</div>';
+        } else {
+            summaryEl.innerHTML = `<strong>${esc(plural(listings.length, 'fresh-hop beer'))}</strong> pouring at ${esc(plural(venues.size, 'place'))}.`;
+            listingsEl.innerHTML = [...venues.values()].map(v => renderVenue(v, v.beers)).join('');
+
+            const search = document.getElementById('search');
+            search.hidden = false;
+            search.addEventListener('input', () => {
+                const q = search.value.trim().toLowerCase();
+                let shown = 0;
+                listingsEl.querySelectorAll('.venue').forEach(section => {
+                    const venueMatches = section.dataset.search.includes(q);
+                    let visibleBeers = 0;
+                    section.querySelectorAll('.beer').forEach(beer => {
+                        const hit = !q || beer.textContent.toLowerCase().includes(q)
+                            || section.querySelector('.venue-name').textContent.toLowerCase().includes(q);
+                        beer.hidden = !hit;
+                        if (hit) visibleBeers++;
+                    });
+                    section.hidden = !(venueMatches && visibleBeers);
+                    if (!section.hidden) shown++;
+                });
+                summaryEl.innerHTML = q
+                    ? `${esc(plural(shown, 'place'))} match “${esc(q)}”.`
+                    : `<strong>${esc(plural(listings.length, 'fresh-hop beer'))}</strong> pouring at ${esc(plural(venues.size, 'place'))}.`;
+            });
+        }
+
+        if (events.length) {
+            document.getElementById('events-section').hidden = false;
+            document.getElementById('events').innerHTML = events.map(e => {
+                const time = e.start_time_raw
+                    ? (e.end_time_raw ? `${e.start_time_raw} – ${e.end_time_raw}` : e.start_time_raw)
+                    : '';
+                return `<div class="event">
+                    <div class="event-date">${esc(formatDate(e.date.split('T')[0]))}${time ? ' · ' + esc(time) : ''}</div>
+                    <div class="beer-name">${esc(e.title)}</div>
+                    <div class="beer-meta">${esc(e.venue)}${e.description ? ' — ' + esc(e.description) : ''}</div>
+                </div>`;
+            }).join('');
+        }
+
+        const errors = data.errors || [];
+        if (errors.length) {
+            const el = document.getElementById('errors');
+            el.hidden = false;
+            el.textContent = 'Couldn’t check some tap lists this time: ' + errors.join(' ');
+        }
+    })
+    .catch(() => {
+        document.getElementById('listings').innerHTML =
+            '<div class="empty">Could not load tap lists.</div>';
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+{
+  "key": "seattle-fall-beers",
+  "name": "Seattle Fall Beers",
+  "template": "fresh-hop",
+  "timezone": "America/Los_Angeles",
+  "public_url": "https://seattlefallbeers.com",
+  "generate_description": false,
+  "venues": [
+    {
+      "key": "bale-breaker-seattle-taps",
+      "name": "Bale Breaker × Yonder (Ballard)",
+      "url": "https://www.bbycballard.com/current-taplist",
+      "source_type": "untappd-embed",
+      "parser_config": {"location_id": 36760, "theme_id": 142569}
+    },
+    {
+      "key": "beer-junction-taps",
+      "name": "The Beer Junction (West Seattle)",
+      "url": "https://www.thebeerjunction.com/tap-list",
+      "source_type": "untappd-embed",
+      "parser_config": {"location_id": 3026, "theme_id": 8580}
+    },
+    {
+      "key": "beer-star-taps",
+      "name": "Beer Star (White Center)",
+      "url": "https://www.beerstarusa.com/tap-list",
+      "source_type": "digitalpour",
+      "parser_config": {"company_id": "590e40cc5e002c09f467f375", "location_id": 1}
+    },
+    {
+      "key": "chucks-central-district-taps",
+      "name": "Chuck's Hop Shop (Central District)",
+      "url": "https://www.chuckshopshop.com/taplistcd",
+      "source_type": "sheet-taplist",
+      "parser_config": {
+        "sheet_id": "1zzW5XS9vlHdsW04pb8uXN_BIJ08HWc6XYFqVCu1ZDCo",
+        "sheet_name": "CD",
+        "header_contains": "Central District",
+        "columns": {"name": 2, "style": 1, "abv": 9},
+        "brewery_separator": ":",
+        "skip_prefix": "-"
+      }
+    },
+    {
+      "key": "chucks-greenwood-taps",
+      "name": "Chuck's Hop Shop (Greenwood)",
+      "url": "https://www.chuckshopshop.com/taplistgw",
+      "source_type": "sheet-taplist",
+      "parser_config": {
+        "sheet_id": "1zzW5XS9vlHdsW04pb8uXN_BIJ08HWc6XYFqVCu1ZDCo",
+        "sheet_name": "GW",
+        "header_contains": "Greenwood",
+        "columns": {"name": 2, "style": 1, "abv": 9},
+        "brewery_separator": ":",
+        "skip_prefix": "-"
+      }
+    },
+    {
+      "key": "chucks-seward-park-taps",
+      "name": "Chuck's Hop Shop (Seward Park)",
+      "url": "https://www.chuckshopshop.com/taplistsp",
+      "source_type": "sheet-taplist",
+      "parser_config": {
+        "sheet_id": "1zzW5XS9vlHdsW04pb8uXN_BIJ08HWc6XYFqVCu1ZDCo",
+        "sheet_name": "SP",
+        "header_contains": "Seward Park",
+        "columns": {"name": 2, "style": 1, "abv": 9},
+        "brewery_separator": ":",
+        "skip_prefix": "-"
+      }
+    },
+    {
+      "key": "cloudburst-ballard-taps",
+      "name": "Cloudburst Brewing (Ballard)",
+      "url": "https://cloudburstbrew.com/location/5456-shilshole-ave-nw/",
+      "source_type": "craftpeak-wot"
+    },
+    {
+      "key": "cloudburst-belltown-taps",
+      "name": "Cloudburst Brewing (Belltown)",
+      "url": "https://cloudburstbrew.com/location/2116-western-ave/",
+      "source_type": "craftpeak-wot"
+    },
+    {
+      "key": "fair-isle-taps",
+      "name": "Fair Isle Brewing (Ballard)",
+      "url": "https://fairislebrewing.com/location/taproom/",
+      "source_type": "craftpeak-wot"
+    },
+    {
+      "key": "flying-lion-taps",
+      "name": "Flying Lion Brewing (Columbia City)",
+      "url": "https://flyinglionbrewing.com/beer-list.html",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "item": ".beer-board:not(.coming-soon) .beer-tile",
+        "name": "span.beer-name",
+        "style": ".beer-style",
+        "abv": ".beer-abv"
+      }
+    },
+    {
+      "key": "fremont-taps",
+      "name": "Fremont Brewing (Fremont)",
+      "url": "https://www.fremontbrewing.com/taplist",
+      "source_type": "text-taplist",
+      "parser_config": {
+        "section_tag": "h2",
+        "include_sections": ["^MAIN BAR$"],
+        "line_pattern": "^(?P<name>[^:$]{2,60}?)(?::\\s*(?P<style>.+))?$"
+      }
+    },
+    {
+      "key": "fremont-columbia-city-taps",
+      "name": "Fremont Brewing (Columbia City)",
+      "url": "https://www.fremontbrewing.com/taplist",
+      "source_type": "text-taplist",
+      "parser_config": {
+        "section_tag": "h2",
+        "include_sections": ["^Columbia City"],
+        "line_pattern": "^(?P<name>[^:$]{2,60}?)(?::\\s*(?P<style>.+))?$"
+      }
+    },
+    {
+      "key": "georgetown-taps",
+      "name": "Georgetown Brewing (Georgetown)",
+      "url": "https://georgetownbeer.com/pages/tasting-room",
+      "source_type": "text-taplist",
+      "parser_config": {
+        "note": "The Fresh Sheet is updated by hand, not in real time.",
+        "section_tag": "h2",
+        "include_sections": ["^Fresh Sheet"],
+        "line_pattern": "^(?P<name>[^:*]{3,80}?):\\s+\\S"
+      }
+    },
+    {
+      "key": "growler-guys-taps",
+      "name": "The Growler Guys (Lake City)",
+      "url": "https://untappd.com/v/the-growler-guys-seattle-northeast/5527415",
+      "source_type": "untappd-venue"
+    },
+    {
+      "key": "hellbent-taps",
+      "name": "Hellbent Brewing (Lake City)",
+      "url": "https://hellbentbrewingcompany.com/beer/",
+      "source_type": "untappd-embed",
+      "parser_config": {"location_id": 126, "theme_id": 301}
+    },
+    {
+      "key": "holy-mountain-interbay-taps",
+      "name": "Holy Mountain Brewing (Interbay)",
+      "url": "https://holymountainbrewing.com/location/interbay-taproom/",
+      "source_type": "craftpeak-wot"
+    },
+    {
+      "key": "holy-mountain-phinney-taps",
+      "name": "Holy Mountain Brewing (Phinney Ridge)",
+      "url": "https://holymountainbrewing.com/location/phinney-taproom/",
+      "source_type": "craftpeak-wot"
+    },
+    {
+      "key": "latona-pub-taps",
+      "name": "Latona Pub (Green Lake)",
+      "url": "https://www.latonapub.com/tap-list",
+      "source_type": "untappd-embed",
+      "parser_config": {"location_id": 16927, "theme_id": 63533}
+    },
+    {
+      "key": "lucky-envelope-taps",
+      "name": "Lucky Envelope Brewing (Ballard)",
+      "url": "https://www.luckyenvelopebrewing.com/currentlyontap",
+      "source_type": "text-taplist",
+      "parser_config": {
+        "line_pattern": "^\\d+\\.\\s*(?P<name>.+?)\\s*\\((?P<abv>\\d+(?:\\.\\d+)?%)\\s*ABV\\)\\s*$"
+      }
+    },
+    {
+      "key": "pine-box-taps",
+      "name": "The Pine Box (Capitol Hill)",
+      "url": "https://www.pineboxbar.com/ontap",
+      "source_type": "untappd-embed",
+      "parser_config": {"location_id": 45275, "theme_id": 170957}
+    },
+    {
+      "key": "ravenna-taps",
+      "name": "Ravenna Brewing (Ravenna)",
+      "url": "https://www.ravennabrewing.com/currently-on-tap",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "item": ".sqs-html-content ul > li",
+        "name": "em",
+        "style_pattern": "-\\s*([^,]+),",
+        "match_whole_item": true
+      }
+    },
+    {
+      "key": "reubens-ballard-taps",
+      "name": "Reuben's Brews (Ballard)",
+      "url": "https://reubensbrews.com/location/ballard-taproom/",
+      "source_type": "html-taplist",
+      "parser_config": {"item": "a.tap-list-beer", "name": ".the-tl-beer-name"}
+    },
+    {
+      "key": "reubens-downtown-taps",
+      "name": "Reuben's Brews (Downtown)",
+      "url": "https://reubensbrews.com/location/downtown-seattle/",
+      "source_type": "html-taplist",
+      "parser_config": {"item": "a.tap-list-beer", "name": ".the-tl-beer-name"}
+    },
+    {
+      "key": "seapine-taps",
+      "name": "Seapine Brewing (SoDo)",
+      "url": "https://www.seapinebrewing.com/the-taproom",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "item": "li.accordion-item",
+        "name": ".accordion-item__title",
+        "match_whole_item": true
+      }
+    },
+    {
+      "key": "stoup-ballard-taps",
+      "name": "Stoup Brewing (Ballard)",
+      "url": "https://www.stoupbrewing.com/ontap/",
+      "source_type": "html-taplist",
+      "parser_config": {"item": "div.beer-on-tap-detail", "name": ".beer-title-info h2"}
+    },
+    {
+      "key": "urban-family-taps",
+      "name": "Urban Family Brewing (Ballard)",
+      "url": "https://urbanfamilybrewing.com/on-tap/",
+      "source_type": "untappd-embed",
+      "parser_config": {"location_id": 12896, "theme_id": 47706}
+    },
+    {
+      "key": "watershed-taps",
+      "name": "Watershed Pub & Kitchen (Northgate)",
+      "url": "https://untappd.com/v/watershed-pub-and-kitchen/1494601",
+      "source_type": "untappd-venue"
+    }
+  ]
+}

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Around the Grounds is a multi-site event aggregator platform. Each site is defined by a JSON config file in `config/sites/` — no new parser code is needed unless the site uses an unsupported platform. This repo is jointly maintained: it produces the original ballardfoodtrucks.com (Vercel-backed, deploys to the `public/` subdir of a dedicated target repo) as well as jredding's Brooklyn music and children's-events sites (GitHub Pages–backed, deploy to the target repo root). Both setups coexist via per-site config.
+Around the Grounds is a multi-site event aggregator platform. Each site is defined by a JSON config file in `config/sites/` — no new parser code is needed unless the site uses an unsupported platform. This repo is jointly maintained: it produces the original ballardfoodtrucks.com (Vercel-backed, deploys to the `public/` subdir of a dedicated target repo) as well as jredding's Brooklyn music and children's-events sites (GitHub Pages–backed, deploy to the target repo root), and Hal's Seattle Fall Beers fresh-hop tap-list site (seattlefallbeers.com; preview-only until it has a target repo). These setups coexist via per-site config.
 
 > **If you're merging the multi-site merge into an existing checkout**, read [MIGRATION.md](./MIGRATION.md) first. It covers per-maintainer migration notes, recommended post-pull hygiene, and the remaining latent follow-up work (per-site haiku prompts, per-site weather location, the `extraction_method` template shim, the `scrape_single_venue` timezone gap). The earlier follow-ups for unifying the Temporal deploy path and retiring `breweries.json` are now done.
 
@@ -21,7 +21,7 @@ Key features:
 - **Self-hosted Temporal worker** alternative scheduling path (Ballard production setup)
 - **Comprehensive error handling** with retry logic, isolation, and graceful degradation
 - **Temporal workflow integration** with cloud deployment support (local, Temporal Cloud, custom servers)
-- **Extensive test suite** with 674 tests covering unit, integration, vision analysis, haiku generation, weather, and error scenarios
+- **Extensive test suite** with 799 tests covering unit, integration, vision analysis, haiku generation, weather, and error scenarios
 - **Modern Python tooling** with uv for dependency management and packaging
 
 ## Development Commands
@@ -140,7 +140,7 @@ See [SCHEDULES.md](./SCHEDULES.md)
 
 ### Testing
 ```bash
-# Full test suite (674 tests)
+# Full test suite (799 tests)
 uv run python -m pytest                    # Run all tests
 uv run python -m pytest tests/unit/        # Unit tests only
 uv run python -m pytest tests/parsers/     # Parser-specific tests
@@ -178,7 +178,9 @@ around_the_grounds/
 │   ├── sites/                     # Per-site JSON configurations
 │   │   ├── ballard-food-trucks.json   # Ballard food trucks (9 venues, deploy_subdir="public")
 │   │   ├── park-slope-music.json      # Park Slope music venues (2 venues, deploy to repo root)
-│   │   └── childrens-events.json      # Brooklyn children's events (2 venues, deploy to repo root)
+│   │   ├── childrens-events.json      # Brooklyn children's events (2 venues, deploy to repo root)
+│   │   └── seattle-fall-beers.json    # Seattle fresh-hop tap lists (27 venues, listing parsers,
+│   │                                  #   no target_repo yet → preview-only)
 │   ├── loader.py                  # Site config loader (load_site_config, load_all_sites)
 │   ├── haiku_prompt.txt           # Weather-grounded haiku prompt template (Ballard-specific)
 │   └── settings.py                # Vision analysis and other settings
@@ -194,7 +196,13 @@ around_the_grounds/
 │   │   ├── wordpress.py           # WordPressParser (REST API)
 │   │   ├── html_selector.py       # HtmlSelectorParser (CSS selectors)
 │   │   ├── ajax.py                # AjaxParser (JSON API endpoints)
-│   │   └── json_ld.py             # JsonLdParser (schema.org JSON-LD)
+│   │   ├── json_ld.py             # JsonLdParser (schema.org JSON-LD)
+│   │   ├── listing_common.py      # Shared tap-list helpers (TapEntry, build_listings, ABV)
+│   │   ├── untappd_embed.py       # UntappdEmbedParser (business.untappd.com embed script)
+│   │   ├── untappd_venue.py       # UntappdVenueParser (untappd.com venue-page menus)
+│   │   ├── sheet_taplist.py       # SheetTaplistParser (public Google Sheet tab as CSV)
+│   │   ├── html_taplist.py        # HtmlTaplistParser + CraftpeakWot / DigitalPour presets
+│   │   └── text_taplist.py        # TextTaplistParser (one beer per line, regex-picked)
 │   ├── stoup_ballard.py           # Stoup Brewing parser (venue-specific)
 │   ├── bale_breaker.py            # Bale Breaker parser (venue-specific)
 │   ├── obec_brewing.py            # Obec Brewing parser (venue-specific)
@@ -226,6 +234,8 @@ around_the_grounds/
 │   ├── vision_analyzer.py         # AI vision analysis for vendor identification
 │   ├── haiku_generator.py         # AI haiku generation (weather-grounded, claude-sonnet-4-6)
 │   ├── ics_generator.py           # RFC 5545 .ics calendar feed (deterministic output)
+│   ├── listing_matcher.py         # Fresh-hop include/exclude matcher for tap-list entries
+│   ├── host_throttle.py           # Per-host request spacing for shared upstream hosts
 │   └── weather.py                 # Open-Meteo weather fetch (free, no API key)
 └── main.py                        # CLI entry point with multi-site, deploy, preview
 
@@ -234,7 +244,9 @@ public_templates/                  # Per-site web interface templates
 │   └── index.html
 ├── music/                         # Park Slope music template
 │   └── index.html
-└── kids/                          # Brooklyn children's events template
+├── kids/                          # Brooklyn children's events template
+│   └── index.html
+└── fresh-hop/                     # Seattle Fall Beers tap-list template (grouped by venue)
     └── index.html
 
 public/                            # Generated files (git-ignored)
@@ -242,7 +254,7 @@ public/                            # Generated files (git-ignored)
 ├── events.ics                     # Subscribable calendar feed (all sites)
 └── index.html                     # Copied from the active template
 
-tests/                             # Comprehensive test suite (674 tests)
+tests/                             # Comprehensive test suite (799 tests)
 ├── conftest.py                    # Shared test fixtures
 ├── fixtures/
 │   ├── csv/                       # CSV samples (channel_marker)
@@ -269,6 +281,7 @@ tests/                             # Comprehensive test suite (674 tests)
     - `HtmlSelectorParser`: Extracts events via CSS selectors (`source_type: "html"`)
     - `AjaxParser`: Fetches from JSON API endpoints (`source_type: "ajax"`)
     - `JsonLdParser`: Extracts events from schema.org JSON-LD blocks (`source_type: "json-ld"`)
+    - **Tap-list ("listing") parsers** for sites that show what is available now rather than dated events: `untappd-embed`, `untappd-venue`, `sheet-taplist`, `html-taplist`, `craftpeak-wot`, `digitalpour`, `text-taplist`. They keep entries accepted by `utils/listing_matcher.py` (fresh/wet hop by default, extendable per venue) and emit `Event(kind="listing")`, which bypasses the coordinator's 7-day window, is excluded from `events.ics`, and carries `"kind"` in `data.json`/Temporal payloads only when non-default. See [ADDING-VENUES.md](./ADDING-VENUES.md)
   - **Venue-specific parsers** (9 for Ballard food trucks): StoupBallard, BaleBreaker, Obec, UrbanFamily, WheeliePop, ChucksGreenwood, SalehsCorner, ChannelMarker, LuckyEnvelope
 - **Registry**: Two-tier lookup — by `venue.key` (specific) then by `venue.source_type` (generic)
 - **Scrapers**: Async coordinator with concurrent processing, retry logic, and error isolation
@@ -279,7 +292,7 @@ tests/                             # Comprehensive test suite (674 tests)
 - **Web Interface**: Per-site templates in `public_templates/<template>/` deployed to the site's configured host (GitHub Pages or Vercel-via-GitHub)
 - **Web Deployment**: Two git strategies selected by `SiteConfig.deploy_subdir` — see Deployment Strategies below. `deploy_subdir` is validated before authentication (relative, no parent traversal, never `.git`), re-checked against the resolved clone path so a committed symlink cannot redirect writes, and staged with a literal pathspec. Preview and deploy share `_write_site_output` so both emit identical files
 - **Scheduling**: Google Cloud Run Jobs with Cloud Scheduler (jredding's sites) OR a self-hosted Temporal worker (Ballard site). Both paths read the same `SiteConfig` and call the same `main.py:_deploy_with_github_auth` for git operations
-- **Tests**: 674 tests covering all scenarios including generic parsers, error handling, vision analysis, haiku generation, weather fetching, multi-site deploy configuration, the Temporal `load_site` / `generate_web_data` / `deploy_to_git` activity contracts, end-to-end `FoodTruckWorkflow` runs against a real local Temporal server (venue isolation, cancellation, replay of recorded histories in `tests/fixtures/temporal/`), real-Git deployment into temporary bare repositories, and a Playwright browser check of all three templates (`tests/browser/check_templates.mjs`, skipped when Node + Playwright are unavailable)
+- **Tests**: 799 tests covering all scenarios including generic parsers, error handling, vision analysis, haiku generation, weather fetching, multi-site deploy configuration, the Temporal `load_site` / `generate_web_data` / `deploy_to_git` activity contracts, end-to-end `FoodTruckWorkflow` runs against a real local Temporal server (venue isolation, cancellation, replay of recorded histories in `tests/fixtures/temporal/`), real-Git deployment into temporary bare repositories, and a Playwright browser check of all three templates (`tests/browser/check_templates.mjs`, skipped when Node + Playwright are unavailable)
 
 ## Deployment Strategies
 
@@ -289,6 +302,8 @@ tests/                             # Comprehensive test suite (674 tests)
 |---|---|---|---|
 | `""` (default, omitted) | **Root mode** | `git init` fresh → copy template to repo root → `git add .` → **force-push** `HEAD:main` | Target repo is dedicated to this site and served from root by GitHub Pages. Used by `park-slope-music`, `childrens-events`. Rewrites history on every deploy. |
 | `"public"` (or any non-empty string) | **Subdir mode** | `git clone` target → copy template into `repo/<subdir>/` → `git add <subdir>/` → no-op short-circuit → normal `push` `HEAD:main` | Target repo has files at root that must be preserved (e.g. a Vercel project whose build output is scoped to `public/`). Used by `ballard-food-trucks`. Preserves history. |
+
+**No `target_repo` → preview-only:** `deploy_to_web` skips a site without `target_repo` (unless `--git-repo` is passed) rather than falling back to `GIT_REPOSITORY_URL` / `DEFAULT_GIT_REPOSITORY` (Steve's Ballard repo), since a root-mode deploy would force-push over it.
 
 **Ballard-specific:** `config/sites/ballard-food-trucks.json` has `deploy_subdir: "public"` and `target_repo: "https://github.com/steveandroulakis/ballard-food-trucks.git"`. A Vercel project watches that repo's `public/` folder and redeploys on every push. The merge must preserve this behavior — changing `deploy_subdir` to `""` would destroy the target repo's structure on first deploy.
 
@@ -351,7 +366,7 @@ See [ERROR-HANDLING.md](./ERROR-HANDLING.md) for the complete error handling str
 
 ## Testing Strategy
 
-The project includes a comprehensive test suite with 674 tests covering unit, integration, generic parsers, vision analysis, haiku generation, weather fetching, and error scenarios.
+The project includes a comprehensive test suite with 799 tests covering unit, integration, generic parsers, vision analysis, haiku generation, weather fetching, and error scenarios.
 
 See [TESTING.md](./TESTING.md) for the complete testing strategy and guide.
 

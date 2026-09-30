@@ -4,12 +4,14 @@ calendar feed, and must round-trip through the Temporal activity payloads.
 Ordinary events must serialize exactly as before so existing sites' output
 does not change."""
 
+import logging
 from datetime import datetime, timedelta
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from around_the_grounds.main import generate_web_data
-from around_the_grounds.models import Event
+from around_the_grounds.models import Event, Venue
 from around_the_grounds.scrapers.coordinator import ScraperCoordinator
 from around_the_grounds.temporal.activities import (
     DeploymentActivities,
@@ -56,6 +58,30 @@ class TestCoordinatorWindow:
         assert result == [listing]
 
 
+class TestMissingTimeWarning:
+    @pytest.mark.asyncio
+    async def test_listings_do_not_warn_about_missing_times(
+        self, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        listing = _listing()
+        timeless_event = Event("growler-guys", "The Growler Guys", "Trivia", _now())
+        venue = Venue("growler-guys", "The Growler Guys", "https://example.com")
+        parser = MagicMock()
+        parser.return_value.parse = AsyncMock(return_value=[listing, timeless_event])
+
+        with patch(
+            "around_the_grounds.scrapers.coordinator.ParserRegistry.get_parser",
+            return_value=parser,
+        ):
+            with caplog.at_level(logging.WARNING):
+                events, error = await ScraperCoordinator().scrape_one(venue)
+
+        assert error is None
+        assert len(events) == 2
+        # Only the timeless ordinary event counts toward the warning.
+        assert "1/2 events from The Growler Guys are missing start_time" in caplog.text
+
+
 class TestWebData:
     @pytest.mark.asyncio
     async def test_ordinary_event_has_no_kind_key(self) -> None:
@@ -80,9 +106,7 @@ class TestCalendarFeed:
 
 class TestTemporalPayloads:
     def test_ordinary_event_payload_is_unchanged(self) -> None:
-        payload = ScrapeActivities._serialize_event(
-            Event("k", "Venue", "Show", _now())
-        )
+        payload = ScrapeActivities._serialize_event(Event("k", "Venue", "Show", _now()))
         assert "kind" not in payload
 
     @pytest.mark.asyncio

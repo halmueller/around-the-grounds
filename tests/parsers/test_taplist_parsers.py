@@ -10,6 +10,7 @@ import aiohttp
 import pytest
 from aioresponses import aioresponses
 
+from around_the_grounds.config.loader import load_site_config
 from around_the_grounds.models import Venue
 from around_the_grounds.parsers.generic.html_taplist import (
     CraftpeakWotParser,
@@ -33,47 +34,22 @@ from around_the_grounds.utils.listing_matcher import ListingMatcher
 
 LOGGER = logging.getLogger(__name__)
 
-NAME_COLON_STYLE = r"^(?P<name>[^:$]{2,60}?)(?::\s*(?P<style>.+))?$"
+# Venue configs come from the real site config, so these fixture tests also
+# check the published configuration.
+_SITE_VENUES = {v.key: v for v in load_site_config("seattle-fall-beers").venues}
 CONFIGS: Dict[str, Dict[str, Any]] = {
-    "stoup": {"item": "div.beer-on-tap-detail", "name": ".beer-title-info h2"},
-    "reubens": {"item": "a.tap-list-beer", "name": ".the-tl-beer-name"},
-    "ravenna": {
-        "item": ".sqs-html-content ul > li",
-        "name": "em",
-        "style_pattern": r"-\s*([^,]+),",
-        "match_whole_item": True,
-    },
-    "flying_lion": {
-        "item": ".beer-board:not(.coming-soon) .beer-tile",
-        "name": "span.beer-name",
-        "style": ".beer-style",
-        "abv": ".beer-abv",
-    },
-    "seapine": {
-        "item": "li.accordion-item",
-        "name": ".accordion-item__title",
-        "match_whole_item": True,
-    },
-    "fremont": {
-        "section_tag": "h2",
-        "include_sections": ["^MAIN BAR$"],
-        "line_pattern": NAME_COLON_STYLE,
-    },
-    "fremont_columbia_city": {
-        "section_tag": "h2",
-        "include_sections": ["^Columbia City"],
-        "line_pattern": NAME_COLON_STYLE,
-    },
-    "lucky": {
-        "line_pattern": (
-            r"^\d+\.\s*(?P<name>.+?)\s*\((?P<abv>\d+(?:\.\d+)?%)\s*ABV\)\s*$"
-        )
-    },
-    "georgetown": {
-        "section_tag": "h2",
-        "include_sections": ["^Fresh Sheet"],
-        "line_pattern": r"^(?P<name>[^:*]{3,80}?):\s+\S",
-    },
+    name: dict(_SITE_VENUES[key].parser_config or {})
+    for name, key in {
+        "stoup": "stoup-ballard-taps",
+        "reubens": "reubens-ballard-taps",
+        "ravenna": "ravenna-taps",
+        "flying_lion": "flying-lion-taps",
+        "seapine": "seapine-taps",
+        "fremont": "fremont-taps",
+        "fremont_columbia_city": "fremont-columbia-city-taps",
+        "lucky": "lucky-envelope-taps",
+        "georgetown": "georgetown-taps",
+    }.items()
 }
 
 

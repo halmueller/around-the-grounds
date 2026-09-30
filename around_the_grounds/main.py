@@ -275,6 +275,17 @@ async def deploy_to_web(
     site: Optional[SiteConfig] = None,
 ) -> bool:
     """Generate web data and deploy to Vercel via git."""
+    # A site without a target repo is preview-only. Never let it fall through
+    # to GIT_REPOSITORY_URL / DEFAULT_GIT_REPOSITORY: a root-mode deploy
+    # force-pushes, which would overwrite another site's repository (e.g.
+    # during `--site all --deploy`). Skipping is not a failure.
+    if site and not site.target_repo and not git_repo_url:
+        print(
+            f"⏭️  Skipping deploy: site '{site.key}' has no target_repo "
+            "(set one in its config or pass --git-repo)"
+        )
+        return True
+
     try:
         # Determine target repo
         repo_url = git_repo_url

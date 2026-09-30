@@ -13,6 +13,7 @@ import pytest
 
 from around_the_grounds.main import (
     _deploy_with_github_auth,
+    deploy_to_web,
     format_events_output,
     main,
     preview_locally,
@@ -556,6 +557,60 @@ class TestExitCodes:
         assert self._run(["--deploy"], [([], [])]) == 0
         assert self.deploy_calls == 0
         assert "Skipping deploy" in capsys.readouterr().out
+
+
+class TestDeployTargetGuard:
+    """A site without target_repo must never deploy to the fallback repo."""
+
+    @staticmethod
+    def _site(target_repo: str = "") -> SiteConfig:
+        return SiteConfig(
+            key="preview-only",
+            name="Preview Only",
+            template="music",
+            timezone="America/Los_Angeles",
+            venues=[],
+            target_repo=target_repo,
+        )
+
+    @staticmethod
+    def _events() -> List[Event]:
+        d = datetime.now() + timedelta(days=1)
+        return [Event(venue_key="v", venue_name="V", title="T", date=d)]
+
+    def test_site_without_target_repo_is_skipped(self, capsys: Any) -> None:
+        with patch.dict(
+            os.environ, {"GIT_REPOSITORY_URL": "https://github.com/x/other.git"}
+        ), patch("around_the_grounds.main._deploy_with_github_auth") as mock_deploy:
+            ok = asyncio.run(deploy_to_web(self._events(), site=self._site()))
+
+        assert ok is True
+        mock_deploy.assert_not_called()
+        assert "has no target_repo" in capsys.readouterr().out
+
+    def test_explicit_git_repo_still_deploys(self) -> None:
+        with patch(
+            "around_the_grounds.main._deploy_with_github_auth", return_value=True
+        ) as mock_deploy:
+            ok = asyncio.run(
+                deploy_to_web(
+                    self._events(),
+                    git_repo_url="https://github.com/x/fresh.git",
+                    site=self._site(),
+                )
+            )
+
+        assert ok is True
+        assert mock_deploy.call_args.args[1] == "https://github.com/x/fresh.git"
+
+    def test_site_with_target_repo_deploys_there(self) -> None:
+        site = self._site("https://github.com/x/fresh.git")
+        with patch(
+            "around_the_grounds.main._deploy_with_github_auth", return_value=True
+        ) as mock_deploy:
+            asyncio.run(deploy_to_web(self._events(), site=site))
+
+        assert mock_deploy.call_args.args[1] == "https://github.com/x/fresh.git"
 
 
 class TestDeploySubdirGuard:

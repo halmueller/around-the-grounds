@@ -108,6 +108,34 @@ Edit the appropriate file in `around_the_grounds/config/sites/`:
 }
 ```
 
+### Tap-list ("listing") venues
+
+Sites like `seattle-fall-beers` list what is available *now* (beers on tap)
+rather than dated events. These parsers read a venue's live tap list, keep the
+entries the fresh-hop matcher accepts, and emit `kind="listing"` events, which
+skip the 7-day window and stay out of `events.ics`.
+
+| Platform | `source_type` | Config |
+|----------|---------------|--------|
+| Untappd for Business website embed (`PreloadEmbedMenu(container, location, theme)`) | `"untappd-embed"` | `location_id`, `theme_id` |
+| Published menu on an `untappd.com/v/<slug>/<id>` venue page | `"untappd-venue"` | venue `url` is the page |
+| Public Google Sheet tab (e.g. Chuck's Hop Shop) | `"sheet-taplist"` | `sheet_id`, `sheet_name`, `columns` (`name` required), optional `header_contains`, `brewery_separator`, `skip_prefix` |
+| Craftpeak/Arryved "What's On Tap" module | `"craftpeak-wot"` | none (preset) |
+| DigitalPour embedded menu (`fbpage.digitalpour.com/?companyID=…&locationID=…`) | `"digitalpour"` | `company_id`, `location_id` |
+| Repeated HTML items | `"html-taplist"` | `item`, `name`, optional `style`, `brewery`, `abv`, `style_pattern`, `match_whole_item`, `exclude_sections` |
+| Free text, one beer per line | `"text-taplist"` | `line_pattern` with a `(?P<name>…)` group, optional `section_tag`, `include_sections`, `exclude_sections` |
+
+Every listing venue can also set `listing_include` / `listing_exclude`
+(regexes that extend the default fresh-hop pattern) and `timezone`.
+
+- Point at the venue's **current** tap list, not a beer catalog or a packaged
+  "available beer" page — and check a multi-location brewery's page is for the
+  right taproom (Bale Breaker's Yakima menu is not its Seattle one).
+- **Use a venue key no venue-specific parser owns** (the registry matches
+  `venue.key` first): `stoup-ballard-taps`, not `stoup-ballard`.
+- Requests to a shared host are spaced 5s apart; Cloudflare challenges are
+  reported by name.
+
 ### 3. Test
 
 ```bash
@@ -159,6 +187,7 @@ Available templates in `public_templates/`:
 - `food-trucks` — dark theme, food truck oriented
 - `music` — dark theme, music/show oriented
 - `kids` — bright/playful theme, children's event oriented
+- `fresh-hop` — tap-list ("listing") sites: beers grouped by venue with search, plus any dated events
 
 To create a new template, add a directory under `public_templates/` with at least an `index.html`.
 
@@ -169,6 +198,10 @@ To create a new template, add a directory under `public_templates/` with at leas
    - **Root mode + GitHub Pages**: Settings → Pages → Deploy from `main` branch root
    - **Subdir mode + Vercel**: Create a Vercel project watching the repo, set the "Output Directory" to match your `deploy_subdir` value (e.g. `public`)
 3. Install your GitHub App on the repo (it needs Contents: Read & Write)
+
+A site with no `target_repo` is **preview-only**: `--deploy` skips it (with a
+message) instead of falling back to `GIT_REPOSITORY_URL` or the default repo,
+unless you pass `--git-repo` explicitly.
 
 ### 4. Test and Deploy
 

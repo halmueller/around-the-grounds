@@ -151,10 +151,15 @@ class ScraperCoordinator:
                 events = await parser.parse(session)
                 self.logger.info(f"Found {len(events)} events for {venue.name}")
 
-                # Warn about events missing start_time unless venue opts out
+                # Warn about events missing start_time unless venue opts out.
+                # Listings (e.g. beers on tap) never have times.
                 config = venue.parser_config or {}
                 if not config.get("times_optional", False):
-                    no_time = [e for e in events if e.start_time is None]
+                    no_time = [
+                        e
+                        for e in events
+                        if e.start_time is None and e.kind != "listing"
+                    ]
                     if no_time:
                         self.logger.warning(
                             f"{len(no_time)}/{len(events)} events from "
