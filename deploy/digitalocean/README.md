@@ -2,7 +2,7 @@
 
 The droplet scrapes the tap lists itself, hourly from cron, and publishes the
 site straight into an Apache document root with `--output-dir`. No git host,
-GitHub App, Temporal worker or API key is involved (haiku and vision are off
+GitHub App, Temporal worker, or API key is involved (haiku and vision are off
 for this site).
 
 - Each published file is swapped in atomically, so visitors never see a
@@ -16,7 +16,7 @@ for this site).
 Commands below use `freshies` as the site user and the fork's
 `feature/fresh-hop-site` branch; adjust as needed.
 
-## 1. Site user, uv and the code
+## 1. Site user, uv, and the code
 
 ```bash
 sudo adduser --disabled-password --gecos "" freshies

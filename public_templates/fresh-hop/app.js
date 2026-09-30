@@ -1,7 +1,7 @@
 // Seattle Freshies: renders one page, chosen by <body data-page>, from the
 // shared data.json:
 //   freshhop  fresh-hop beers at breweries
-//   festbier  festbiers, Oktoberfests and Märzens at breweries
+//   festbier  festbiers, Oktoberfests, and Märzens at breweries
 //   bars      both, at bottle shops and bars
 //   events    upcoming fresh-hop events
 
