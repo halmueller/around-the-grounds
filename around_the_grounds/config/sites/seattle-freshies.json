@@ -127,6 +127,16 @@
       "source_type": "craftpeak-wot"
     },
     {
+      "key": "dirty-couch-taps",
+      "name": "Dirty Couch Brewing (Ballard)",
+      "url": "https://dirtycouchbrewing.com/tap-list",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 16762,
+        "theme_id": 62873
+      }
+    },
+    {
       "key": "fair-isle-taps",
       "name": "Fair Isle Brewing (Ballard)",
       "url": "https://fairislebrewing.com/location/taproom/",

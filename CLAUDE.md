@@ -180,7 +180,7 @@ around_the_grounds/
 │   │   ├── ballard-food-trucks.json   # Ballard food trucks (9 venues, deploy_subdir="public")
 │   │   ├── park-slope-music.json      # Park Slope music venues (2 venues, deploy to repo root)
 │   │   ├── childrens-events.json      # Brooklyn children's events (2 venues, deploy to repo root)
-│   │   └── seattle-freshies.json    # Seattle fresh-hop tap lists (29 listing venues + 6
+│   │   └── seattle-freshies.json    # Seattle fresh-hop tap lists (30 listing venues + 6
 │   │                                  #   fresh-hop event sources; no target_repo → preview-only)
 │   ├── loader.py                  # Site config loader (load_site_config, load_all_sites)
 │   ├── haiku_prompt.txt           # Weather-grounded haiku prompt template (Ballard-specific)
