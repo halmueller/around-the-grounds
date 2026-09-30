@@ -54,11 +54,19 @@ async def fetch_listing_text(
     session: aiohttp.ClientSession,
     url: str,
     params: Optional[Dict[str, Any]] = None,
+    json_body: Optional[Any] = None,
 ) -> str:
-    """Fetch *url* politely and return its body, raising ValueError on failure."""
+    """Fetch *url* politely and return its body, raising ValueError on failure.
+
+    With *json_body*, POSTs it as JSON (for GraphQL APIs) instead of a GET.
+    """
     await listing_throttle.wait(url)
+    if json_body is None:
+        request = session.get(url, params=params)
+    else:
+        request = session.post(url, params=params, json=json_body)
     try:
-        async with session.get(url, params=params) as response:
+        async with request as response:
             # Cloudflare marks bot challenges with this header; name them
             # explicitly since they depend on the client's IP/fingerprint.
             if response.headers.get("cf-mitigated", "").lower() == "challenge":

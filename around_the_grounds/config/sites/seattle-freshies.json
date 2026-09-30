@@ -187,10 +187,19 @@
     {
       "key": "growler-guys-taps",
       "name": "The Growler Guys (Lake City)",
-      "url": "https://untappd.com/v/the-growler-guys-seattle-northeast/5527415",
-      "source_type": "untappd-venue",
+      "url": "https://thegrowlerguys.com/locations/seattle-northeast/",
+      "source_type": "html-taplist",
       "parser_config": {
-        "venue_type": "bar"
+        "venue_type": "bar",
+        "item": "ul.tap-list > li",
+        "name": ".beerName .title",
+        "style": ".beerName .style",
+        "brewery": ".breweryInfo .brewery",
+        "abv": ".beerDetails .abv",
+        "listing_include": [
+          "\\bwet season\\b",
+          "\\bfresh \\w+ hopped\\b"
+        ]
       }
     },
     {
@@ -323,10 +332,11 @@
     {
       "key": "watershed-taps",
       "name": "Watershed Pub & Kitchen (Northgate)",
-      "url": "https://untappd.com/v/watershed-pub-and-kitchen/1494601",
-      "source_type": "untappd-venue",
+      "url": "https://watershedpub.com/lets-drink",
+      "source_type": "bevwerk",
       "parser_config": {
-        "venue_type": "bar"
+        "venue_type": "bar",
+        "taplist_id": "3670c864-6020-4ec6-9088-53bd97020edd"
       }
     },
     {

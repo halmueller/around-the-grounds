@@ -138,6 +138,7 @@ class TestListingVenues:
             "html-taplist",
             "craftpeak-wot",
             "digitalpour",
+            "bevwerk",
             "text-taplist",
         }
         for source_type, parser in ParserRegistry._generic.items():

@@ -1,7 +1,9 @@
-"""Tests for the selector-driven (html-taplist, craftpeak-wot, digitalpour)
-and line-driven (text-taplist) tap-list parsers. Fixtures are live pages
-saved on 2026-09-29, stripped of scripts, styles and most attributes."""
+"""Tests for the selector-driven (html-taplist, craftpeak-wot, digitalpour),
+line-driven (text-taplist) and Bevwerk API (bevwerk) tap-list parsers.
+Fixtures are live pages saved on 2026-09-29, stripped of scripts, styles and
+most attributes; the Bevwerk response is trimmed to the fields read."""
 
+import json
 import logging
 from pathlib import Path
 from typing import Any, Dict, Iterator, List
@@ -12,6 +14,11 @@ from aioresponses import aioresponses
 
 from around_the_grounds.config.loader import load_site_config
 from around_the_grounds.models import Venue
+from around_the_grounds.parsers.generic.bevwerk import (
+    GRAPHQL_URL,
+    BevwerkParser,
+    parse_bevwerk_menu,
+)
 from around_the_grounds.parsers.generic.html_taplist import (
     CraftpeakWotParser,
     DigitalPourParser,
@@ -51,6 +58,7 @@ CONFIGS: Dict[str, Dict[str, Any]] = {
         "georgetown": "georgetown-taps",
         "bizarre": "bizarre-taps",
         "obec": "obec-taps",
+        "growler_guys": "growler-guys-taps",
     }.items()
 }
 
@@ -78,6 +86,7 @@ def fresh(entries: List[TapEntry]) -> List[TapEntry]:
         ("html-taplist", HtmlTaplistParser),
         ("craftpeak-wot", CraftpeakWotParser),
         ("digitalpour", DigitalPourParser),
+        ("bevwerk", BevwerkParser),
         ("text-taplist", TextTaplistParser),
     ],
 )
@@ -272,6 +281,33 @@ class TestHtmlTaplistVenues:
         assert entries[0].abv == "5.7%"  # from "... ABV 5.7%" in the description
         assert fresh(entries) == []  # no fresh hops on the list today
 
+    def test_growler_guys(self, html_fixtures_dir: Path) -> None:
+        config = CONFIGS["growler_guys"]
+        entries = parse_html_taplist(
+            page(html_fixtures_dir, "taplist_growler_guys"), config
+        )
+        assert len(entries) == 60
+        assert entries[0] == TapEntry("Root Beer", "Diamond Knot", "Root Beer")
+        green_rush = next(e for e in entries if e.name.startswith("Green Rush"))
+        assert green_rush == TapEntry(
+            "Green Rush Fresh Hop IPA (2026)",
+            "Bale Breaker / Russian River",
+            "Fresh Hop",
+            "6.9%",
+        )
+        venue = Venue("growler-guys-taps", "The Growler Guys", "https://x.com")
+        venue.parser_config = config
+        events = build_listings(venue, entries, "html", LOGGER)
+        titles = [e.title for e in events if e.category == "fresh-hop"]
+        assert len(titles) == 21
+        # Named only by the venue's listing_include patterns.
+        assert "Wet Season '26 --Tettnang" in titles
+        assert "Fresh Pine (Fresh Amarillo Hopped)" in titles
+        assert [e.title for e in events if e.category == "festbier"] == [
+            "Festbier",
+            "Oktorok -- Marzen Lager",
+        ]
+
     @pytest.mark.asyncio
     async def test_parse_fetches_venue_url(self, html_fixtures_dir: Path) -> None:
         url = "https://www.stoupbrewing.com/ontap/"
@@ -420,3 +456,114 @@ class TestTextTaplist:
             "Fresh Hop Strata Hazy IPA",
             "Fresh Hop Lórien Pilsner",
         ]
+
+
+class TestBevwerk:
+    @pytest.fixture
+    def payload(self, fixtures_dir: Path) -> Dict[str, Any]:
+        data: Dict[str, Any] = json.loads(
+            (fixtures_dir / "json" / "bevwerk_watershed.json").read_text()
+        )
+        return data
+
+    @pytest.fixture
+    def venue(self) -> Venue:
+        return Venue(
+            "watershed-taps",
+            "Watershed Pub & Kitchen",
+            "https://watershedpub.com/lets-drink",
+            "bevwerk",
+            {"taplist_id": "3670c864-6020-4ec6-9088-53bd97020edd"},
+        )
+
+    def test_parses_menu(self, payload: Dict[str, Any]) -> None:
+        entries = parse_bevwerk_menu(payload)
+        assert len(entries) == 21
+        assert entries[0] == TapEntry("Czech Plz Czech Pilsner", "Odd Otter", abv="5%")
+        assert [e.name for e in fresh(entries)] == [
+            "Fresh Hop Festbier Lager",
+            "One Thousand Deaths Centennial Wet Hop IPA",
+            "Fresh Digs Fresh Hop West Coast IPA",
+            "Bug Fresh Hop Hazy IPA",
+            "Aqua Seafoam Shame Wet Hop IPA",
+            "Ryezomes Fresh Hop Black IPA",
+        ]
+
+    def test_only_taps_pouring_now(self, payload: Dict[str, Any]) -> None:
+        taps = payload["data"]["menu_data"][0]["data"]["taplist_by_pk"]["taps"]
+        taps[0]["on_tap_item"]["status"] = "ON_DECK"
+        taps[1]["on_tap_item"]["inventory_type"]["menu_category"]["is_up_next"] = True
+        taps[2]["on_tap_item"] = None  # empty tap
+        names = [e.name for e in parse_bevwerk_menu(payload)]
+        assert len(names) == 18
+        assert "Czech Plz Czech Pilsner" not in names
+
+    def test_display_name_and_abv_formats(self) -> None:
+        tap = {
+            "on_tap_item": {
+                "status": "ON_TAP",
+                "inventory_type": {
+                    "product": {
+                        "title": "Long Title",
+                        "display_name": " Short ",
+                        "abv": "6.5%",
+                        "style": "IPA",
+                        "producer": {"title": "Brewery Co.", "display_name": ""},
+                    }
+                },
+            }
+        }
+        payload = {
+            "data": {"menu_data": [{"data": {"taplist_by_pk": {"taps": [tap]}}}]}
+        }
+        assert parse_bevwerk_menu(payload) == [
+            TapEntry("Short", "Brewery Co.", "IPA", "6.5%")
+        ]
+
+    @pytest.mark.parametrize(
+        "payload,message",
+        [
+            ({"errors": [{"message": "bad uuid"}]}, "API error"),
+            ({"data": {}}, "no menu_data"),
+            ({"data": {"menu_data": []}}, "no menu for this taplist_id"),
+        ],
+    )
+    def test_bad_responses(self, payload: Dict[str, Any], message: str) -> None:
+        with pytest.raises(ValueError, match=message):
+            parse_bevwerk_menu(payload)
+
+    @pytest.mark.asyncio
+    async def test_posts_the_taplist_query(
+        self, venue: Venue, payload: Dict[str, Any]
+    ) -> None:
+        with aioresponses() as m:
+            m.post(GRAPHQL_URL, status=200, payload=payload)
+            async with aiohttp.ClientSession() as session:
+                events = await BevwerkParser(venue).parse(session)
+            ((_, _), [call]) = next(iter(m.requests.items()))
+            body = call.kwargs["json"]
+
+        assert body["variables"] == {"taplist_id": venue.parser_config["taplist_id"]}
+        assert "menu_data" in body["query"]
+        assert all(e.kind == "listing" for e in events)
+        assert len([e for e in events if e.category == "fresh-hop"]) == 6
+        assert [e.title for e in events if e.category == "festbier"] == [
+            "Fresh Hop Festbier Lager",
+            "Excessive Celebrations Festbier Lager",
+            "Munsterfest Oktoberfest Märzen Lager",
+        ]
+
+    @pytest.mark.asyncio
+    async def test_invalid_json(self, venue: Venue) -> None:
+        with aioresponses() as m:
+            m.post(GRAPHQL_URL, status=200, body="<html>oops</html>")
+            async with aiohttp.ClientSession() as session:
+                with pytest.raises(ValueError, match="invalid JSON"):
+                    await BevwerkParser(venue).parse(session)
+
+    @pytest.mark.asyncio
+    async def test_missing_taplist_id(self) -> None:
+        venue = Venue("x", "X", "https://x.com", "bevwerk", {})
+        async with aiohttp.ClientSession() as session:
+            with pytest.raises(ValueError, match="needs taplist_id"):
+                await BevwerkParser(venue).parse(session)

@@ -118,10 +118,11 @@ skip the 7-day window and stay out of `events.ics`.
 | Platform | `source_type` | Config |
 |----------|---------------|--------|
 | Untappd for Business website embed (`PreloadEmbedMenu(container, location, theme)`) | `"untappd-embed"` | `location_id`, `theme_id` |
-| Published menu on an `untappd.com/v/<slug>/<id>` venue page | `"untappd-venue"` | venue `url` is the page |
+| Published menu on an `untappd.com/v/<slug>/<id>` venue page | `"untappd-venue"` | venue `url` is the page — untappd.com challenges datacenter IPs (Cloudflare), so prefer the venue's own site when the scraper runs on a server |
 | Public Google Sheet tab (e.g. Chuck's Hop Shop) | `"sheet-taplist"` | `sheet_id`, `sheet_name`, `columns` (`name` required), optional `header_contains`, `brewery_separator`, `skip_prefix` |
 | Craftpeak/Arryved "What's On Tap" module | `"craftpeak-wot"` | none (preset) |
 | DigitalPour embedded menu (`fbpage.digitalpour.com/?companyID=…&locationID=…`) | `"digitalpour"` | `company_id`, `location_id` |
+| Bevwerk website menu (`<bw-website-menu-root taplist-id="…">`, e.g. Watershed Pub) | `"bevwerk"` | `taplist_id`; venue `url` is the bar's menu page (not fetched) |
 | Repeated HTML items | `"html-taplist"` | `item`, `name`, optional `style`, `brewery`, `abv`, `style_pattern`, `match_whole_item`, `exclude_sections` |
 | Free text, one beer per line | `"text-taplist"` | `line_pattern` with a `(?P<name>…)` group, optional `section_tag`, `include_sections`, `exclude_sections`, `line_tags` (elements that hold entries; default `p`, `li` — set `["h2"]` when beers are headings) |
 

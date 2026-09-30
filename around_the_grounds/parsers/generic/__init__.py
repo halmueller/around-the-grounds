@@ -1,4 +1,5 @@
 from .ajax import AjaxParser
+from .bevwerk import BevwerkParser
 from .html_selector import HtmlSelectorParser
 from .html_taplist import CraftpeakWotParser, DigitalPourParser, HtmlTaplistParser
 from .json_ld import JsonLdParser
@@ -20,6 +21,7 @@ __all__ = [
     "HtmlTaplistParser",
     "CraftpeakWotParser",
     "DigitalPourParser",
+    "BevwerkParser",
     "TextTaplistParser",
     "SquarespaceEventsParser",
 ]

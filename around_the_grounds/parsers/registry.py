@@ -6,6 +6,7 @@ from .channel_marker import ChannelMarkerParser
 from .chucks_greenwood import ChucksGreenwoodParser
 from .generic import (
     AjaxParser,
+    BevwerkParser,
     CraftpeakWotParser,
     DigitalPourParser,
     HtmlSelectorParser,
@@ -41,6 +42,7 @@ class ParserRegistry:
         "html-taplist": HtmlTaplistParser,
         "craftpeak-wot": CraftpeakWotParser,
         "digitalpour": DigitalPourParser,
+        "bevwerk": BevwerkParser,
         "text-taplist": TextTaplistParser,
         "squarespace-events": SquarespaceEventsParser,
     }
