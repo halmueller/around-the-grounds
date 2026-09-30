@@ -163,6 +163,8 @@ class TestBuildListings:
             TapEntry("Midnight in Bavaria", style="Dunkel Lager"),
             TapEntry("Weizenbock", style="Bock - Weizenbock"),
             TapEntry("Dunkelweizen", style="Wheat Beer - Dunkelweizen"),
+            TapEntry("Paulaner Wies’n Fest"),
+            TapEntry("Hacker-Pschorr Münich Dark"),
             # Descriptions only count for Festbier/Oktoberfest/Märzen/Wiesn.
             TapEntry("Porter", description="Brewed with Munich Dunkel malt"),
         ]
@@ -171,6 +173,8 @@ class TestBuildListings:
             "Harvest Lager (ON LUKR FAUCET)",
             "Midnight in Bavaria",
             "Weizenbock",
+            "Paulaner Wies’n Fest",
+            "Hacker-Pschorr Münich Dark",
         ]
 
     def test_description_cannot_exclude_a_name_match(self) -> None:

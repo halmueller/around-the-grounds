@@ -74,9 +74,12 @@ def test_bottle_shops_and_bars_are_typed(site: SiteConfig) -> None:
         "chucks-central-district-taps",
         "chucks-greenwood-taps",
         "chucks-seward-park-taps",
+        "die-bierstube-taps",
         "growler-guys-taps",
         "latona-pub-taps",
         "pine-box-taps",
+        "prost-phinney-taps",
+        "prost-west-seattle-taps",
         "watershed-taps",
     }
     assert {(v.parser_config or {}).get("venue_type") for v in site.venues} == {

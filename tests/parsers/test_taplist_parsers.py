@@ -61,6 +61,7 @@ CONFIGS: Dict[str, Dict[str, Any]] = {
         "growler_guys": "growler-guys-taps",
         "stoup_capitol_hill": "stoup-capitol-hill-taps",
         "old_stove_gardens": "old-stove-gardens-taps",
+        "die_bierstube": "die-bierstube-taps",
     }.items()
 }
 
@@ -306,6 +307,22 @@ class TestHtmlTaplistVenues:
             ("Citra Fresh Hop Fiend IPA (2026) - Perrault Farms", "6.8%"),
             ("Simcoe Fresh Hop Fiend 2026 (Perrault Farms)", "6.7%"),
             ("Dolcita Fresh Hop Fiend Hazy IPA-Perrault Farms", "6.3%"),
+        ]
+
+    def test_squarespace_menu_draft_tab_only(self, html_fixtures_dir: Path) -> None:
+        # Die Bierstube and its Prost! sister pubs share this layout.
+        entries = parse_html_taplist(
+            page(html_fixtures_dir, "taplist_die_bierstube"), CONFIGS["die_bierstube"]
+        )
+        # 15 drafts; bottles, cocktails, and wine are later tabs.
+        assert len(entries) == 15
+        assert "Aecht Rauchbier Märzen ,5L" not in [e.name for e in entries]
+        venue = _SITE_VENUES["die-bierstube-taps"]
+        events = build_listings(venue, entries, "html", LOGGER)
+        assert [e.title for e in events if e.category == "festbier"] == [
+            "Hacker-Pschorr Munich Dunkel",
+            "Hacker-Pschorr Oktoberfest",
+            "Hofbräu Oktoberfest",
         ]
 
     def test_old_stove_wix_menu(self, html_fixtures_dir: Path) -> None:

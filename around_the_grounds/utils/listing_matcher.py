@@ -38,13 +38,14 @@ FESTBIER_CORE = [
     r"\bfest[\s-]*b(?:ie|ee)r\b",  # Festbier, Fest Bier, Fest Beer
     r"tober[\s-]*fest",  # Oktoberfest, Octoberfest, Bobtoberfest
     r"\bm(?:ä|ae|a)rzen\b",  # Märzen, Maerzen, Marzen
-    r"\bwiesn\b",
+    r"\bwies[’'`]?n\b",  # Wiesn, Wies'n
 ]
 
 # Season beers counted by name or style only.
 FESTBIER_INCLUDE = FESTBIER_CORE + [
     r"\bharvest[\s-]*lager\b",
     r"\bdunkel\b",  # Dunkel Lager, Munich Dunkel; not Dunkelweizen
+    r"\bm(?:ü|ue|u)nich[\s-]+dark\b",  # Hacker-Pschorr Münich Dark
     r"\bweizen[\s-]*bock\b",
 ]
 

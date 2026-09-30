@@ -134,8 +134,8 @@ skip the 7-day window and stay out of `events.ics`.
 | Free text, one beer per line | `"text-taplist"` | `line_pattern` with a `(?P<name>…)` group, optional `section_tag`, `include_sections`, `exclude_sections`, `line_tags` (elements that hold entries; default `p`, `li` — set `["h2"]` when beers are headings) |
 
 Listings are sorted into **categories**: `fresh-hop` (fresh/wet hop) and
-`festbier` (Festbier, Oktoberfest/-toberfest, Märzen, Wiesn, plus harvest
-lagers, Dunkels, and Weizenbocks; not Dunkelweizen).
+`festbier` (Festbier, Oktoberfest/-toberfest, Märzen, Wiesn/Wies'n, plus harvest
+lagers, Dunkels/Munich Dark, and Weizenbocks; not Dunkelweizen).
 
 A parser that supplies beer descriptions (`TapEntry.description`;
 `untappd-embed` and `bevwerk`) lets a beer match by its description when its

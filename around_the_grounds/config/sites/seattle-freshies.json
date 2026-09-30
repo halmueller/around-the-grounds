@@ -149,6 +149,18 @@
       "source_type": "craftpeak-wot"
     },
     {
+      "key": "die-bierstube-taps",
+      "name": "Die Bierstube (Roosevelt)",
+      "url": "https://www.diebierstube.com/bier",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "venue_type": "bar",
+        "item": ".menus > .menu:first-of-type .menu-item",
+        "name": ".menu-item-title",
+        "match_whole_item": true
+      }
+    },
+    {
       "key": "dirty-couch-taps",
       "name": "Dirty Couch Brewing (Ballard)",
       "url": "https://dirtycouchbrewing.com/tap-list",
@@ -328,6 +340,30 @@
         "location_id": 45275,
         "theme_id": 170957,
         "venue_type": "bar"
+      }
+    },
+    {
+      "key": "prost-phinney-taps",
+      "name": "Prost! (Phinney Ridge)",
+      "url": "https://www.prosttavern.net/bier",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "venue_type": "bar",
+        "item": ".menus > .menu:first-of-type .menu-item",
+        "name": ".menu-item-title",
+        "match_whole_item": true
+      }
+    },
+    {
+      "key": "prost-west-seattle-taps",
+      "name": "Prost! (West Seattle)",
+      "url": "https://www.prostwestseattle.com/bier",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "venue_type": "bar",
+        "item": ".menus > .menu:first-of-type .menu-item",
+        "name": ".menu-item-title",
+        "match_whole_item": true
       }
     },
     {
