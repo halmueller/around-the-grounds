@@ -31,7 +31,7 @@ class ScrapeActivities:
     @staticmethod
     def _serialize_event(event: Event) -> Dict[str, Any]:
         """Convert an event to a JSON-serializable structure."""
-        return {
+        payload: Dict[str, Any] = {
             "venue_key": event.venue_key,
             "venue_name": event.venue_name,
             "title": event.title,
@@ -41,6 +41,11 @@ class ScrapeActivities:
             "description": event.description,
             "extraction_method": event.extraction_method,
         }
+        # Omitted for ordinary events so their payloads match recorded
+        # workflow histories.
+        if event.kind != "event":
+            payload["kind"] = event.kind
+        return payload
 
     @staticmethod
     def _serialize_error(error: Optional[ScrapingError]) -> Optional[Dict[str, str]]:
@@ -131,6 +136,7 @@ class DeploymentActivities:
                 ),
                 description=event_data.get("description"),
                 extraction_method=event_data.get("extraction_method", "html"),
+                kind=event_data.get("kind", "event"),
             )
             reconstructed_events.append(event)
 

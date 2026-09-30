@@ -226,6 +226,10 @@ async def generate_web_data(
             ),
             "location": event.venue_name,
         }
+        # Only emitted for non-default kinds so existing sites' data.json is
+        # unchanged.
+        if event.kind != "event":
+            web_event["kind"] = event.kind
         web_events.append(web_event)
 
     unique_error_messages = list(dict.fromkeys(error_messages or []))

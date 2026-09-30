@@ -253,7 +253,8 @@ class ScraperCoordinator:
         filtered_events = [
             event
             for event in events
-            if now.date() <= event.date.date() <= one_week_later.date()
+            if event.kind == "listing"
+            or now.date() <= event.date.date() <= one_week_later.date()
         ]
 
         # Default venue_order: sort alphabetically by venue_key when no
