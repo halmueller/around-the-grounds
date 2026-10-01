@@ -24,6 +24,7 @@ except ImportError:
 from .config.loader import load_all_sites, load_site_config, load_site_from_path
 from .config.settings import get_git_repository_url
 from .models import Event, SiteConfig, Venue
+from .parsers import ParserRegistry
 from .scrapers.coordinator import ScraperCoordinator, ScrapingError
 from .utils.github_auth import _sanitize_url
 from .utils.haiku_generator import HaikuGenerator
@@ -160,6 +161,7 @@ async def generate_web_data(
     events: List[Event],
     error_messages: Optional[List[str]] = None,
     site: Optional[SiteConfig] = None,
+    failed_venue_keys: Optional[List[str]] = None,
 ) -> dict:
     """Generate web-friendly JSON data from events."""
     web_events = []
@@ -226,6 +228,12 @@ async def generate_web_data(
             ),
             "location": event.venue_name,
         }
+        # Only emitted for non-default kinds so existing sites' data.json is
+        # unchanged.
+        if event.kind != "event":
+            web_event["kind"] = event.kind
+        if event.category:
+            web_event["category"] = event.category
         web_events.append(web_event)
 
     unique_error_messages = list(dict.fromkeys(error_messages or []))
@@ -248,7 +256,7 @@ async def generate_web_data(
         except Exception as e:
             logger.warning("Haiku generation failed: %s", e, exc_info=True)
 
-    return {
+    web_data = {
         "events": web_events,
         "updated": datetime.now(timezone.utc).isoformat(),
         "total_events": len(web_events),
@@ -262,6 +270,39 @@ async def generate_web_data(
         "errors": unique_error_messages,
         "haiku": description,
     }
+    # Tap-list sites also list every venue they check, so a page can say
+    # which places had nothing matching. Omitted when there are none, so
+    # other sites' data.json is unchanged.
+    listing_venues = _listing_venues(site) if site else []
+    if listing_venues and site:
+        web_data["listing_venues"] = listing_venues
+        # Venue names are not unique (a brewery can be both a tap-list venue
+        # and an event source), so pages attribute failures by key.
+        failed = set(failed_venue_keys or [])
+        web_data["failed_venues"] = [
+            {"key": venue.key, "name": venue.name}
+            for venue in site.venues
+            if venue.key in failed
+        ]
+    return web_data
+
+
+def _listing_venues(site: SiteConfig) -> List[dict]:
+    """Venues of *site* whose parser emits listings, in config order."""
+    venues = []
+    for venue in site.venues:
+        try:
+            parser_class = ParserRegistry.get_parser(venue)
+        except ValueError:
+            continue
+        if getattr(parser_class, "PRODUCES_LISTINGS", False):
+            entry = {"key": venue.key, "name": venue.name, "url": venue.url}
+            # Optional grouping for templates, e.g. "taproom" (bottle shops and taprooms) vs breweries.
+            venue_type = (venue.parser_config or {}).get("venue_type")
+            if venue_type:
+                entry["type"] = venue_type
+            venues.append(entry)
+    return venues
 
 
 async def deploy_to_web(
@@ -271,6 +312,17 @@ async def deploy_to_web(
     site: Optional[SiteConfig] = None,
 ) -> bool:
     """Generate web data and deploy to Vercel via git."""
+    # A site without a target repo is preview-only. Never let it fall through
+    # to GIT_REPOSITORY_URL / DEFAULT_GIT_REPOSITORY: a root-mode deploy
+    # force-pushes, which would overwrite another site's repository (e.g.
+    # during `--site all --deploy`). Skipping is not a failure.
+    if site and not site.target_repo and not git_repo_url:
+        print(
+            f"⏭️  Skipping deploy: site '{site.key}' has no target_repo "
+            "(set one in its config or pass --git-repo)"
+        )
+        return True
+
     try:
         # Determine target repo
         repo_url = git_repo_url
@@ -280,7 +332,9 @@ async def deploy_to_web(
 
         error_messages = [error.to_user_message() for error in errors or []]
         error_messages = list(dict.fromkeys(error_messages))
-        web_data = await generate_web_data(events, error_messages, site)
+        web_data = await generate_web_data(
+            events, error_messages, site, [error.venue.key for error in errors or []]
+        )
 
         print(f"✅ Generated web data: {len(events)} events")
         print(f"📍 Target repository: {repository_url}")
@@ -316,7 +370,9 @@ def _write_calendar_file(target_dir: Path, web_data: dict) -> bool:
         ics_bytes = build_ics(web_data)
         with open(target_dir / "events.ics", "wb") as f:
             f.write(ics_bytes)
-        print(f"📅 Generated events.ics with {web_data.get('total_events', 0)} events")
+        # Count what the feed holds: listings (beers on tap) are left out.
+        count = ics_bytes.count(b"BEGIN:VEVENT")
+        print(f"📅 Generated events.ics with {count} event{'' if count == 1 else 's'}")
         return True
     except Exception as e:
         logger.warning("Calendar feed generation failed: %s", e, exc_info=True)
@@ -583,7 +639,9 @@ async def preview_locally(
     try:
         error_messages = [error.to_user_message() for error in errors or []]
         error_messages = list(dict.fromkeys(error_messages))
-        web_data = await generate_web_data(events, error_messages, site)
+        web_data = await generate_web_data(
+            events, error_messages, site, [error.venue.key for error in errors or []]
+        )
 
         # Determine template directory
         if site:
@@ -615,6 +673,71 @@ async def preview_locally(
     except Exception as e:
         print(f"❌ Error during local preview generation: {e}")
         return False
+
+
+def _replace_tree(staging: Path, target: Path) -> None:
+    """Move every file under *staging* into *target*, one atomic rename each.
+
+    Files already in *target* that the site does not produce (a Search Console
+    verification file, .htaccess, certbot's .well-known/) are left alone.
+    """
+    for source in sorted(staging.rglob("*")):
+        if source.is_dir():
+            continue
+        destination = target / source.relative_to(staging)
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        os.replace(source, destination)
+
+
+async def publish_to_directory(
+    events: List[Event],
+    errors: Optional[List[ScrapingError]],
+    site: SiteConfig,
+    output_dir: Path,
+) -> bool:
+    """Write the site into *output_dir* (e.g. a web server's document root).
+
+    The site is built in a hidden staging directory inside *output_dir* (same
+    filesystem) and each file is then swapped in with ``os.replace``, so
+    visitors never see a half-written ``data.json``. When every venue failed,
+    nothing is written and the last good copy stays up.
+    """
+    import shutil
+    import tempfile
+
+    failed = {error.venue.key for error in errors or []}
+    if site.venues and failed >= {venue.key for venue in site.venues}:
+        print(f"⏭️  Not publishing: every venue failed; keeping {output_dir} as is")
+        return False
+
+    staging: Optional[Path] = None
+    try:
+        output_dir = output_dir.resolve()
+        if not output_dir.is_dir():
+            print(f"❌ Output directory does not exist: {output_dir}")
+            return False
+        template_dir = _resolve_template_dir(site.template)
+        if not template_dir.exists():
+            print(f"❌ Template directory not found: {template_dir}")
+            return False
+
+        error_messages = [error.to_user_message() for error in errors or []]
+        error_messages = list(dict.fromkeys(error_messages))
+        web_data = await generate_web_data(
+            events, error_messages, site, [error.venue.key for error in errors or []]
+        )
+
+        staging = Path(tempfile.mkdtemp(prefix=".atg-staging-", dir=output_dir))
+        _write_site_output(staging, template_dir, web_data)
+        _replace_tree(staging, output_dir)
+        print(f"✅ Published {len(events)} events to {output_dir}")
+        return True
+    except Exception as e:
+        print(f"❌ Error publishing to {output_dir}: {e}")
+        return False
+    finally:
+        if staging is not None:
+            shutil.rmtree(staging, ignore_errors=True)
 
 
 async def scrape_site(site: SiteConfig) -> tuple:
@@ -663,6 +786,11 @@ async def async_main(args: argparse.Namespace) -> int:
             print("❌ Default site 'ballard-food-trucks' not found")
             return 1
 
+    output_dir = getattr(args, "output_dir", None)
+    if output_dir and len(sites) != 1:
+        print("❌ --output-dir publishes one site; choose it with --site")
+        return 1
+
     # Exit code contract (consumed by Cloud Run Jobs / Cloud Scheduler):
     #   1 = any site scraped nothing, or a requested deploy/preview failed
     #   2 = every site produced output but at least one venue failed
@@ -693,6 +821,12 @@ async def async_main(args: argparse.Namespace) -> int:
         if args.preview:
             previewed = await preview_locally(events, errors, site=site)
             output_ok = output_ok and previewed
+
+        if output_dir:
+            published = await publish_to_directory(
+                events, errors, site, Path(output_dir)
+            )
+            output_ok = output_ok and published
 
         if (errors and not events) or not output_ok:
             any_failure = True
@@ -741,6 +875,13 @@ def main(argv: Optional[List[str]] = None) -> int:
         "-p",
         action="store_true",
         help="Generate web files locally in public/ directory for preview",
+    )
+    parser.add_argument(
+        "--output-dir",
+        help=(
+            "Publish the site's files into this existing directory (e.g. a web "
+            "server document root), replacing each file atomically"
+        ),
     )
 
     args = parser.parse_args(argv)

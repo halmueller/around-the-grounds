@@ -12,6 +12,7 @@ except ImportError:
 
 from ..models import Venue, Event
 from ..parsers import ParserRegistry
+from ..utils.listing_matcher import ListingMatcher
 
 
 class ScrapingError:
@@ -66,6 +67,7 @@ class ScraperCoordinator:
         venue_order: Dict[str, int] = {
             v.key: idx for idx, v in enumerate(venues)
         }
+        event_windows = self._event_windows(venues)
 
         connector = aiohttp.TCPConnector(limit=self.max_concurrent)
         async with aiohttp.ClientSession(
@@ -106,8 +108,9 @@ class ScraperCoordinator:
                     self.errors.append(error_opt)
                 all_events.extend(events)
 
-        # Filter to next 7 days and sort by date, preserving venue config order
-        return self._filter_and_sort_events(all_events, venue_order)
+        # Filter to each venue's window (7 days unless configured) and sort by
+        # date, preserving venue config order
+        return self._filter_and_sort_events(all_events, venue_order, event_windows)
 
     async def scrape_one(
         self, venue: Venue, timezone: str = "America/Los_Angeles"
@@ -122,7 +125,9 @@ class ScraperCoordinator:
         ) as session:
             events, error = await self._scrape_venue(session, venue)
 
-        filtered_events = self._filter_and_sort_events(events)
+        filtered_events = self._filter_and_sort_events(
+            events, event_windows=self._event_windows([venue])
+        )
         self.errors = [error] if error else []
         return filtered_events, error
 
@@ -150,11 +155,17 @@ class ScraperCoordinator:
                 )
                 events = await parser.parse(session)
                 self.logger.info(f"Found {len(events)} events for {venue.name}")
+                events = self._apply_event_filter(venue, events)
 
-                # Warn about events missing start_time unless venue opts out
+                # Warn about events missing start_time unless venue opts out.
+                # Listings (e.g. beers on tap) never have times.
                 config = venue.parser_config or {}
                 if not config.get("times_optional", False):
-                    no_time = [e for e in events if e.start_time is None]
+                    no_time = [
+                        e
+                        for e in events
+                        if e.start_time is None and e.kind != "listing"
+                    ]
                     if no_time:
                         self.logger.warning(
                             f"{len(no_time)}/{len(events)} events from "
@@ -230,10 +241,42 @@ class ScraperCoordinator:
 
         return [], None
 
+    @staticmethod
+    def _event_windows(venues: List[Venue]) -> Dict[str, int]:
+        """Per-venue upcoming-days windows from ``event_window_days``."""
+        windows: Dict[str, int] = {}
+        for venue in venues:
+            days = (venue.parser_config or {}).get("event_window_days")
+            if isinstance(days, int) and not isinstance(days, bool) and days > 0:
+                windows[venue.key] = days
+        return windows
+
+    def _apply_event_filter(self, venue: Venue, events: List[Event]) -> List[Event]:
+        """Keep only fresh-hop events when the venue sets ``event_filter``.
+
+        Uses the listing matcher (including the venue's ``listing_include`` /
+        ``listing_exclude``) but keeps festivals. Listings are already
+        filtered by their parsers and pass through untouched.
+        """
+        config = venue.parser_config or {}
+        if not config.get("event_filter"):
+            return events
+        matcher = ListingMatcher.from_config(config, default_exclude=False)
+        kept = [
+            e
+            for e in events
+            if e.kind == "listing" or matcher.matches(e.title, e.description)
+        ]
+        self.logger.info(
+            f"{venue.name}: {len(kept)} of {len(events)} events match event_filter"
+        )
+        return kept
+
     def _filter_and_sort_events(
         self,
         events: List[Event],
         venue_order: Optional[Dict[str, int]] = None,
+        event_windows: Optional[Dict[str, int]] = None,
     ) -> List[Event]:
         """
         Filter events to next 7 days and sort by (date, venue config order, start_time).
@@ -248,12 +291,14 @@ class ScraperCoordinator:
             site_tz = ZoneInfo("America/Los_Angeles")
 
         now = datetime.now(site_tz)
-        one_week_later = now + timedelta(days=7)
+        windows = event_windows or {}
+
+        def in_window(event: Event) -> bool:
+            last_day = now + timedelta(days=windows.get(event.venue_key, 7))
+            return now.date() <= event.date.date() <= last_day.date()
 
         filtered_events = [
-            event
-            for event in events
-            if now.date() <= event.date.date() <= one_week_later.date()
+            event for event in events if event.kind == "listing" or in_window(event)
         ]
 
         # Default venue_order: sort alphabetically by venue_key when no

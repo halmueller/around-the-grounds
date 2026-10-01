@@ -9,6 +9,10 @@ from ..models import Venue, Event
 
 
 class BaseParser(ABC):
+    # True for tap-list parsers that emit kind="listing" events. Sites use it
+    # to report venues that were checked but had nothing matching.
+    PRODUCES_LISTINGS = False
+
     def __init__(self, venue: Venue):
         self.venue = venue
         self.logger = logging.getLogger(self.__class__.__name__)

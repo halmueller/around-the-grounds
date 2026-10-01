@@ -76,6 +76,12 @@ Edit the appropriate file in `around_the_grounds/config/sites/`:
 }
 ```
 
+When the date or hours share an element with other text (Beveridge Place's
+"Saturday, Oct 17, 1-7pm THIRTY+ fresh hop beers…"), add `date_pattern` and/or
+`time_pattern`: a regex whose first group (or whole match) is the part to
+parse. Items with no date match are skipped. A time range borrows am/pm from
+whichever end has it ("1-7pm" is 1–7 pm).
+
 **AJAX/JSON API example** (`source_type: "ajax"`):
 ```json
 {
@@ -107,6 +113,84 @@ Edit the appropriate file in `around_the_grounds/config/sites/`:
   }
 }
 ```
+
+### Tap-list ("listing") venues
+
+Sites like `seattle-freshies` list what is available *now* (beers on tap)
+rather than dated events. These parsers read a venue's live tap list, keep the
+entries the fresh-hop matcher accepts, and emit `kind="listing"` events, which
+skip the 7-day window and stay out of `events.ics`.
+
+| Platform | `source_type` | Config |
+|----------|---------------|--------|
+| Untappd for Business website embed (`PreloadEmbedMenu(container, location, theme)`) | `"untappd-embed"` | `location_id`, `theme_id`; optional `menu_name` when one embed holds several taprooms' tabs (Postdoc) |
+| Published menu on an `untappd.com/v/<slug>/<id>` venue page | `"untappd-venue"` | venue `url` is the page — untappd.com challenges datacenter IPs (Cloudflare), so prefer the venue's own site when the scraper runs on a server |
+| Public Google Sheet tab (e.g. Chuck's Hop Shop) | `"sheet-taplist"` | `sheet_id`, `sheet_name`, `columns` (`name` required), optional `header_contains`, `brewery_separator`, `skip_prefix` |
+| Craftpeak/Arryved "What's On Tap" module | `"craftpeak-wot"` | none (preset) |
+| DigitalPour embedded menu (`fbpage.digitalpour.com/?companyID=…&locationID=…`) | `"digitalpour"` | `company_id`, `location_id` |
+| Bevwerk website menu (`<bw-website-menu-root taplist-id="…">`, e.g. Watershed Pub) | `"bevwerk"` | `taplist_id`; venue `url` is the bar's menu page (not fetched) |
+| Canva design embedded as a draft list (`canva.com/design/…/view?embed`, e.g. Old Stove) | `"canva"` | `design_url` (venue `url` is the page embedding it). Beers are found by layout around each "ABV" line. Sends a browser User-Agent: Canva refuses others |
+| Repeated HTML items | `"html-taplist"` | `item`, `name`, optional `style`, `brewery`, `abv`, `style_pattern`, `name_pattern`, `match_whole_item`, `exclude_sections` |
+| Free text, one beer per line | `"text-taplist"` | `line_pattern` with a `(?P<name>…)` group, optional `section_tag`, `include_sections`, `exclude_sections`, `line_tags` (elements that hold entries; default `p`, `li` — set `["h2"]` when beers are headings) |
+
+Listings are sorted into **categories**: `fresh-hop` (fresh/wet hop),
+`festbier` (Festbier, Oktoberfest/-toberfest, Märzen, Wiesn/Wies'n, plus harvest
+lagers, Dunkels/Munich Dark, and Weizenbocks; not Dunkelweizen), and `pumpkin`
+(pumpkin, gourd, jack-o'-lantern, calabaza).
+
+A parser that supplies beer descriptions (`TapEntry.description`;
+`untappd-embed` and `bevwerk`) lets a beer match by its description when its
+name and style don't: fresh/wet hop for `fresh-hop` ("FRESH HOP Collab with
+Uprise"), Festbier, Oktoberfest, Märzen, or Wiesn for `festbier` ("our
+yearly golden Festbier"), and any `pumpkin` word ("brewed with roasted
+pumpkin"). Harvest lager, Dunkel, and Weizenbock count only in the name or
+style.
+
+Festivals named on a tap-list page ("Fresh Hop Fest") are dropped from
+`fresh-hop` by the beer's name only, so a beer "brewed for Fresh Hop Ale
+Festival" or named "Fresh Hop Fest Bier" stays.
+
+An entry matching several categories yields one listing per category, and each listing carries
+`category` in `data.json`. Per venue:
+
+| Option | Effect |
+|--------|--------|
+| `listing_include` / `listing_exclude` | Extra fresh-hop patterns (e.g. Bizarre's `"fresh hoppy"`) |
+| `festbier_include` / `festbier_exclude` | Extra festbier patterns |
+| `pumpkin_include` / `pumpkin_exclude` | Extra pumpkin patterns (e.g. Old Stove Pike Place's `"\\bvodka\\b"` drops a cocktail) |
+| `listing_categories` | Limit the venue to some categories (default: all) |
+| `venue_type` | Grouping for templates: `"taproom"` for bottle shops/taprooms (default: brewery) |
+| `timezone` | Site-local "today" for listing dates |
+
+A site with listing venues also gets `listing_venues` (key, name, url) in
+`data.json`; the `fresh-hop` template uses it to name places that were
+checked but have nothing matching. Other sites' `data.json` is unchanged.
+
+- Point at the venue's **current** tap list, not a beer catalog or a packaged
+  "available beer" page — and check a multi-location brewery's page is for the
+  right taproom (Bale Breaker's Yakima menu is not its Seattle one).
+- **Use a venue key no venue-specific parser owns** (the registry matches
+  `venue.key` first): `stoup-ballard-taps`, not `stoup-ballard`.
+- Requests to a shared host are spaced 5s apart; Cloudflare challenges are
+  reported by name.
+
+### Filtering and looking further ahead (any event source)
+
+These `parser_config` options work with every event parser (`html`,
+`json-ld`, `wordpress`, `ajax`, `squarespace-events`, …):
+
+| Option | Effect |
+|--------|--------|
+| `"event_filter": true` | Keep only events whose title/description match the fresh-hop matcher (festivals are kept; `listing_include` / `listing_exclude` apply) |
+| `"event_window_days": 60` | Keep events up to this many days ahead instead of the default 7 (fests are announced weeks out) |
+| `"timezone": "America/Los_Angeles"` | `html` parser only: convert timezone-aware dates (e.g. ISO `...Z` attributes) to local time so evening events keep their day |
+
+`squarespace-events` reads a Squarespace events collection page as JSON
+(`?format=json`); the venue `url` is the collection page. For an aggregated
+list whose items happen elsewhere, put the host venue in the description
+(the `fresh-hop` template shows it with "via <source>"), and use a CSS
+attribute selector to keep only local items, e.g.
+`article.article-event-item[data-tags*="Seattle"]`.
 
 ### 3. Test
 
@@ -159,6 +243,7 @@ Available templates in `public_templates/`:
 - `food-trucks` — dark theme, food truck oriented
 - `music` — dark theme, music/show oriented
 - `kids` — bright/playful theme, children's event oriented
+- `fresh-hop` — tap-list ("listing") sites: five pages sharing `app.js`/`styles.css` under a pinned tab bar — fresh hops at breweries (`index.html`), festbiers at breweries (`festbier.html`), pumpkin beers at breweries (`pumpkin.html`), all three at bottle shops and taprooms (`taprooms.html`, the "Taprooms" tab, venues with `venue_type: "taproom"`), and dated events (`events.html`)
 
 To create a new template, add a directory under `public_templates/` with at least an `index.html`.
 
@@ -169,6 +254,10 @@ To create a new template, add a directory under `public_templates/` with at leas
    - **Root mode + GitHub Pages**: Settings → Pages → Deploy from `main` branch root
    - **Subdir mode + Vercel**: Create a Vercel project watching the repo, set the "Output Directory" to match your `deploy_subdir` value (e.g. `public`)
 3. Install your GitHub App on the repo (it needs Contents: Read & Write)
+
+A site with no `target_repo` is **preview-only**: `--deploy` skips it (with a
+message) instead of falling back to `GIT_REPOSITORY_URL` or the default repo,
+unless you pass `--git-repo` explicitly.
 
 ### 4. Test and Deploy
 

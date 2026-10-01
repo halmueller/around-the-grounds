@@ -261,6 +261,9 @@ def build_ics(web_data: Dict[str, Any]) -> bytes:
 
     # Events arrive already sorted by date/venue/time from the coordinator.
     for web_event in web_data.get("events") or []:
+        # Listings (e.g. beers on tap) are available now, not scheduled.
+        if web_event.get("kind") == "listing":
+            continue
         cal_event = _build_vevent(
             web_event, site_key, tz, site_name, public_url, max_timed_hours
         )

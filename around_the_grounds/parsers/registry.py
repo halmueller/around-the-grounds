@@ -4,7 +4,22 @@ from .bale_breaker import BaleBreakerParser
 from .base import BaseParser
 from .channel_marker import ChannelMarkerParser
 from .chucks_greenwood import ChucksGreenwoodParser
-from .generic import AjaxParser, HtmlSelectorParser, JsonLdParser, WordPressParser
+from .generic import (
+    AjaxParser,
+    BevwerkParser,
+    CanvaParser,
+    CraftpeakWotParser,
+    DigitalPourParser,
+    HtmlSelectorParser,
+    HtmlTaplistParser,
+    JsonLdParser,
+    SheetTaplistParser,
+    SquarespaceEventsParser,
+    TextTaplistParser,
+    UntappdEmbedParser,
+    UntappdVenueParser,
+    WordPressParser,
+)
 from .lucky_envelope import LuckyEnvelopeParser
 from .obec_brewing import ObecBrewingParser
 from .salehs_corner import SalehsCornerParser
@@ -22,6 +37,16 @@ class ParserRegistry:
         "html": HtmlSelectorParser,
         "ajax": AjaxParser,
         "json-ld": JsonLdParser,
+        "untappd-embed": UntappdEmbedParser,
+        "untappd-venue": UntappdVenueParser,
+        "sheet-taplist": SheetTaplistParser,
+        "html-taplist": HtmlTaplistParser,
+        "craftpeak-wot": CraftpeakWotParser,
+        "digitalpour": DigitalPourParser,
+        "bevwerk": BevwerkParser,
+        "canva": CanvaParser,
+        "text-taplist": TextTaplistParser,
+        "squarespace-events": SquarespaceEventsParser,
     }
 
     # Specific parsers — selected by venue.key (takes precedence over generic)

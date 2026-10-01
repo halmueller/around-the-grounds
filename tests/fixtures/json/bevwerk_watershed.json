@@ -1,0 +1,500 @@
+{
+ "data": {
+  "menu_data": [
+   {
+    "data": {
+     "taplist_by_pk": {
+      "id": "3670c864-6020-4ec6-9088-53bd97020edd",
+      "title": "Taplist",
+      "taps": [
+       {
+        "index": 0,
+        "tap_type": "Beer",
+        "on_tap_item": {
+         "status": "ON_TAP",
+         "inventory_type": {
+          "menu_category": {
+           "title": "Draft Beer",
+           "is_up_next": false
+          },
+          "product": {
+           "title": "Czech Plz Czech Pilsner",
+           "display_name": "",
+           "abv": "5",
+           "style": null,
+           "producer": {
+            "title": "Odd Otter Brewing Company",
+            "display_name": "Odd Otter"
+           }
+          }
+         }
+        }
+       },
+       {
+        "index": 1,
+        "tap_type": "Beer",
+        "on_tap_item": {
+         "status": "ON_TAP",
+         "inventory_type": {
+          "menu_category": {
+           "title": "Draft Beer",
+           "is_up_next": false
+          },
+          "product": {
+           "title": "Genus Rubus Mixed Berry Wild Sour",
+           "display_name": "",
+           "abv": "6.1",
+           "style": null,
+           "producer": {
+            "title": "E9 Brewing Company",
+            "display_name": "E9"
+           }
+          }
+         }
+        }
+       },
+       {
+        "index": 2,
+        "tap_type": "Beer",
+        "on_tap_item": {
+         "status": "ON_TAP",
+         "inventory_type": {
+          "menu_category": {
+           "title": "Draft Beer",
+           "is_up_next": false
+          },
+          "product": {
+           "title": "Bramblemania Blackberry Sour Ale",
+           "display_name": "",
+           "abv": "5.5",
+           "style": null,
+           "producer": {
+            "title": "Urban Family Brewing",
+            "display_name": "Urban Family"
+           }
+          }
+         }
+        }
+       },
+       {
+        "index": 3,
+        "tap_type": "Beer",
+        "on_tap_item": {
+         "status": "ON_TAP",
+         "inventory_type": {
+          "menu_category": {
+           "title": "Draft Beer",
+           "is_up_next": false
+          },
+          "product": {
+           "title": "Mile Marker Saison",
+           "display_name": "",
+           "abv": "4.8",
+           "style": null,
+           "producer": {
+            "title": "Perennial Artisan Ales",
+            "display_name": "Perennial"
+           }
+          }
+         }
+        }
+       },
+       {
+        "index": 4,
+        "tap_type": "Beer",
+        "on_tap_item": {
+         "status": "ON_TAP",
+         "inventory_type": {
+          "menu_category": {
+           "title": "Draft Beer",
+           "is_up_next": false
+          },
+          "product": {
+           "title": "Fresh Hop Festbier Lager",
+           "display_name": "",
+           "abv": "5.5",
+           "style": null,
+           "producer": {
+            "title": "Threshold",
+            "display_name": ""
+           }
+          }
+         }
+        }
+       },
+       {
+        "index": 5,
+        "tap_type": "Beer",
+        "on_tap_item": {
+         "status": "ON_TAP",
+         "inventory_type": {
+          "menu_category": {
+           "title": "Draft Beer",
+           "is_up_next": false
+          },
+          "product": {
+           "title": "Ottermelon Fruited Wheat Ale",
+           "display_name": "",
+           "abv": "5",
+           "style": null,
+           "producer": {
+            "title": "Odd Otter Brewing Company",
+            "display_name": "Odd Otter"
+           }
+          }
+         }
+        }
+       },
+       {
+        "index": 6,
+        "tap_type": "Beer",
+        "on_tap_item": {
+         "status": "ON_TAP",
+         "inventory_type": {
+          "menu_category": {
+           "title": "Draft Beer",
+           "is_up_next": false
+          },
+          "product": {
+           "title": "Excessive Celebrations Festbier Lager",
+           "display_name": "",
+           "abv": "5.6",
+           "style": null,
+           "producer": {
+            "title": "Otherlands",
+            "display_name": null
+           }
+          }
+         }
+        }
+       },
+       {
+        "index": 7,
+        "tap_type": "Beer",
+        "on_tap_item": {
+         "status": "ON_TAP",
+         "inventory_type": {
+          "menu_category": {
+           "title": "Draft Beer",
+           "is_up_next": false
+          },
+          "product": {
+           "title": "Ottzel Quatzel Pale Ale",
+           "display_name": "",
+           "abv": "5.5",
+           "style": null,
+           "producer": {
+            "title": "Odd Otter Brewing Company",
+            "display_name": "Odd Otter"
+           }
+          }
+         }
+        }
+       },
+       {
+        "index": 8,
+        "tap_type": "Beer",
+        "on_tap_item": {
+         "status": "ON_TAP",
+         "inventory_type": {
+          "menu_category": {
+           "title": "Draft Beer",
+           "is_up_next": false
+          },
+          "product": {
+           "title": "One Thousand Deaths Centennial Wet Hop IPA",
+           "display_name": "",
+           "abv": "6.9",
+           "style": null,
+           "producer": {
+            "title": "No Boat Brewing Company",
+            "display_name": "No Boat"
+           }
+          }
+         }
+        }
+       },
+       {
+        "index": 9,
+        "tap_type": "Beer",
+        "on_tap_item": {
+         "status": "ON_TAP",
+         "inventory_type": {
+          "menu_category": {
+           "title": "Draft Beer",
+           "is_up_next": false
+          },
+          "product": {
+           "title": "Fresh Digs Fresh Hop West Coast IPA",
+           "display_name": "",
+           "abv": "6.8",
+           "style": null,
+           "producer": {
+            "title": "Brothers Cascadia Brewing",
+            "display_name": "Brothers Cascadia"
+           }
+          }
+         }
+        }
+       },
+       {
+        "index": 10,
+        "tap_type": "Beer",
+        "on_tap_item": {
+         "status": "ON_TAP",
+         "inventory_type": {
+          "menu_category": {
+           "title": "Draft Beer",
+           "is_up_next": false
+          },
+          "product": {
+           "title": "Bug Fresh Hop Hazy IPA",
+           "display_name": "",
+           "abv": "7",
+           "style": null,
+           "producer": {
+            "title": "Human People Beer",
+            "display_name": "Human People"
+           }
+          }
+         }
+        }
+       },
+       {
+        "index": 11,
+        "tap_type": "Beer",
+        "on_tap_item": {
+         "status": "ON_TAP",
+         "inventory_type": {
+          "menu_category": {
+           "title": "Draft Beer",
+           "is_up_next": false
+          },
+          "product": {
+           "title": "Aqua Seafoam Shame Wet Hop IPA",
+           "display_name": "",
+           "abv": "6.8",
+           "style": null,
+           "producer": {
+            "title": "Cloudburst Brewing",
+            "display_name": "Cloudburst"
+           }
+          }
+         }
+        }
+       },
+       {
+        "index": 12,
+        "tap_type": "Beer",
+        "on_tap_item": {
+         "status": "ON_TAP",
+         "inventory_type": {
+          "menu_category": {
+           "title": "Draft Beer",
+           "is_up_next": false
+          },
+          "product": {
+           "title": "Sticky Hands: Greatest Hits Vol. 3 Double IPA",
+           "display_name": "",
+           "abv": "8.1",
+           "style": null,
+           "producer": {
+            "title": "Block 15 Brewing Company",
+            "display_name": "Block 15"
+           }
+          }
+         }
+        }
+       },
+       {
+        "index": 13,
+        "tap_type": "Beer",
+        "on_tap_item": {
+         "status": "ON_TAP",
+         "inventory_type": {
+          "menu_category": {
+           "title": "Draft Beer",
+           "is_up_next": false
+          },
+          "product": {
+           "title": "Munsterfest Oktoberfest Märzen Lager",
+           "display_name": "",
+           "abv": "6.2",
+           "style": null,
+           "producer": {
+            "title": "3 Floyds",
+            "display_name": ""
+           }
+          }
+         }
+        }
+       },
+       {
+        "index": 14,
+        "tap_type": "Beer",
+        "on_tap_item": {
+         "status": "ON_TAP",
+         "inventory_type": {
+          "menu_category": {
+           "title": "Draft Beer",
+           "is_up_next": false
+          },
+          "product": {
+           "title": "Smoked Porter",
+           "display_name": "",
+           "abv": "6.5",
+           "style": null,
+           "producer": {
+            "title": "Old Stove Brewing",
+            "display_name": "Old Stove"
+           }
+          }
+         }
+        }
+       },
+       {
+        "index": 15,
+        "tap_type": "Beer",
+        "on_tap_item": {
+         "status": "ON_TAP",
+         "inventory_type": {
+          "menu_category": {
+           "title": "Draft Beer",
+           "is_up_next": false
+          },
+          "product": {
+           "title": "Ryezomes Fresh Hop Black IPA",
+           "display_name": "",
+           "abv": "6.5",
+           "style": null,
+           "producer": {
+            "title": "Flying Lion Brewing",
+            "display_name": "Flying Lion"
+           }
+          }
+         }
+        }
+       },
+       {
+        "index": 16,
+        "tap_type": "Beer",
+        "on_tap_item": {
+         "status": "ON_TAP",
+         "inventory_type": {
+          "menu_category": {
+           "title": "Draft Beer",
+           "is_up_next": false
+          },
+          "product": {
+           "title": "Java Suit Barrel Aged Imperial Coffee Milk Stout '26",
+           "display_name": "",
+           "abv": "11.2",
+           "style": null,
+           "producer": {
+            "title": "Alesong Brewing",
+            "display_name": "Alesong"
+           }
+          }
+         }
+        }
+       },
+       {
+        "index": 17,
+        "tap_type": "Beer",
+        "on_tap_item": {
+         "status": "ON_TAP",
+         "inventory_type": {
+          "menu_category": {
+           "title": "Draft Beer",
+           "is_up_next": false
+          },
+          "product": {
+           "title": "Nitro Peanut Butter Milk Stout",
+           "display_name": "",
+           "abv": "6.4",
+           "style": null,
+           "producer": {
+            "title": "Hellbent Brewing Co.",
+            "display_name": "Hellbent"
+           }
+          }
+         }
+        }
+       },
+       {
+        "index": 18,
+        "tap_type": "Cider",
+        "on_tap_item": {
+         "status": "ON_TAP",
+         "inventory_type": {
+          "menu_category": {
+           "title": "Draft Cider",
+           "is_up_next": false
+          },
+          "product": {
+           "title": "Ashmead’s Kernel Single Varietal '25",
+           "display_name": "",
+           "abv": "6.6",
+           "style": null,
+           "producer": {
+            "title": "Alpenfire Cider",
+            "display_name": "Alpenfire Cider"
+           }
+          }
+         }
+        }
+       },
+       {
+        "index": 19,
+        "tap_type": "Cider",
+        "on_tap_item": {
+         "status": "ON_TAP",
+         "inventory_type": {
+          "menu_category": {
+           "title": "Draft Cider",
+           "is_up_next": false
+          },
+          "product": {
+           "title": "Plum Bubbly",
+           "display_name": "",
+           "abv": "6.5",
+           "style": null,
+           "producer": {
+            "title": "George's Washington Cider",
+            "display_name": ""
+           }
+          }
+         }
+        }
+       },
+       {
+        "index": 20,
+        "tap_type": "Kombucha",
+        "on_tap_item": {
+         "status": "ON_TAP",
+         "inventory_type": {
+          "menu_category": {
+           "title": "Draft Kombucha",
+           "is_up_next": false
+          },
+          "product": {
+           "title": "Relish The Moment Jun Kombucha",
+           "display_name": "",
+           "abv": "0.5",
+           "style": null,
+           "producer": {
+            "title": "Boocha Love Kombucha",
+            "display_name": "Boocha Love"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    },
+    "taplist_id": "3670c864-6020-4ec6-9088-53bd97020edd"
+   }
+  ]
+ }
+}

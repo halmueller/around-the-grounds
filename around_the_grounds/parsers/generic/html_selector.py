@@ -2,7 +2,14 @@
 
 Triggered by source_type: "html" when no venue-specific parser is registered.
 Extracts events using configurable CSS selectors from parser_config.
+
+When the date or time shares an element with other text ("Saturday, Oct 17,
+1-7pm THIRTY+ fresh hop beers…"), ``date_pattern`` / ``time_pattern`` pick
+it out: a regex whose first group (or whole match) is parsed. An item whose
+text has no match is skipped.
 """
+
+import re
 
 import logging
 from datetime import datetime
@@ -10,6 +17,11 @@ from typing import Any, Dict, List, Optional
 
 import aiohttp
 from bs4 import BeautifulSoup, Tag
+
+try:
+    from zoneinfo import ZoneInfo  # type: ignore
+except ImportError:
+    from backports.zoneinfo import ZoneInfo  # type: ignore
 
 from ...models import Event, Venue
 from ..base import BaseParser
@@ -32,6 +44,14 @@ class HtmlSelectorParser(BaseParser):
         time_selector: Optional[str] = config.get("time_selector")
         desc_selector: Optional[str] = config.get("description_selector")
         date_format: str = config.get("date_format", "auto")
+        # Optional: convert timezone-aware dates (e.g. ISO "...Z" attributes)
+        # to this zone so a late-evening UTC timestamp keeps its local day.
+        tz_name: Optional[str] = config.get("timezone")
+        try:
+            date_pattern = self._compile(config.get("date_pattern"))
+            time_pattern = self._compile(config.get("time_pattern"))
+        except re.error as e:
+            raise ValueError(f"{self.venue.key}: invalid date/time pattern: {e}") from e
 
         soup = await self.fetch_page(session, self.venue.url)
 
@@ -53,9 +73,11 @@ class HtmlSelectorParser(BaseParser):
                 time_selector=time_selector,
                 desc_selector=desc_selector,
                 date_format=date_format,
+                date_pattern=date_pattern,
+                time_pattern=time_pattern,
             )
             if event:
-                events.append(event)
+                events.append(self._localize(event, tz_name) if tz_name else event)
 
         self.logger.info(
             f"HtmlSelectorParser: {len(events)} events from {self.venue.url}"
@@ -71,6 +93,8 @@ class HtmlSelectorParser(BaseParser):
         time_selector: Optional[str],
         desc_selector: Optional[str],
         date_format: str,
+        date_pattern: Optional["re.Pattern[str]"] = None,
+        time_pattern: Optional["re.Pattern[str]"] = None,
     ) -> Optional[Event]:
         """Extract a single Event from one HTML container."""
         try:
@@ -88,6 +112,11 @@ class HtmlSelectorParser(BaseParser):
                 date_text = str(date_el.get(date_attribute, "")).strip()
             else:
                 date_text = date_el.get_text(separator=" ", strip=True)
+            if date_pattern is not None:
+                picked = self._pick(date_pattern, date_text)
+                if picked is None:
+                    return None
+                date_text = picked
             date = self._parse_date(date_text, date_format)
             if not date:
                 return None
@@ -96,10 +125,13 @@ class HtmlSelectorParser(BaseParser):
             end_time: Optional[datetime] = None
             if time_selector:
                 time_el = container.select_one(time_selector)
-                if time_el:
-                    start_time, end_time = self._parse_time_range(
-                        time_el.get_text(strip=True), date
-                    )
+                time_text: Optional[str] = (
+                    time_el.get_text(separator=" ", strip=True) if time_el else None
+                )
+                if time_text and time_pattern is not None:
+                    time_text = self._pick(time_pattern, time_text)
+                if time_text:
+                    start_time, end_time = self._parse_time_range(time_text, date)
 
             description: Optional[str] = None
             if desc_selector:
@@ -121,6 +153,33 @@ class HtmlSelectorParser(BaseParser):
             self.logger.debug(f"Error parsing container: {e}")
             return None
 
+    @staticmethod
+    def _compile(pattern: Optional[str]) -> Optional["re.Pattern[str]"]:
+        return re.compile(pattern, re.IGNORECASE) if pattern else None
+
+    @staticmethod
+    def _pick(pattern: "re.Pattern[str]", text: str) -> Optional[str]:
+        """The pattern's first group (or whole match) in *text*, if any."""
+        m = pattern.search(text)
+        if not m:
+            return None
+        return (m.group(1) if pattern.groups else m.group(0)).strip() or None
+
+    @staticmethod
+    def _localize(event: Event, tz_name: str) -> Event:
+        """Convert the event's timezone-aware datetimes to naive *tz_name* time."""
+        zone = ZoneInfo(tz_name)
+
+        def local(value: Optional[datetime]) -> Optional[datetime]:
+            if value is None or value.tzinfo is None:
+                return value
+            return value.astimezone(zone).replace(tzinfo=None)
+
+        event.date = local(event.date) or event.date
+        event.start_time = local(event.start_time)
+        event.end_time = local(event.end_time)
+        return event
+
     def _parse_date(self, text: str, date_format: str) -> Optional[datetime]:
         """Parse a date string using the configured format or dateutil auto-parse."""
         text = text.strip()
@@ -141,21 +200,16 @@ class HtmlSelectorParser(BaseParser):
     @staticmethod
     def _extract_period(text: str) -> Optional[str]:
         """Extract AM/PM period from a time string, if present."""
-        import re
-
         m = re.search(r"(am|pm)", text, re.IGNORECASE)
         return m.group(1).lower() if m else None
 
-    def _parse_time_range(
-        self, text: str, date: datetime
-    ) -> tuple:
+    def _parse_time_range(self, text: str, date: datetime) -> tuple:
         """Parse a time range like '7:00 PM - 10:00 PM' relative to date.
 
         Carries forward AM/PM from the start part when the end part lacks it,
-        e.g. '5pm-8:30' → start=17:00, end=20:30.
+        e.g. '5pm-8:30' → start=17:00, end=20:30, and back from the end when
+        only it has one: '1-7pm' → 13:00-19:00, '11-2pm' → 11:00-14:00.
         """
-        import re
-
         parts = re.split(r"\s*[-–—]\s*", text, maxsplit=1)
         start_time: Optional[datetime] = None
         end_time: Optional[datetime] = None
@@ -169,6 +223,17 @@ class HtmlSelectorParser(BaseParser):
             end_time = self._parse_single_time(
                 parts[1].strip(), date, default_period=start_period
             )
+            end_period = self._extract_period(parts[1])
+            if start_period is None and end_period:
+                start_time = self._parse_single_time(
+                    parts[0].strip(), date, default_period=end_period
+                )
+                # "11-2pm": a start later than the end is in the other half.
+                if start_time and end_time and start_time > end_time:
+                    other = "am" if end_period == "pm" else "pm"
+                    start_time = self._parse_single_time(
+                        parts[0].strip(), date, default_period=other
+                    )
 
         return start_time, end_time
 
@@ -181,18 +246,21 @@ class HtmlSelectorParser(BaseParser):
         """Parse a single time string like '7:00 PM' relative to date.
 
         When the text has no AM/PM suffix and *default_period* is provided,
-        the default is used instead (enables carry-forward from the start time).
+        the default is used instead (enables carry-forward from the start time),
+        and a bare hour ("1") is accepted.
         """
-        import re
-
         m = re.search(r"(\d{1,2}):(\d{2})\s*(am|pm)?", text, re.IGNORECASE)
         if not m:
             m = re.search(r"(\d{1,2})\s*(am|pm)", text, re.IGNORECASE)
+            if not m and default_period:
+                m = re.fullmatch(r"(\d{1,2})", text.strip())
             if not m:
                 return None
             hour = int(m.group(1))
             minute = 0
-            period: Optional[str] = m.group(2).lower()
+            period: Optional[str] = (
+                m.group(2).lower() if m.lastindex == 2 else default_period
+            )
         else:
             hour = int(m.group(1))
             minute = int(m.group(2))

@@ -31,7 +31,7 @@ class ScrapeActivities:
     @staticmethod
     def _serialize_event(event: Event) -> Dict[str, Any]:
         """Convert an event to a JSON-serializable structure."""
-        return {
+        payload: Dict[str, Any] = {
             "venue_key": event.venue_key,
             "venue_name": event.venue_name,
             "title": event.title,
@@ -41,12 +41,20 @@ class ScrapeActivities:
             "description": event.description,
             "extraction_method": event.extraction_method,
         }
+        # Omitted for ordinary events so their payloads match recorded
+        # workflow histories.
+        if event.kind != "event":
+            payload["kind"] = event.kind
+        if event.category:
+            payload["category"] = event.category
+        return payload
 
     @staticmethod
     def _serialize_error(error: Optional[ScrapingError]) -> Optional[Dict[str, str]]:
         if not error:
             return None
         return {
+            "venue_key": error.venue.key,
             "venue_name": error.venue.name,
             "message": error.message,
             "user_message": error.to_user_message(),
@@ -131,13 +139,18 @@ class DeploymentActivities:
                 ),
                 description=event_data.get("description"),
                 extraction_method=event_data.get("extraction_method", "html"),
+                kind=event_data.get("kind", "event"),
+                category=event_data.get("category"),
             )
             reconstructed_events.append(event)
 
         error_messages: List[str] = []
+        failed_venue_keys: List[str] = []
         if errors:
             for error in errors:
                 if isinstance(error, dict):
+                    if error.get("venue_key"):
+                        failed_venue_keys.append(str(error["venue_key"]))
                     if "user_message" in error and error["user_message"]:
                         error_messages.append(str(error["user_message"]))
                     elif "venue_name" in error and error["venue_name"]:
@@ -150,7 +163,12 @@ class DeploymentActivities:
         error_messages = list(dict.fromkeys(error_messages))
 
         site = site_from_dict(site_dict) if site_dict else None
-        return await generate_web_data(reconstructed_events, error_messages, site=site)
+        return await generate_web_data(
+            reconstructed_events,
+            error_messages,
+            site=site,
+            failed_venue_keys=failed_venue_keys,
+        )
 
     @activity.defn
     async def deploy_to_git(self, params: Dict[str, Any]) -> bool:

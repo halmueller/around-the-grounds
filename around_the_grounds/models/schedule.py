@@ -13,6 +13,13 @@ class Event:
     end_time: Optional[datetime] = None
     description: Optional[str] = None
     extraction_method: str = "html"
+    # "event" is scheduled for `date`; "listing" is available now (e.g. a beer
+    # on tap), is exempt from the upcoming-days window, and stays out of the
+    # calendar feed.
+    kind: str = "event"
+    # For listings: which list the entry belongs to ("fresh-hop", "festbier",
+    # "pumpkin").
+    category: Optional[str] = None
 
     def __str__(self) -> str:
         date_str = self.date.strftime("%Y-%m-%d") if self.date else "None"
