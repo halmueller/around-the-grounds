@@ -12,6 +12,8 @@ Built-in categories:
 - ``festbier``: Oktoberfest-season beers (Festbier, Oktoberfest, Märzen,
   plus harvest lagers, Dunkels, and Weizenbocks). Venues extend it with
   ``festbier_include`` / ``festbier_exclude``.
+- ``pumpkin``: pumpkin beers (pumpkin, gourd, jack-o'-lantern, calabaza).
+  Venues extend it with ``pumpkin_include`` / ``pumpkin_exclude``.
 
 A beer's description (``matches_description``) is checked against a
 narrower list per category: brewers write "FRESH HOP collab…" or "our
@@ -23,6 +25,7 @@ from typing import Any, Dict, List, Optional, Pattern, Sequence, Tuple
 
 FRESH_HOP = "fresh-hop"
 FESTBIER = "festbier"
+PUMPKIN = "pumpkin"
 
 # "fresh hop", "wet-hop", "Freshhop", "Fresh Hops", "wet-hopped". Requiring
 # "hop" right after "fresh"/"wet" keeps out "Fresh Squeezed IPA" and
@@ -49,11 +52,20 @@ FESTBIER_INCLUDE = FESTBIER_CORE + [
     r"\bweizen[\s-]*bock\b",
 ]
 
+# Also the patterns checked in descriptions ("brewed with roasted pumpkin").
+PUMPKIN_INCLUDE = [
+    r"pumpkin",  # Pumpkin Ale, Kilty MacPumpkin, Punkuccino's "Coffee Pumpkin Ale"
+    r"\bgourd",  # Ravenna's "Hello, Gourdgeous"
+    r"\bjack[\s-]*o[\s'’-]*lantern",
+    r"\bcalabaza\b",
+]
+
 # category -> (include patterns, exclude patterns, config key prefix,
 #              include patterns for descriptions)
 CATEGORIES: Dict[str, Tuple[List[str], List[str], str, List[str]]] = {
     FRESH_HOP: (DEFAULT_INCLUDE, DEFAULT_EXCLUDE, "listing", DEFAULT_INCLUDE),
     FESTBIER: (FESTBIER_INCLUDE, [], "festbier", FESTBIER_CORE),
+    PUMPKIN: (PUMPKIN_INCLUDE, [], "pumpkin", PUMPKIN_INCLUDE),
 }
 
 
@@ -93,8 +105,9 @@ class ListingMatcher:
         """Build a matcher for *category* from a venue's ``parser_config``.
 
         ``<prefix>_include`` / ``<prefix>_exclude`` (``listing_*`` for fresh
-        hop, ``festbier_*`` for festbier) may each be a pattern or a list of
-        patterns; they extend the defaults rather than replace them.
+        hop, ``festbier_*`` for festbier, ``pumpkin_*`` for pumpkin) may each
+        be a pattern or a list of patterns; they extend the defaults rather
+        than replace them.
         """
         if category not in CATEGORIES:
             raise ValueError(f"Unknown listing category {category!r}")

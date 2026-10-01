@@ -2,7 +2,8 @@
 // shared data.json:
 //   freshhop  fresh-hop beers at breweries
 //   festbier  festbiers, Oktoberfests, and Märzens at breweries
-//   bars      both, at bottle shops and bars
+//   pumpkin   pumpkin beers at breweries
+//   bars      all three, at bottle shops and bars
 //   events    upcoming fresh-hop events
 
 // Escape text for safe insertion into innerHTML (text nodes and
@@ -27,7 +28,7 @@ function formatDate(dateKey) {
 function count(n, one, many) { return `${n} ${n === 1 ? one : many}`; }
 
 const BREWERIES = n => count(n, 'brewery', 'breweries');
-const CATEGORY_LABELS = { 'fresh-hop': 'Fresh hop', festbier: 'Festbier' };
+const CATEGORY_LABELS = { 'fresh-hop': 'Fresh hop', festbier: 'Festbier', pumpkin: 'Pumpkin' };
 const PAGES = {
     freshhop: {
         venueType: type => type !== 'bar',
@@ -43,12 +44,19 @@ const PAGES = {
         beers: n => count(n, 'festbier or Oktoberfest beer', 'festbiers and Oktoberfest beers'),
         none: 'no festbiers',
     },
+    pumpkin: {
+        venueType: type => type !== 'bar',
+        categories: ['pumpkin'],
+        places: BREWERIES,
+        beers: n => count(n, 'pumpkin beer', 'pumpkin beers'),
+        none: 'no pumpkin beers',
+    },
     bars: {
         venueType: type => type === 'bar',
-        categories: ['fresh-hop', 'festbier'],
+        categories: ['fresh-hop', 'festbier', 'pumpkin'],
         places: n => count(n, 'bottle shop or bar', 'bottle shops and bars'),
-        beers: n => count(n, 'fresh-hop beer or festbier', 'fresh-hop beers and festbiers'),
-        none: 'no fresh hops or festbiers',
+        beers: n => count(n, 'fresh-hop, festbier, or pumpkin beer', 'fresh-hop, festbier, and pumpkin beers'),
+        none: 'no fresh hops, festbiers, or pumpkin beers',
         tags: true,
     },
     events: { events: true },

@@ -88,10 +88,11 @@ def test_bottle_shops_and_bars_are_typed(site: SiteConfig) -> None:
     }
 
 
-def test_template_has_the_three_pages() -> None:
+def test_template_has_every_page() -> None:
     for page in (
         "index.html",
         "festbier.html",
+        "pumpkin.html",
         "bars.html",
         "events.html",
         "app.js",
@@ -101,6 +102,7 @@ def test_template_has_the_three_pages() -> None:
     for page, data_page in (
         ("index.html", "freshhop"),
         ("festbier.html", "festbier"),
+        ("pumpkin.html", "pumpkin"),
         ("bars.html", "bars"),
         ("events.html", "events"),
     ):
@@ -116,8 +118,14 @@ def test_template_has_the_three_pages() -> None:
         assert html.count('<a href="https://halmueller.com">Hal Mueller</a>') == 1
         assert html.count('href="https://www.linkedin.com/in/halmueller/"') == 1
         assert "Seattle Freshies" in html
-        for href in ('"./"', '"festbier.html"', '"bars.html"', '"events.html"'):
-            assert f"href={href}" in html, (page, href)
+        hrefs = re.findall(r'<nav class="tabs".*?</nav>', html, re.S)[0]
+        assert re.findall(r'href="([^"]+)"', hrefs) == [
+            "./",
+            "festbier.html",
+            "pumpkin.html",
+            "bars.html",
+            "events.html",
+        ], page
 
 
 def test_sitemap_lists_every_page(site: SiteConfig) -> None:
@@ -142,6 +150,7 @@ def test_robots_points_at_sitemap(site: SiteConfig) -> None:
     [
         ("index.html", ""),
         ("festbier.html", "festbier.html"),
+        ("pumpkin.html", "pumpkin.html"),
         ("bars.html", "bars.html"),
         ("events.html", "events.html"),
     ],
@@ -177,7 +186,8 @@ ICON_LINKS = (
 
 
 @pytest.mark.parametrize(
-    "page", ["index.html", "festbier.html", "bars.html", "events.html"]
+    "page",
+    ["index.html", "festbier.html", "pumpkin.html", "bars.html", "events.html"],
 )
 def test_pages_link_the_favicon_files(page: str) -> None:
     head = (TEMPLATES / "fresh-hop" / page).read_text().split("</head>")[0]

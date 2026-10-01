@@ -148,11 +148,56 @@ class TestFestbierCategory:
         assert not festbier.matches("Hazy Cowiche")
 
 
+class TestPumpkin:
+    @pytest.fixture
+    def pumpkin(self) -> ListingMatcher:
+        return ListingMatcher(category="pumpkin")
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "Pumpkin Ale",  # Fremont
+            "Kilty MacPumpkin",  # Postdoc
+            "Your Worst Nightmare Pumpkin Double Milk Stout",  # Cloudburst
+            "MOONSHAKE OAT STOUT: PUMPKIN EDITION",  # Bizarre
+            "Hello, Gourdgeous: A collaboration with A La Mode Pies",  # Ravenna
+            "Punkuccino - Coffee Pumpkin Ale",  # Elysian at Chuck's
+            "Jack-o'-Lantern Ale",
+            "Calabaza Blanca",
+        ],
+    )
+    def test_pumpkin_names_match(self, pumpkin: ListingMatcher, text: str) -> None:
+        assert pumpkin.matches(text)
+
+    @pytest.mark.parametrize(
+        "text", ["Fall Hornin'", "Oktoberfest Märzen", "Squash Court Saison", ""]
+    )
+    def test_other_beers_do_not_match(self, pumpkin: ListingMatcher, text: str) -> None:
+        assert not pumpkin.matches(text)
+
+    def test_style_alone_matches(self, pumpkin: ListingMatcher) -> None:
+        # Untappd lists Anderson Valley's Fall Hornin' with style "Pumpkin".
+        assert pumpkin.matches("Fall Hornin'", "Pumpkin")
+
+    def test_description_matches(self, pumpkin: ListingMatcher) -> None:
+        assert pumpkin.matches_description(
+            "A dark ale brewed with roasted pumpkin.", "Looming Specter"
+        )
+
+    def test_venue_exclude_drops_cocktail(self) -> None:
+        pumpkin = ListingMatcher.from_config(
+            {"pumpkin_exclude": [r"\bvodka\b"]}, category="pumpkin"
+        )
+        assert not pumpkin.matches("Batch 206 Vodka, Cold brew, Pumpkin Spiced Simple")
+        assert pumpkin.matches("PUMPKIN ALE")
+
+
 class TestVenueCategories:
     def test_default_is_every_category(self) -> None:
         assert [m.category for m in ListingMatcher.for_venue({})] == [
             "fresh-hop",
             "festbier",
+            "pumpkin",
         ]
 
     def test_venue_can_limit_categories(self) -> None:

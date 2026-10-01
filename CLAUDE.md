@@ -250,16 +250,18 @@ public_templates/                  # Per-site web interface templates
 │   └── index.html
 ├── kids/                          # Brooklyn children's events template
 │   └── index.html
-└── fresh-hop/                     # Seattle Freshies: 4 pages sharing app.js + styles.css
+└── fresh-hop/                     # Seattle Freshies: 5 pages sharing app.js + styles.css
     ├── index.html                 #   fresh hops at breweries
     ├── festbier.html              #   festbiers/Oktoberfests/Märzens at breweries
-    ├── bars.html                  #   both, at bottle shops & bars (venue_type "bar")
+    ├── pumpkin.html               #   pumpkin beers at breweries
+    ├── bars.html                  #   all three, at bottle shops & bars ("Taprooms" tab;
+    │                              #   venue_type "bar")
     ├── events.html                #   upcoming fresh-hop events + calendar link
     ├── app.js
     ├── analytics.js               #   TelemetryDeck loader; app ID comes from a server-only
     │                              #   analytics-config.js (deploy/digitalocean/*.example.js)
     ├── styles.css
-    ├── sitemap.xml                #   static; lists the four pages under public_url
+    ├── sitemap.xml                #   static; lists the five pages under public_url
     ├── robots.txt                 #   allows all, points at sitemap.xml
     ├── og-image.png               #   Open Graph card (1200x630)
     ├── favicon.svg                #   hop-cone icon
@@ -298,7 +300,7 @@ tests/                             # Comprehensive test suite (799 tests)
     - `HtmlSelectorParser`: Extracts events via CSS selectors (`source_type: "html"`)
     - `AjaxParser`: Fetches from JSON API endpoints (`source_type: "ajax"`)
     - `JsonLdParser`: Extracts events from schema.org JSON-LD blocks (`source_type: "json-ld"`)
-    - **Tap-list ("listing") parsers** for sites that show what is available now rather than dated events: `untappd-embed`, `untappd-venue`, `sheet-taplist`, `html-taplist`, `craftpeak-wot`, `digitalpour`, `bevwerk`, `canva`, `text-taplist`. They keep entries accepted by `utils/listing_matcher.py` in one or more categories (`fresh-hop`, `festbier`; extendable per venue) and emit `Event(kind="listing", category=...)`, which bypasses the coordinator's 7-day window, is excluded from `events.ics`, and carries `"kind"` in `data.json`/Temporal payloads only when non-default. Any event source can opt into `event_filter` (coordinator keeps only fresh-hop events, festivals included) and `event_window_days` (look further ahead than 7 days); both travel in `parser_config`, so the Temporal path honors them too. See [ADDING-VENUES.md](./ADDING-VENUES.md)
+    - **Tap-list ("listing") parsers** for sites that show what is available now rather than dated events: `untappd-embed`, `untappd-venue`, `sheet-taplist`, `html-taplist`, `craftpeak-wot`, `digitalpour`, `bevwerk`, `canva`, `text-taplist`. They keep entries accepted by `utils/listing_matcher.py` in one or more categories (`fresh-hop`, `festbier`, `pumpkin`; extendable per venue) and emit `Event(kind="listing", category=...)`, which bypasses the coordinator's 7-day window, is excluded from `events.ics`, and carries `"kind"` in `data.json`/Temporal payloads only when non-default. Any event source can opt into `event_filter` (coordinator keeps only fresh-hop events, festivals included) and `event_window_days` (look further ahead than 7 days); both travel in `parser_config`, so the Temporal path honors them too. See [ADDING-VENUES.md](./ADDING-VENUES.md)
   - **Venue-specific parsers** (9 for Ballard food trucks): StoupBallard, BaleBreaker, Obec, UrbanFamily, WheeliePop, ChucksGreenwood, SalehsCorner, ChannelMarker, LuckyEnvelope
 - **Registry**: Two-tier lookup — by `venue.key` (specific) then by `venue.source_type` (generic)
 - **Scrapers**: Async coordinator with concurrent processing, retry logic, and error isolation

@@ -379,6 +379,7 @@ class TestHtmlTaplistVenues:
             ("festbier", "FESTBIER"),
             ("festbier", "THE CLAW"),
             ("fresh-hop", "STRATA FRESH HOP"),
+            ("pumpkin", "PUMPKIN ALE"),
         ]
 
     def test_growler_guys(self, html_fixtures_dir: Path) -> None:
@@ -575,6 +576,7 @@ class TestTextTaplist:
         assert [(e.title, e.category) for e in events] == [
             ("Fresh Hop Strata Hazy IPA", "fresh-hop"),
             ("Ground Provisions Harvest Lager", "festbier"),
+            ("Pumpkin Emoji Cream Stout", "pumpkin"),
             ("Fresh Hop Lórien Pilsner", "fresh-hop"),
         ]
 

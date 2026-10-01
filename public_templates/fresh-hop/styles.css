@@ -8,6 +8,7 @@
     --accent: #b4531c;
     --leaf: #4f7a28;
     --chip: #f3e9da;
+    --pumpkin: #964f00;
     --radius: 10px;
 }
 @media (prefers-color-scheme: dark) {
@@ -20,6 +21,7 @@
         --accent: #e38a4e;
         --leaf: #9cc46b;
         --chip: #32281f;
+        --pumpkin: #f0a340;
     }
 }
 
@@ -155,11 +157,13 @@ h2 { font-size: 1.1rem; margin: 28px 0 10px; }
 }
 .tag-fresh-hop { color: var(--leaf); background: var(--chip); }
 .tag-festbier { color: var(--accent); background: var(--chip); }
+.tag-pumpkin { color: var(--pumpkin); background: var(--chip); }
 
-/* Phones: fit all four tabs and keep the credit bar to about two lines. */
+/* Phones: fit all five tabs and keep the credit bar to about two lines. */
 @media (max-width: 480px) {
     .topbar h1 { font-size: 1.25rem; padding-top: 10px; }
-    .tabs a { padding: 8px 7px; font-size: 13px; }
+    .tabs { gap: 0; }
+    .tabs a { padding: 8px 5px; font-size: 12px; }
     .credits { font-size: 11px; gap: 0 10px; padding: 6px 16px; line-height: 1.4; }
     .credits .sep { display: none; }
 }

@@ -357,8 +357,9 @@
       "url": "https://www.oldstove.com/pikeplace",
       "source_type": "canva",
       "parser_config": {
-        "note": "The Pike Place Draft List is a Canva design embedded on the page; Canva needs a browser User-Agent.",
-        "design_url": "https://www.canva.com/design/DAHA7yux_ks/Eu2izPaTaz2oVobeD7A2OQ/view?embed"
+        "note": "The Pike Place Draft List is a Canva design embedded on the page; Canva needs a browser User-Agent. The list also has cocktails; pumpkin_exclude keeps out the pumpkin-spice one.",
+        "design_url": "https://www.canva.com/design/DAHA7yux_ks/Eu2izPaTaz2oVobeD7A2OQ/view?embed",
+        "pumpkin_exclude": ["\\bvodka\\b"]
       }
     },
     {
