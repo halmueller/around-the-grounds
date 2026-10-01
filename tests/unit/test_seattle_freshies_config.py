@@ -116,7 +116,13 @@ def test_template_has_every_page() -> None:
         ) in html
         # Author credit in the pinned bottom bar; every page links every tab.
         assert html.count('<a href="https://halmueller.com">Hal Mueller</a>') == 1
-        assert html.count('href="https://www.linkedin.com/in/halmueller/"') == 1
+        assert html.count('href="https://www.linkedin.com/in/halmueller/"') == 2
+        # Byline sits between the site title and the tabs.
+        assert re.search(
+            r'</h1>\s*<p class="byline">By Ballard resident <a href="https://www.'
+            r'linkedin.com/in/halmueller/">Hal Mueller</a></p>\s*<nav class="tabs"',
+            html,
+        ), page
         assert "Seattle Freshies" in html
         hrefs = re.findall(r'<nav class="tabs".*?</nav>', html, re.S)[0]
         assert re.findall(r'href="([^"]+)"', hrefs) == [

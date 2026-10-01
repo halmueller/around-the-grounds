@@ -48,6 +48,8 @@ body {
 .topbar h1 { padding-top: 12px; font-size: 1.5rem; }
 h1 { font-size: 1.9rem; letter-spacing: -0.5px; line-height: 1.15; }
 h1 .leaf { color: var(--leaf); }
+.byline { color: var(--muted); font-size: 13px; }
+.byline a { color: inherit; }
 .tagline { color: var(--muted); font-size: 15px; }
 .summary { margin-top: 14px; font-size: 14px; }
 .summary strong { color: var(--accent); }
