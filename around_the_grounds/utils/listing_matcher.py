@@ -1,8 +1,9 @@
 """Decide which tap-list entries belong on a listing site, by category.
 
 Parsers pass every text field they have for an entry (name, style,
-description); the entry matches a category when any field hits one of its
-include patterns and no field hits one of its exclude patterns.
+description), name first; the entry matches a category when any field hits
+one of its include patterns and no field hits one of the venue's exclude
+patterns. The built-in excludes look at the name only.
 
 Built-in categories:
 
@@ -32,9 +33,10 @@ PUMPKIN = "pumpkin"
 # "brewed with fresh Simcoe hops".
 DEFAULT_INCLUDE = [r"\b(?:fresh|wet)[\s-]*hop(?:s|ped)?\b"]
 
-# Fresh-hop festivals show up in tap-list pages alongside the beers. ("\bfest\b"
-# does not match "Festbier".)
-DEFAULT_EXCLUDE = [r"\bfest(?:ival)?\b"]
+# Fresh-hop festivals show up in tap-list pages alongside the beers. Checked
+# against the name only: a beer "brewed for Fresh Hop Ale Festival" stays.
+# ("\bfest\b" does not match "Festbier", and "Fest Bier" is let through.)
+DEFAULT_EXCLUDE = [r"\bfest(?:ival)?\b(?![\s-]*b(?:ie|ee)r\b)"]
 
 # Also the patterns checked in descriptions ("our yearly golden Festbier").
 FESTBIER_CORE = [
@@ -90,10 +92,10 @@ class ListingMatcher:
         self._description_include = self._compile(
             description_include, f"{prefix}_include"
         )
-        defaults = base_exclude if default_exclude else []
-        self._exclude = self._compile(
-            defaults + list(exclude or []), f"{prefix}_exclude"
+        self._name_exclude = self._compile(
+            base_exclude if default_exclude else [], f"{prefix}_exclude"
         )
+        self._exclude = self._compile(list(exclude or []), f"{prefix}_exclude")
 
     @classmethod
     def from_config(
@@ -131,22 +133,29 @@ class ListingMatcher:
         return [cls.from_config(config, category=c) for c in categories]
 
     def matches(self, *texts: Optional[str]) -> bool:
+        """*texts* are an entry's fields, name first."""
         fields = [t for t in texts if t]
         if not any(p.search(t) for p in self._include for t in fields):
             return False
-        return not any(p.search(t) for p in self._exclude for t in fields)
+        return not self._excluded(texts)
+
+    def _excluded(self, texts: Sequence[Optional[str]]) -> bool:
+        name = texts[0] if texts else None
+        if name and any(p.search(name) for p in self._name_exclude):
+            return True
+        return any(p.search(t) for p in self._exclude for t in texts if t)
 
     def matches_description(
         self, description: Optional[str], *texts: Optional[str]
     ) -> bool:
         """Match on a beer's *description* (with the narrower description
-        patterns) when its other *texts* don't; excludes cover all of them."""
+        patterns) when its other *texts* (name first) don't; the venue's
+        excludes cover all of them."""
         if not description:
             return False
         if not any(p.search(description) for p in self._description_include):
             return False
-        fields = [t for t in texts if t] + [description]
-        return not any(p.search(t) for p in self._exclude for t in fields)
+        return not self._excluded(list(texts) + [description])
 
     @staticmethod
     def _as_list(value: Any) -> List[Any]:

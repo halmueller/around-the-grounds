@@ -191,6 +191,7 @@ class FoodTruckWorkflow:
             return {
                 "events": [],
                 "error": {
+                    "venue_key": venue_config.get("key", ""),
                     "venue_name": venue_name,
                     "message": f"Scrape activity failed: {cause}",
                     "user_message": f"Failed to fetch information for: {venue_name}",

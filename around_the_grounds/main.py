@@ -161,6 +161,7 @@ async def generate_web_data(
     events: List[Event],
     error_messages: Optional[List[str]] = None,
     site: Optional[SiteConfig] = None,
+    failed_venue_keys: Optional[List[str]] = None,
 ) -> dict:
     """Generate web-friendly JSON data from events."""
     web_events = []
@@ -273,8 +274,16 @@ async def generate_web_data(
     # which places had nothing matching. Omitted when there are none, so
     # other sites' data.json is unchanged.
     listing_venues = _listing_venues(site) if site else []
-    if listing_venues:
+    if listing_venues and site:
         web_data["listing_venues"] = listing_venues
+        # Venue names are not unique (a brewery can be both a tap-list venue
+        # and an event source), so pages attribute failures by key.
+        failed = set(failed_venue_keys or [])
+        web_data["failed_venues"] = [
+            {"key": venue.key, "name": venue.name}
+            for venue in site.venues
+            if venue.key in failed
+        ]
     return web_data
 
 
@@ -323,7 +332,9 @@ async def deploy_to_web(
 
         error_messages = [error.to_user_message() for error in errors or []]
         error_messages = list(dict.fromkeys(error_messages))
-        web_data = await generate_web_data(events, error_messages, site)
+        web_data = await generate_web_data(
+            events, error_messages, site, [error.venue.key for error in errors or []]
+        )
 
         print(f"✅ Generated web data: {len(events)} events")
         print(f"📍 Target repository: {repository_url}")
@@ -628,7 +639,9 @@ async def preview_locally(
     try:
         error_messages = [error.to_user_message() for error in errors or []]
         error_messages = list(dict.fromkeys(error_messages))
-        web_data = await generate_web_data(events, error_messages, site)
+        web_data = await generate_web_data(
+            events, error_messages, site, [error.venue.key for error in errors or []]
+        )
 
         # Determine template directory
         if site:
@@ -710,7 +723,9 @@ async def publish_to_directory(
 
         error_messages = [error.to_user_message() for error in errors or []]
         error_messages = list(dict.fromkeys(error_messages))
-        web_data = await generate_web_data(events, error_messages, site)
+        web_data = await generate_web_data(
+            events, error_messages, site, [error.venue.key for error in errors or []]
+        )
 
         staging = Path(tempfile.mkdtemp(prefix=".atg-staging-", dir=output_dir))
         _write_site_output(staging, template_dir, web_data)

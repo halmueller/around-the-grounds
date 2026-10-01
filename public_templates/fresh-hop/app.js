@@ -173,9 +173,8 @@ function renderListingsPage(data, venueInfo, listingsEl, summaryEl) {
 
     // Places checked that have nothing on right now (failed ones are named in
     // the errors line instead).
-    const errors = data.errors || [];
-    const quiet = pageVenues.filter(v =>
-        !venues.has(v.key) && !errors.some(msg => String(msg).includes(v.name)));
+    const failed = new Set((data.failed_venues || []).map(v => v.key));
+    const quiet = pageVenues.filter(v => !venues.has(v.key) && !failed.has(v.key));
     if (quiet.length) {
         showNotice('quiet', `Checked, ${esc(PAGE.none)} on right now: ` + quiet.map(v =>
             safeUrl(v.url)
@@ -203,18 +202,18 @@ fetch('data.json')
             ? (renderEventsPage(data, listingsEl, summaryEl), [])
             : renderListingsPage(data, venueInfo, listingsEl, summaryEl);
 
-        // Errors name venues ("Failed to fetch information for: <name>"). Show
-        // those for this page's tap-list venues; event sources' errors go on
-        // the events page.
-        const mentions = (msg, v) => String(msg).includes(v.name);
-        const isListingError = msg => [...venueInfo.values()].some(v => mentions(msg, v));
-        const pageErrors = (data.errors || []).filter(msg => PAGE.events
-            ? !isListingError(msg)
-            : pageVenues.some(v => mentions(msg, v)));
+        // Show failures for this page's tap-list venues; event sources'
+        // failures go on the events page. Matched by key: a brewery's tap
+        // list and its events source can share a name.
+        const onPage = new Set(pageVenues.map(v => v.key));
+        const pageErrors = (data.failed_venues || []).filter(v => PAGE.events
+            ? !venueInfo.has(v.key)
+            : onPage.has(v.key));
         if (pageErrors.length) {
             const el = document.getElementById('errors');
             el.hidden = false;
-            el.textContent = 'Couldn’t check some lists this time: ' + pageErrors.join(' ');
+            el.textContent = 'Couldn’t check some lists this time: '
+                + pageErrors.map(v => v.name).join(', ') + '.';
         }
     })
     .catch(() => {

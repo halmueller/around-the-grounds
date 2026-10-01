@@ -64,8 +64,23 @@ def test_none_fields_are_ignored(matcher: ListingMatcher) -> None:
     assert not matcher.matches(None, None)
 
 
-def test_exclusion_wins_across_fields(matcher: ListingMatcher) -> None:
-    assert not matcher.matches("Fresh Hop IPA", "Fresh Hop Fest pour")
+def test_festival_names_are_excluded(matcher: ListingMatcher) -> None:
+    assert not matcher.matches("Fresh Hop Fest")
+    assert not matcher.matches("Fresh Hop Ale Festival", "Saturday")
+
+
+def test_festival_exclude_is_name_only(matcher: ListingMatcher) -> None:
+    assert matcher.matches("Fresh Hop IPA", "Fresh Hop Fest pour")
+    assert matcher.matches_description(
+        "FRESH HOP collab brewed for Fresh Hop Ale Festival", "Collab IPA"
+    )
+    assert matcher.matches("Fresh Hop Fest Bier")
+
+
+def test_venue_exclusion_wins_across_fields() -> None:
+    matcher = ListingMatcher(exclude=["cocktail"])
+    assert not matcher.matches("Fresh Hop IPA", "Fresh Hop cocktail")
+    assert not matcher.matches_description("fresh hop cocktail", "Spritz")
 
 
 class TestFromConfig:

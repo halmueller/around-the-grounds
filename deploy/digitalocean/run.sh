@@ -29,7 +29,14 @@ status=$?
 # 75 skipped because the previous run was still going.
 echo "$(date "+%Y-%m-%dT%H:%M:%S%z") finished with exit code $status"
 
+# healthchecks.io counts any non-zero status as a failure. A partial run (2)
+# still published and a skipped run (75) is not an outage, so both ping as
+# success; only 1 and unexpected codes alert.
 if [ -n "${HEALTHCHECK_URL:-}" ]; then
-    curl -fsS -m 10 --retry 3 "$HEALTHCHECK_URL/$status" > /dev/null || true
+    case "$status" in
+        2|75) ping_status=0 ;;
+        *) ping_status=$status ;;
+    esac
+    curl -fsS -m 10 --retry 3 "$HEALTHCHECK_URL/$ping_status" > /dev/null || true
 fi
 exit "$status"

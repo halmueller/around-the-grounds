@@ -54,6 +54,7 @@ class ScrapeActivities:
         if not error:
             return None
         return {
+            "venue_key": error.venue.key,
             "venue_name": error.venue.name,
             "message": error.message,
             "user_message": error.to_user_message(),
@@ -144,9 +145,12 @@ class DeploymentActivities:
             reconstructed_events.append(event)
 
         error_messages: List[str] = []
+        failed_venue_keys: List[str] = []
         if errors:
             for error in errors:
                 if isinstance(error, dict):
+                    if error.get("venue_key"):
+                        failed_venue_keys.append(str(error["venue_key"]))
                     if "user_message" in error and error["user_message"]:
                         error_messages.append(str(error["user_message"]))
                     elif "venue_name" in error and error["venue_name"]:
@@ -159,7 +163,12 @@ class DeploymentActivities:
         error_messages = list(dict.fromkeys(error_messages))
 
         site = site_from_dict(site_dict) if site_dict else None
-        return await generate_web_data(reconstructed_events, error_messages, site=site)
+        return await generate_web_data(
+            reconstructed_events,
+            error_messages,
+            site=site,
+            failed_venue_keys=failed_venue_keys,
+        )
 
     @activity.defn
     async def deploy_to_git(self, params: Dict[str, Any]) -> bool:

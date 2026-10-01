@@ -106,6 +106,8 @@ After the next :07, check `~freshies/logs/seattle-freshies.log`:
 
 Optional: create a check at healthchecks.io (hourly, with a grace period) and
 set `HEALTHCHECK_URL` in the crontab to be emailed if runs stop or fail.
+Exit codes 2 and 75 ping as success, so one unreachable venue does not alert;
+only a run that published nothing does.
 
 ## Changes to the Apache config
 

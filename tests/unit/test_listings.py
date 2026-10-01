@@ -124,12 +124,29 @@ class TestListingVenues:
         assert "type" not in by_key["stoup-ballard-taps"]
 
     @pytest.mark.asyncio
+    async def test_failed_venues_are_attributed_by_key(self) -> None:
+        """Fremont's tap list and its events source share a name."""
+        site = load_site_config("seattle-freshies")
+        failed = [
+            v
+            for v in site.venues
+            if v.name == "Fremont Brewing (Fremont)" and not v.key.endswith("-taps")
+        ]
+        assert len(failed) == 1
+        data = await generate_web_data([], site=site, failed_venue_keys=[failed[0].key])
+        assert data["failed_venues"] == [
+            {"key": failed[0].key, "name": "Fremont Brewing (Fremont)"}
+        ]
+        assert failed[0].key not in [v["key"] for v in data["listing_venues"]]
+
+    @pytest.mark.asyncio
     @pytest.mark.parametrize(
         "site_key", ["ballard-food-trucks", "park-slope-music", "childrens-events"]
     )
     async def test_other_sites_are_unchanged(self, site_key: str) -> None:
         data = await generate_web_data([], site=load_site_config(site_key))
         assert "listing_venues" not in data
+        assert "failed_venues" not in data
 
     def test_only_tap_list_parsers_produce_listings(self) -> None:
         listing_types = {
