@@ -297,7 +297,7 @@ def _listing_venues(site: SiteConfig) -> List[dict]:
             continue
         if getattr(parser_class, "PRODUCES_LISTINGS", False):
             entry = {"key": venue.key, "name": venue.name, "url": venue.url}
-            # Optional grouping for templates, e.g. "bar" vs brewery taprooms.
+            # Optional grouping for templates, e.g. "taproom" (bottle shops and taprooms) vs breweries.
             venue_type = (venue.parser_config or {}).get("venue_type")
             if venue_type:
                 entry["type"] = venue_type

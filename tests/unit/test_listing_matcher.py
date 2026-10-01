@@ -1,5 +1,5 @@
 """Tests for the fresh-hop listing matcher. Cases are real tap-list text
-collected from Seattle breweries and bars in September 2026."""
+collected from Seattle breweries and taprooms in September 2026."""
 
 import pytest
 

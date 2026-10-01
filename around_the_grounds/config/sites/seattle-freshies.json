@@ -24,7 +24,7 @@
       "parser_config": {
         "location_id": 3026,
         "theme_id": 8580,
-        "venue_type": "bar"
+        "venue_type": "taproom"
       }
     },
     {
@@ -35,7 +35,7 @@
       "parser_config": {
         "company_id": "590e40cc5e002c09f467f375",
         "location_id": 1,
-        "venue_type": "bar"
+        "venue_type": "taproom"
       }
     },
     {
@@ -46,7 +46,7 @@
       "parser_config": {
         "location_id": 30360,
         "theme_id": 116970,
-        "venue_type": "bar"
+        "venue_type": "taproom"
       }
     },
     {
@@ -86,7 +86,7 @@
       "parser_config": {
         "location_id": 15438,
         "theme_id": 57577,
-        "venue_type": "bar"
+        "venue_type": "taproom"
       }
     },
     {
@@ -105,7 +105,7 @@
         },
         "brewery_separator": ":",
         "skip_prefix": "-",
-        "venue_type": "bar",
+        "venue_type": "taproom",
         "name_remove": "\\s*\\(\\.?\\d[^)]*L\\b[^)]*\\)\\s*$"
       }
     },
@@ -125,7 +125,7 @@
         },
         "brewery_separator": ":",
         "skip_prefix": "-",
-        "venue_type": "bar",
+        "venue_type": "taproom",
         "name_remove": "\\s*\\(\\.?\\d[^)]*L\\b[^)]*\\)\\s*$"
       }
     },
@@ -145,7 +145,7 @@
         },
         "brewery_separator": ":",
         "skip_prefix": "-",
-        "venue_type": "bar",
+        "venue_type": "taproom",
         "name_remove": "\\s*\\(\\.?\\d[^)]*L\\b[^)]*\\)\\s*$"
       }
     },
@@ -167,7 +167,7 @@
       "url": "https://www.diebierstube.com/bier",
       "source_type": "html-taplist",
       "parser_config": {
-        "venue_type": "bar",
+        "venue_type": "taproom",
         "item": ".menus > .menu:first-of-type .menu-item",
         "name": ".menu-item-title",
         "match_whole_item": true
@@ -247,7 +247,7 @@
       "url": "https://thegrowlerguys.com/locations/seattle-northeast/",
       "source_type": "html-taplist",
       "parser_config": {
-        "venue_type": "bar",
+        "venue_type": "taproom",
         "item": "ul.tap-list > li",
         "name": ".beerName .title",
         "style": ".beerName .style",
@@ -299,7 +299,7 @@
       "parser_config": {
         "location_id": 16927,
         "theme_id": 63533,
-        "venue_type": "bar"
+        "venue_type": "taproom"
       }
     },
     {
@@ -380,7 +380,7 @@
       "parser_config": {
         "location_id": 45275,
         "theme_id": 170957,
-        "venue_type": "bar"
+        "venue_type": "taproom"
       }
     },
     {
@@ -411,7 +411,7 @@
       "url": "https://www.prosttavern.net/bier",
       "source_type": "html-taplist",
       "parser_config": {
-        "venue_type": "bar",
+        "venue_type": "taproom",
         "item": ".menus > .menu:first-of-type .menu-item",
         "name": ".menu-item-title",
         "match_whole_item": true
@@ -423,7 +423,7 @@
       "url": "https://www.prostwestseattle.com/bier",
       "source_type": "html-taplist",
       "parser_config": {
-        "venue_type": "bar",
+        "venue_type": "taproom",
         "item": ".menus > .menu:first-of-type .menu-item",
         "name": ".menu-item-title",
         "match_whole_item": true
@@ -536,7 +536,7 @@
       "url": "https://watershedpub.com/lets-drink",
       "source_type": "bevwerk",
       "parser_config": {
-        "venue_type": "bar",
+        "venue_type": "taproom",
         "taplist_id": "3670c864-6020-4ec6-9088-53bd97020edd"
       }
     },

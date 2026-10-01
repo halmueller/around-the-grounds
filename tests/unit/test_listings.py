@@ -120,7 +120,7 @@ class TestListingVenues:
         site = load_site_config("seattle-freshies")
         data = await generate_web_data([], site=site)
         by_key = {v["key"]: v for v in data["listing_venues"]}
-        assert by_key["chucks-greenwood-taps"]["type"] == "bar"
+        assert by_key["chucks-greenwood-taps"]["type"] == "taproom"
         assert "type" not in by_key["stoup-ballard-taps"]
 
     @pytest.mark.asyncio

@@ -64,9 +64,9 @@ def test_event_sources_filter_for_fresh_hop_and_look_ahead(site: SiteConfig) -> 
         assert config.get("event_window_days", 0) > 7, venue.key
 
 
-def test_bottle_shops_and_bars_are_typed(site: SiteConfig) -> None:
-    bars = {v.key for v in site.venues if (v.parser_config or {}).get("venue_type")}
-    assert bars == {
+def test_bottle_shops_and_taprooms_are_typed(site: SiteConfig) -> None:
+    taprooms = {v.key for v in site.venues if (v.parser_config or {}).get("venue_type")}
+    assert taprooms == {
         "beer-junction-taps",
         "beer-star-taps",
         "beveridge-place-taps",
@@ -83,7 +83,7 @@ def test_bottle_shops_and_bars_are_typed(site: SiteConfig) -> None:
         "watershed-taps",
     }
     assert {(v.parser_config or {}).get("venue_type") for v in site.venues} == {
-        "bar",
+        "taproom",
         None,
     }
 
@@ -93,7 +93,7 @@ def test_template_has_every_page() -> None:
         "index.html",
         "festbier.html",
         "pumpkin.html",
-        "bars.html",
+        "taprooms.html",
         "events.html",
         "app.js",
         "styles.css",
@@ -103,7 +103,7 @@ def test_template_has_every_page() -> None:
         ("index.html", "freshhop"),
         ("festbier.html", "festbier"),
         ("pumpkin.html", "pumpkin"),
-        ("bars.html", "bars"),
+        ("taprooms.html", "taprooms"),
         ("events.html", "events"),
     ):
         html = (TEMPLATES / "fresh-hop" / page).read_text()
@@ -123,7 +123,7 @@ def test_template_has_every_page() -> None:
             "./",
             "festbier.html",
             "pumpkin.html",
-            "bars.html",
+            "taprooms.html",
             "events.html",
         ], page
 
@@ -151,7 +151,7 @@ def test_robots_points_at_sitemap(site: SiteConfig) -> None:
         ("index.html", ""),
         ("festbier.html", "festbier.html"),
         ("pumpkin.html", "pumpkin.html"),
-        ("bars.html", "bars.html"),
+        ("taprooms.html", "taprooms.html"),
         ("events.html", "events.html"),
     ],
 )
@@ -187,7 +187,7 @@ ICON_LINKS = (
 
 @pytest.mark.parametrize(
     "page",
-    ["index.html", "festbier.html", "pumpkin.html", "bars.html", "events.html"],
+    ["index.html", "festbier.html", "pumpkin.html", "taprooms.html", "events.html"],
 )
 def test_pages_link_the_favicon_files(page: str) -> None:
     head = (TEMPLATES / "fresh-hop" / page).read_text().split("</head>")[0]
