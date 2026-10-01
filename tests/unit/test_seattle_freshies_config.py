@@ -120,7 +120,8 @@ def test_template_has_every_page() -> None:
         # Byline sits between the site title and the tabs.
         assert re.search(
             r'</h1>\s*<p class="byline">By Ballard resident <a href="https://www.'
-            r'linkedin.com/in/halmueller/">Hal Mueller</a></p>\s*<nav class="tabs"',
+            r'linkedin.com/in/halmueller/">Hal Mueller</a> with the help of '
+            r'<a href="https://claude.ai">Claude Code</a></p>\s*<nav class="tabs"',
             html,
         ), page
         assert "Seattle Freshies" in html
