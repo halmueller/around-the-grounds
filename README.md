@@ -1,16 +1,19 @@
 # Around the Grounds 🍺🎫
 
-A multi-site event aggregator written in Python. Each site you want to publish is described by a single JSON config file in `config/sites/`. The CLI scrapes the configured venues, generates a static site, and pushes it to a GitHub-hosted target repo. **You can use this codebase to publish your own event site without writing parser code, as long as the venues you want to track use platforms the generic parsers already understand** (WordPress, HTML with CSS selectors, AJAX/JSON APIs, JSON-LD).
+A multi-site event aggregator written in Python. Each site you want to publish is described by a single JSON config file in `config/sites/`. The CLI scrapes the configured venues, generates a static site, and pushes it to a GitHub-hosted target repo. **You can use this codebase to publish your own event site without writing parser code, as long as the venues you want to track use platforms the generic parsers already understand** (WordPress, HTML with CSS selectors, AJAX/JSON APIs, JSON-LD, and a set of tap-list platforms such as Untappd, DigitalPour, and Google Sheets).
 
 ## Live sites running on this codebase
 
-Three sites publish from this repo today, on three different host setups, all from the same code:
+Four sites publish from this repo today, on three different host setups, all from the same code:
 
 | Site | Live URL | Hosting | Updates |
 |---|---|---|---|
 | **Food Trucks in Ballard** | <https://www.ballardfoodtrucks.com> | Vercel (watches `public/` subdir of [`steveandroulakis/ballard-food-trucks`](https://github.com/steveandroulakis/ballard-food-trucks)) | Self-hosted Temporal worker, hourly |
 | **Park Slope Music** | <https://jredding.github.io/atg-park-slope-music/> | GitHub Pages from [`jredding/atg-park-slope-music`](https://github.com/jredding/atg-park-slope-music) repo root | Google Cloud Run Job, daily |
 | **Brooklyn Children's Events** | <https://jredding.github.io/atg-childrens-events/> | GitHub Pages from [`jredding/atg-childrens-events`](https://github.com/jredding/atg-childrens-events) repo root | Google Cloud Run Job, daily |
+| **Seattle Freshies** | <https://seattlefreshies.com> | Apache on a DigitalOcean droplet; published straight into the web root with `--output-dir` (no target repo) | cron, hourly |
+
+Seattle Freshies is a tap-list site rather than an event calendar: it shows which fresh-hop, festbier, and pumpkin beers are pouring right now at 46 Seattle breweries and taprooms, plus upcoming fresh-hop events from 6 more sources. It can easily be expanded to include other seasonal beers, such as winter ales.
 
 The Ballard site adds AI haikus (Claude Sonnet 4.6, grounded in real-time weather from Open-Meteo) and AI vision analysis (Claude Vision API) for vendor names extracted from food-truck logo posts where text scraping isn't enough.
 
@@ -46,6 +49,7 @@ uv run around-the-grounds
 # Run a specific site
 uv run around-the-grounds --site park-slope-music
 uv run around-the-grounds --site childrens-events
+uv run around-the-grounds --site seattle-freshies
 
 # Run all configured sites
 uv run around-the-grounds --site all
@@ -54,6 +58,16 @@ uv run around-the-grounds --site all
 uv run around-the-grounds --site ballard-food-trucks --preview
 cd public && python -m http.server 8000   # then open http://localhost:8000
 ```
+
+`--preview` always writes to the same `public/` directory, so `--site all --preview` leaves only the last site's files there.
+
+### Exit codes
+
+| Exit code | Meaning |
+|---|---|
+| 0 | Clean run |
+| 2 | Every site produced output, but at least one venue failed |
+| 1 | A site scraped nothing, or a requested deploy, preview, or publish failed |
 
 ### Example output
 
@@ -114,13 +128,13 @@ Create `around_the_grounds/config/sites/<your-site-key>.json`. Cribbing from `pa
 }
 ```
 
-The supported `source_type` values are `wordpress`, `html` (CSS selectors), `ajax` (JSON API), and `json-ld` (schema.org JSON-LD). Each has its own `parser_config` shape — see [ADDING-VENUES.md](./ADDING-VENUES.md) for the field-by-field reference and examples for each platform.
+The supported `source_type` values for dated events are `wordpress`, `html` (CSS selectors), `ajax` (JSON API), `json-ld` (schema.org JSON-LD), and `squarespace-events`. Tap-list sites use the listing parsers instead: `untappd-embed`, `untappd-venue`, `sheet-taplist`, `html-taplist`, `craftpeak-wot`, `digitalpour`, `bevwerk`, `canva`, and `text-taplist`. Each has its own `parser_config` shape — see [ADDING-VENUES.md](./ADDING-VENUES.md) for the field-by-field reference and examples for each platform.
 
 If a venue uses a platform none of these handle, you can add a venue-specific parser in `around_the_grounds/parsers/` and register it in `parsers/registry.py`. There are nine such hand-written parsers already in the repo (Stoup, Yonder/Bale Breaker, Obec, Urban Family, Wheelie Pop, Chuck's, Saleh's, Channel Marker, Lucky Envelope) you can use as templates.
 
 ### 3. (Optional) Customize the template
 
-`public_templates/` holds one directory per template. Copying an existing one (`food-trucks/`, `music/`, `kids/`) and tweaking the HTML/CSS is the easiest path. The template reads from `data.json` written next to it; see any existing template's `index.html` for the available fields.
+`public_templates/` holds one directory per template. Copying an existing one (`food-trucks/`, `music/`, `kids/`, `fresh-hop/`) and tweaking the HTML/CSS is the easiest path. The template reads from `data.json` written next to it; see any existing template's `index.html` for the available fields.
 
 ### 4. Preview locally
 
@@ -170,7 +184,7 @@ For full deployment details, GitHub App permissions, and troubleshooting, see [D
 
 ## Scheduled updates
 
-You don't need scheduled updates to use this project — you can re-run `--deploy` from any machine, by hand or from `cron`. The two scheduling options below are what the live sites use, and either works for whatever you publish.
+You don't need scheduled updates to use this project — you can re-run `--deploy` from any machine, by hand or from `cron`. The three scheduling options below are what the live sites use, and either works for whatever you publish.
 
 ### Option A: Temporal worker (used by Ballard)
 
@@ -197,6 +211,16 @@ uv run around-the-grounds --site <site-key> --deploy
 
 The Docker image is built and pushed by the GCP Artifact Registry workflow in `.github/workflows/docker-build-push.yml`.
 
+### Option C: cron on a web host (used by Seattle Freshies)
+
+No target repo and no GitHub App: cron runs the CLI on the web server and publishes into the document root.
+
+```sh
+uv run around-the-grounds --site seattle-freshies --output-dir /var/www/seattlefreshies.com
+```
+
+`--output-dir` takes exactly one site. Files are staged and swapped in, unrelated files in the directory are left alone, and if every venue fails nothing is written, so the last good copy stays up. See [deploy/digitalocean/README.md](./deploy/digitalocean/README.md) for the Apache config, the cron wrapper (`run.sh`), and the optional healthchecks.io ping.
+
 ## Configuration reference
 
 ### Site config fields (`config/sites/<key>.json`)
@@ -207,7 +231,7 @@ The Docker image is built and pushed by the GCP Artifact Registry workflow in `.
 | `name` | ✓ | — | Human-readable site name shown in `data.json` and commit messages |
 | `template` | ✓ | — | Subdirectory of `public_templates/` to use |
 | `timezone` | ✓ | — | IANA timezone (e.g. `America/Los_Angeles`) |
-| `target_repo` | recommended | `""` | HTTPS URL of the target GitHub repo |
+| `target_repo` | recommended | `""` | HTTPS URL of the target GitHub repo. A site without one is preview-only: `--deploy` skips it |
 | `deploy_subdir` | optional | `""` | Empty → root mode (force-push). Non-empty → subdir mode (clone + scoped add) |
 | `generate_description` | optional | `true` | Set to `false` to opt out of AI haiku generation |
 | `venues` | ✓ | — | List of venue objects (see below) |
@@ -219,7 +243,7 @@ The Docker image is built and pushed by the GCP Artifact Registry workflow in `.
 | `key` | ✓ | Stable slug, used by the parser registry |
 | `name` | ✓ | Display name |
 | `url` | ✓ | URL the parser fetches |
-| `source_type` | optional | `wordpress`, `html`, `ajax`, `json-ld`, or omitted to use a venue-specific parser registered by `key` |
+| `source_type` | optional | An event platform (`wordpress`, `html`, `ajax`, `json-ld`, `squarespace-events`), a tap-list platform (see [ADDING-VENUES.md](./ADDING-VENUES.md)), or omitted to use a venue-specific parser registered by `key` |
 | `parser_config` | optional | Parser-specific configuration. See [ADDING-VENUES.md](./ADDING-VENUES.md) |
 
 ### Environment variables
@@ -251,14 +275,14 @@ GIT_REPOSITORY_URL=https://github.com/username/target-repo.git
 
 ## Architecture at a glance
 
-- **CLI entry**: `around_the_grounds/main.py` — `--site`, `--preview`, `--deploy`, `--config`
+- **CLI entry**: `around_the_grounds/main.py` — `--site`, `--preview`, `--deploy`, `--output-dir`, `--config`
 - **Site loader**: `around_the_grounds/config/loader.py` — reads `config/sites/*.json` into `SiteConfig`
-- **Parsers**: `parsers/generic/` (config-driven, four platforms) and `parsers/<venue>.py` (hand-written, registered in `parsers/registry.py`)
+- **Parsers**: `parsers/generic/` (config-driven event and tap-list platforms) and `parsers/<venue>.py` (hand-written, registered in `parsers/registry.py`)
 - **Scraper coordinator**: `scrapers/coordinator.py` — async, concurrent, error-isolated
 - **Web data + deploy**: `main.py:generate_web_data` and `main.py:_deploy_with_github_auth` — the single source of truth for both CLI and Temporal paths
 - **Temporal**: `temporal/workflows.py` (workflow), `temporal/activities.py` (activities), `temporal/worker.py` (worker process). The workflow resolves a `site_key`, calls a `load_site` activity to fetch `SiteConfig`, scrapes per-venue in parallel batches, and delegates `generate_web_data` and `deploy_to_git` to the same `main.py` functions the CLI uses
 - **Templates**: `public_templates/<template>/` — one directory per template, copied verbatim into the target repo at deploy time
-- **Tests**: 490 tests (`uv run python -m pytest`) covering parsers, generic platforms, scraper coordinator, AI utilities, weather, multi-site deploy strategies, and Temporal activity contracts
+- **Tests**: 945 tests (`uv run python -m pytest`) covering parsers, generic platforms, tap-list matching, scraper coordinator, AI utilities, weather, multi-site deploy strategies, and Temporal activity contracts
 
 For the full architecture rundown including the deploy strategy decision tree, the AI subsystems, and the testing strategy, see [CLAUDE.md](./CLAUDE.md).
 
@@ -270,6 +294,7 @@ For the full architecture rundown including the deploy strategy decision tree, t
 | [ADDING-VENUES.md](./ADDING-VENUES.md) | Generic-vs-venue-specific parser decision tree, per-platform config fields |
 | [DEPLOYMENT.MD](./DEPLOYMENT.MD) | GitHub App setup and deploy strategy details |
 | [WEB-DEPLOYMENT.md](./WEB-DEPLOYMENT.md) | End-to-end deployment walkthrough and troubleshooting |
+| [deploy/digitalocean/README.md](./deploy/digitalocean/README.md) | Publishing with cron and `--output-dir` on a web host (Seattle Freshies) |
 | [SCHEDULES.md](./SCHEDULES.md) | Temporal schedule management commands |
 | [HAIKU-GENERATOR.md](./HAIKU-GENERATOR.md) | Haiku generator configuration and prompt customization |
 | [VISION-ANALYSIS.md](./VISION-ANALYSIS.md) | Claude Vision integration for vendor identification |
@@ -281,7 +306,7 @@ For the full architecture rundown including the deploy strategy decision tree, t
 
 ```bash
 uv sync --dev                          # Install dev dependencies
-uv run python -m pytest                # Full test suite (490 tests)
+uv run python -m pytest                # Full test suite (945 tests)
 uv run black .                         # Format
 uv run flake8                          # Lint
 uv run mypy around_the_grounds/        # Type check

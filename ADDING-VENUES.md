@@ -146,6 +146,10 @@ yearly golden Festbier"), and any `pumpkin` word ("brewed with roasted
 pumpkin"). Harvest lager, Dunkel, and Weizenbock count only in the name or
 style.
 
+Festivals named on a tap-list page ("Fresh Hop Fest") are dropped from
+`fresh-hop` by the beer's name only, so a beer "brewed for Fresh Hop Ale
+Festival" or named "Fresh Hop Fest Bier" stays.
+
 An entry matching several categories yields one listing per category, and each listing carries
 `category` in `data.json`. Per venue:
 
@@ -155,7 +159,7 @@ An entry matching several categories yields one listing per category, and each l
 | `festbier_include` / `festbier_exclude` | Extra festbier patterns |
 | `pumpkin_include` / `pumpkin_exclude` | Extra pumpkin patterns (e.g. Old Stove Pike Place's `"\\bvodka\\b"` drops a cocktail) |
 | `listing_categories` | Limit the venue to some categories (default: all) |
-| `venue_type` | Grouping for templates: `"bar"` for bottle shops/bars (default: brewery) |
+| `venue_type` | Grouping for templates: `"taproom"` for bottle shops/taprooms (default: brewery) |
 | `timezone` | Site-local "today" for listing dates |
 
 A site with listing venues also gets `listing_venues` (key, name, url) in
@@ -239,7 +243,7 @@ Available templates in `public_templates/`:
 - `food-trucks` — dark theme, food truck oriented
 - `music` — dark theme, music/show oriented
 - `kids` — bright/playful theme, children's event oriented
-- `fresh-hop` — tap-list ("listing") sites: five pages sharing `app.js`/`styles.css` under a pinned tab bar — fresh hops at breweries (`index.html`), festbiers at breweries (`festbier.html`), pumpkin beers at breweries (`pumpkin.html`), all three at bottle shops and bars (`bars.html`, the "Taprooms" tab, venues with `venue_type: "bar"`), and dated events (`events.html`)
+- `fresh-hop` — tap-list ("listing") sites: five pages sharing `app.js`/`styles.css` under a pinned tab bar — fresh hops at breweries (`index.html`), festbiers at breweries (`festbier.html`), pumpkin beers at breweries (`pumpkin.html`), all three at bottle shops and taprooms (`taprooms.html`, the "Taprooms" tab, venues with `venue_type: "taproom"`), and dated events (`events.html`)
 
 To create a new template, add a directory under `public_templates/` with at least an `index.html`.
 
