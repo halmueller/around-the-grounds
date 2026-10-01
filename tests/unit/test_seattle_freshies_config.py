@@ -121,7 +121,10 @@ def test_template_has_every_page() -> None:
         assert re.search(
             r'</h1>\s*<p class="byline">By Ballard resident <a href="https://www.'
             r'linkedin.com/in/halmueller/">Hal Mueller</a> with the help of '
-            r'<a href="https://claude.ai">Claude Code</a></p>\s*<nav class="tabs"',
+            r'<a href="https://claude.ai">Claude Code</a></p>\s*'
+            r'<p class="byline">For food trucks at Ballard breweries, see '
+            r'<a href="https://www.ballardfoodtrucks.com">ballardfoodtrucks.com</a>'
+            r'</p>\s*<nav class="tabs"',
             html,
         ), page
         assert "Seattle Freshies" in html
