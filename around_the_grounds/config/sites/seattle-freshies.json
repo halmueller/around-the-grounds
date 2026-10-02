@@ -17,6 +17,17 @@
       }
     },
     {
+      "key": "beardslee-taps",
+      "name": "Beardslee Public House (Bothell)",
+      "url": "https://beardsleeph.com/menu/",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "The restaurant's whole menu is one page; only the 'Beardslee Beer' group is the house tap list.",
+        "item": "section.bph-group:has(> h3:-soup-contains(\"Beardslee Beer\")) li.bph-item",
+        "name": "h4"
+      }
+    },
+    {
       "key": "beer-junction-taps",
       "name": "The Beer Junction (West Seattle)",
       "url": "https://www.thebeerjunction.com/tap-list",
@@ -76,6 +87,28 @@
         "listing_include": [
           "fresh hoppy"
         ]
+      }
+    },
+    {
+      "key": "black-raven-redmond-taps",
+      "name": "Black Raven Brewing (Redmond)",
+      "url": "https://blackravenbrewing.com/pages/on-tap-redmond",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 25735,
+        "theme_id": 98586,
+        "menu_name": "BLACK RAVEN REDMOND"
+      }
+    },
+    {
+      "key": "black-raven-woodinville-taps",
+      "name": "Black Raven Brewing (Woodinville)",
+      "url": "https://blackravenbrewing.com/pages/on-tap",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 25735,
+        "theme_id": 98586,
+        "menu_name": "BLACK RAVEN WOODINVILLE"
       }
     },
     {
@@ -213,6 +246,32 @@
       }
     },
     {
+      "key": "formula-taps",
+      "name": "Formula Brewing (Issaquah)",
+      "url": "https://www.formulabrewing.com/beer-drinks-menu",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "Squarespace text blocks: each beer is a paragraph, 'NAME – 7.2% ABV' in bold, then its style on the next line.",
+        "item": ".sqs-html-content p:has(> strong):-soup-contains(\"%\")",
+        "name": "strong",
+        "name_pattern": "^(?P<name>.+?)\\s*[-–]\\s*\\d",
+        "style_pattern": "%(?:\\s*ABV)?\\s+(.+)$"
+      }
+    },
+    {
+      "key": "four-generals-taps",
+      "name": "Four Generals Brewing (Renton)",
+      "url": "https://www.fourgenerals.com/beers/",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "Tables of name, style, ABV. A leading * marks a beer that is temporarily out of stock; those rows are skipped.",
+        "item": ".entry-content table tr:not(:has(td:first-child:-soup-contains(\"*\")))",
+        "name": "td:nth-of-type(1)",
+        "style": "td:nth-of-type(2)",
+        "abv": "td:nth-of-type(3)"
+      }
+    },
+    {
       "key": "fremont-columbia-city-taps",
       "name": "Fremont Brewing (Columbia City)",
       "url": "https://www.fremontbrewing.com/taplist",
@@ -311,6 +370,17 @@
         "location_id": 16927,
         "theme_id": 63533,
         "venue_type": "taproom"
+      }
+    },
+    {
+      "key": "logan-burien-taps",
+      "name": "Logan Brewing (Burien)",
+      "url": "https://www.logan.beer/burien-taproom",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "Squarespace menu block; the title holds name and style together, the description starts with the ABV.",
+        "item": ".menu-item",
+        "name": ".menu-item-title"
       }
     },
     {

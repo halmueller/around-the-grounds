@@ -282,7 +282,7 @@ GIT_REPOSITORY_URL=https://github.com/username/target-repo.git
 - **Web data + deploy**: `main.py:generate_web_data` and `main.py:_deploy_with_github_auth` — the single source of truth for both CLI and Temporal paths
 - **Temporal**: `temporal/workflows.py` (workflow), `temporal/activities.py` (activities), `temporal/worker.py` (worker process). The workflow resolves a `site_key`, calls a `load_site` activity to fetch `SiteConfig`, scrapes per-venue in parallel batches, and delegates `generate_web_data` and `deploy_to_git` to the same `main.py` functions the CLI uses
 - **Templates**: `public_templates/<template>/` — one directory per template, copied verbatim into the target repo at deploy time
-- **Tests**: 969 tests (`uv run python -m pytest`) covering parsers, generic platforms, tap-list matching, scraper coordinator, AI utilities, weather, multi-site deploy strategies, and Temporal activity contracts
+- **Tests**: 974 tests (`uv run python -m pytest`) covering parsers, generic platforms, tap-list matching, scraper coordinator, AI utilities, weather, multi-site deploy strategies, and Temporal activity contracts
 
 For the full architecture rundown including the deploy strategy decision tree, the AI subsystems, and the testing strategy, see [CLAUDE.md](./CLAUDE.md).
 
@@ -306,7 +306,7 @@ For the full architecture rundown including the deploy strategy decision tree, t
 
 ```bash
 uv sync --dev                          # Install dev dependencies
-uv run python -m pytest                # Full test suite (969 tests)
+uv run python -m pytest                # Full test suite (974 tests)
 uv run black .                         # Format
 uv run flake8                          # Lint
 uv run mypy around_the_grounds/        # Type check

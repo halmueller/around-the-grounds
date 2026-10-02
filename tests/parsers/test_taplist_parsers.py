@@ -66,6 +66,10 @@ CONFIGS: Dict[str, Dict[str, Any]] = {
         "big_time": "big-time-taps",
         "machine_house": "machine-house-taps",
         "ladd_and_lass": "ladd-and-lass-taps",
+        "beardslee": "beardslee-taps",
+        "formula": "formula-taps",
+        "four_generals": "four-generals-taps",
+        "logan": "logan-burien-taps",
     }.items()
 }
 
@@ -451,6 +455,72 @@ class TestHtmlTaplistVenues:
                 events = await HtmlTaplistParser(venue).parse(session)
         assert [e.category for e in events] == ["fresh-hop"] * 3 + ["festbier"]
         assert events[0].description == "6.8%"
+
+
+class TestNearbyBreweries:
+    """Pages saved on 2026-10-01."""
+
+    def test_beardslee_reads_only_the_house_beer_group(
+        self, html_fixtures_dir: Path
+    ) -> None:
+        entries = parse_html_taplist(
+            page(html_fixtures_dir, "taplist_beardslee"), CONFIGS["beardslee"]
+        )
+        assert len(entries) == 10
+        assert (entries[0].name, entries[0].abv) == ("Pineapple IPA", "5.75%")
+        assert "Ponderosa Pilsner" in [e.name for e in entries]
+
+    def test_formula_name_style_and_abv(self, html_fixtures_dir: Path) -> None:
+        entries = parse_html_taplist(
+            page(html_fixtures_dir, "taplist_formula"), CONFIGS["formula"]
+        )
+        assert len(entries) == 16
+        assert [(e.name, e.style, e.abv) for e in fresh(entries)] == [
+            ("CONE SHATTERED DREAMS", "Strata Fresh Hop West Coast IPA", "7.2%")
+        ]
+        # A beer listed without "ABV" after its percentage.
+        assert ("COMPLETE CHAOS (10oz. pour)", "British Imperial Stout", "12.5%") in [
+            (e.name, e.style, e.abv) for e in entries
+        ]
+
+    def test_four_generals_skips_out_of_stock_rows(
+        self, html_fixtures_dir: Path
+    ) -> None:
+        venue = Venue(
+            "four-generals-taps",
+            "Four Generals",
+            "https://www.fourgenerals.com/beers/",
+            "html-taplist",
+            CONFIGS["four_generals"],
+        )
+        entries = parse_html_taplist(
+            page(html_fixtures_dir, "taplist_four_generals"), CONFIGS["four_generals"]
+        )
+        names = [e.name for e in entries]
+        assert "Altbier" in names
+        assert not any("Vienna" in n or "Kölsch" in n for n in names)  # "* Vienna"
+        events = build_listings(venue, entries, "html", LOGGER)
+        assert [(e.title, e.category, e.description) for e in events] == [
+            ("Rauch Märzen", "festbier", "Bamberg style smoked Amber Lager · 4.9%"),
+            ("Festbier", "festbier", "Modern Oktoberfest · 6.4%"),
+        ]
+
+    def test_logan_menu_block(self, html_fixtures_dir: Path) -> None:
+        venue = Venue(
+            "logan-burien-taps",
+            "Logan",
+            "https://www.logan.beer/burien-taproom",
+            "html-taplist",
+            CONFIGS["logan"],
+        )
+        entries = parse_html_taplist(
+            page(html_fixtures_dir, "taplist_logan"), CONFIGS["logan"]
+        )
+        assert len(entries) == 22
+        events = build_listings(venue, entries, "html", LOGGER)
+        assert [(e.title, e.category, e.description) for e in events] == [
+            ("OCTOROK Märzen Oktoberfest Lager", "festbier", "6.3%")
+        ]
 
 
 class TestTextTaplist:

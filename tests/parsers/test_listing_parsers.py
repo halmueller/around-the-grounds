@@ -285,6 +285,20 @@ class TestUntappdEmbedMenu:
         assert "Jimothy And the Giant Peach" not in kenmore
         assert "Kenmore Oktoberfest" in kenmore
 
+    def test_compact_theme_with_tabs(self, fixtures_dir: Path) -> None:
+        """Black Raven (saved 2026-10-01): names are bare ``h4.item``
+        elements and tabs are titled by ``.menu-info .h2``."""
+        html = decode_embed_html(_embed_script(fixtures_dir, "black_raven"))
+        woodinville = parse_embed_menu(html, "BLACK RAVEN WOODINVILLE")
+        redmond = parse_embed_menu(html, "black raven redmond")
+        assert len(woodinville) + len(redmond) == len(parse_embed_menu(html)) == 43
+        first = woodinville[0]
+        assert (first.name, first.style, first.abv) == (
+            "Moon Tower Lager",
+            "American Lager",
+            "4.5%",
+        )
+
     def test_unknown_menu_name_raises(self, fixtures_dir: Path) -> None:
         html = decode_embed_html(_embed_script(fixtures_dir, "postdoc"))
         with pytest.raises(ValueError, match="no menu named 'Bothell'"):

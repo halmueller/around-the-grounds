@@ -10,6 +10,8 @@ selectors seen in the wild:
 - standard theme: ``h4.item-name`` link (minus ``.item-tap-number``),
   ``.item-category`` style, ``.item-abv``, ``.brewery``
 - table theme: ``.table-name .item`` name, ``.item-abv``
+- compact theme (Black Raven): ``h4.item`` name, ``.item-category`` style,
+  ``.item-abv``; its tabs are titled by ``.menu-info .h2``, not ``.menu-title``
 
 The ``.item-description`` text, when present, is kept for matching
 (see ``TapEntry.description``).
@@ -68,7 +70,11 @@ def _name(item: Tag) -> Optional[str]:
         name = " ".join(link.get_text(" ", strip=True).split())
         if name:
             return name
-    return _text(item, ".table-name .item") or _text(item, ".item-name")
+    return (
+        _text(item, ".table-name .item")
+        or _text(item, ".item-name")
+        or _text(item, "h4.item")
+    )
 
 
 def _style(item: Tag) -> Optional[str]:
@@ -102,7 +108,7 @@ def parse_embed_menu(html: str, menu_name: Optional[str] = None) -> List[TapEntr
         tabs = [
             tab
             for tab in soup.select(".tab-content")
-            if (_text(tab, ".menu-title") or "").casefold() == wanted
+            if (_text(tab, ".menu-title, .menu-info .h2") or "").casefold() == wanted
         ]
         if not tabs:
             raise ValueError(f"Untappd embed has no menu named {menu_name!r}")
