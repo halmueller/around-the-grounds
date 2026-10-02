@@ -125,7 +125,7 @@ skip the 7-day window and stay out of `events.ics`.
 |----------|---------------|--------|
 | Untappd for Business website embed (`PreloadEmbedMenu(container, location, theme)`) | `"untappd-embed"` | `location_id`, `theme_id`; optional `menu_name` when one embed holds several taprooms' tabs (Postdoc) |
 | Published menu on an `untappd.com/v/<slug>/<id>` venue page | `"untappd-venue"` | venue `url` is the page — untappd.com challenges datacenter IPs (Cloudflare), so prefer the venue's own site when the scraper runs on a server |
-| Public Google Sheet tab (e.g. Chuck's Hop Shop) | `"sheet-taplist"` | `sheet_id`, `sheet_name`, `columns` (`name` required), optional `header_contains`, `brewery_separator`, `skip_prefix` |
+| Public Google Sheet tab (e.g. Chuck's Hop Shop) | `"sheet-taplist"` | `sheet_id`, `sheet_name`, `columns` (`name` required), optional `header_contains`, `brewery_separator`, `skip_prefix`; `columns` may also name a `brewery` column. For a sheet shared with "Publish to the web" (The Beer Authority), give `csv_url` (its published `…/pub?…&output=csv` address) in place of `sheet_id`/`sheet_name`, and `"header_rows": 0` when the first row is already a beer |
 | Craftpeak/Arryved "What's On Tap" module | `"craftpeak-wot"` | none (preset) |
 | DigitalPour embedded menu (`fbpage.digitalpour.com/?companyID=…&locationID=…`) | `"digitalpour"` | `company_id`, `location_id` |
 | Bevwerk website menu (`<bw-website-menu-root taplist-id="…">`, e.g. Watershed Pub) | `"bevwerk"` | `taplist_id`; venue `url` is the bar's menu page (not fetched) |

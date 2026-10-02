@@ -67,6 +67,7 @@ def test_event_sources_filter_for_fresh_hop_and_look_ahead(site: SiteConfig) -> 
 def test_bottle_shops_and_taprooms_are_typed(site: SiteConfig) -> None:
     taprooms = {v.key for v in site.venues if (v.parser_config or {}).get("venue_type")}
     assert taprooms == {
+        "beer-authority-taps",
         "beer-junction-taps",
         "beer-star-taps",
         "beveridge-place-taps",

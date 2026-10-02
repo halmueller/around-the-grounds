@@ -8,7 +8,7 @@
   "venues": [
     {
       "key": "bale-breaker-seattle-taps",
-      "name": "Bale Breaker × Yonder (Ballard)",
+      "name": "Bale Breaker + Yonder Cider (Ballard)",
       "url": "https://www.bbycballard.com/current-taplist",
       "source_type": "untappd-embed",
       "parser_config": {
@@ -25,6 +25,26 @@
         "note": "The restaurant's whole menu is one page; only the 'Beardslee Beer' group is the house tap list.",
         "item": "section.bph-group:has(> h3:-soup-contains(\"Beardslee Beer\")) li.bph-item",
         "name": "h4"
+      }
+    },
+    {
+      "key": "beer-authority-taps",
+      "name": "The Beer Authority (Lake City)",
+      "url": "https://www.seattlebeerauthority.com/",
+      "source_type": "sheet-taplist",
+      "parser_config": {
+        "note": "The home page's 'Current tap list' is this published sheet: tap, brewery, beer, size, ABV, price, with no header row. The shop writes fresh hop as FH.",
+        "csv_url": "https://docs.google.com/spreadsheets/d/1ZB8jsUWf5nkftw1hEunE4S1qN2OQjR75LlXppNgLPQ8/pub?gid=0&single=true&output=csv",
+        "header_rows": 0,
+        "columns": {
+          "brewery": 1,
+          "name": 2,
+          "abv": 4
+        },
+        "listing_include": [
+          "\\bFH\\b"
+        ],
+        "venue_type": "taproom"
       }
     },
     {
@@ -128,7 +148,11 @@
       "url": "https://www.burkegilmanbrewing.com/on-tap",
       "source_type": "menu-tools",
       "parser_config": {
-        "display_path": "bgbc/my-location/main-menu"
+        "display_path": "bgbc/my-location/main-menu",
+        "note": "Guest fresh hops are styled 'FH Hazy IPA'.",
+        "listing_include": [
+          "\\bFH\\b"
+        ]
       }
     },
     {
@@ -534,6 +558,18 @@
       }
     },
     {
+      "key": "outer-planet-taps",
+      "name": "Outer Planet Brewing (Capitol Hill)",
+      "url": "https://www.outerplanetbrewing.com/",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "Tap cards on the home page: name in h3, then a description, the style, and 'ABV: 5.6' as paragraphs.",
+        "item": "li.rounded-md:has(h3)",
+        "name": "h3",
+        "style": "p.text-sm"
+      }
+    },
+    {
       "key": "pine-box-taps",
       "name": "The Pine Box (Capitol Hill)",
       "url": "https://www.pineboxbar.com/ontap",
@@ -624,7 +660,7 @@
     },
     {
       "key": "rooftop-taps",
-      "name": "Rooftop × Maritime Pacific (Ballard)",
+      "name": "Rooftop Brew Co at the Jolly Roger (Ballard)",
       "url": "https://www.rooftopbrew.co/beer",
       "source_type": "airtable",
       "parser_config": {

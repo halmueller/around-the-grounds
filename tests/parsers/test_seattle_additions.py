@@ -18,6 +18,7 @@ from around_the_grounds.models import Event, Venue
 from around_the_grounds.parsers.generic.html_taplist import (
     HtmlTaplistParser,
     TapHunterParser,
+    parse_html_taplist,
 )
 from around_the_grounds.parsers.generic.listing_common import build_listings
 from around_the_grounds.parsers.generic.menu_tools import (
@@ -25,7 +26,10 @@ from around_the_grounds.parsers.generic.menu_tools import (
     MenuToolsParser,
     parse_menu_tools,
 )
-from around_the_grounds.parsers.generic.sheet_taplist import parse_sheet_rows
+from around_the_grounds.parsers.generic.sheet_taplist import (
+    SheetTaplistParser,
+    parse_sheet_rows,
+)
 from around_the_grounds.parsers.generic.text_taplist import parse_text_taplist
 from around_the_grounds.parsers.registry import ParserRegistry
 from around_the_grounds.utils.host_throttle import listing_throttle
@@ -106,6 +110,10 @@ class TestMenuTools:
             "Bavarian Festbier · 5.8%",
         ]
         assert "Fresh Hop Fiend Simcoe Italian Pils" in [e.title for e in events]
+        # A guest beer whose only fresh-hop marker is its "FH Hazy IPA" style.
+        assert ["Skyfinder", "fresh-hop", "Single Hill · FH Hazy IPA · 6.8%"] in (
+            summary(events)
+        )
 
     @pytest.mark.asyncio
     async def test_missing_display_path_raises(self) -> None:
@@ -215,6 +223,46 @@ class TestHtmlTaplistSources:
         ]
 
 
+class TestPublishedSheet:
+    VENUE = VENUES["beer-authority-taps"]
+
+    @pytest.fixture
+    def csv_text(self, csv_fixtures_dir: Path) -> str:
+        return (csv_fixtures_dir / "beer_authority_taplist.csv").read_text()
+
+    def test_no_header_row_brewery_column_and_bare_abv(self, csv_text: str) -> None:
+        entries = parse_sheet_rows(csv_text, self.VENUE.parser_config or {})
+        assert len(entries) == 13
+        first = entries[0]
+        assert (first.name, first.brewery, first.abv) == (
+            "Dry Nitro Stout",
+            "Ferment",
+            "4.5%",
+        )
+
+    @pytest.mark.asyncio
+    async def test_parse_reads_csv_url(self, csv_text: str) -> None:
+        url = (self.VENUE.parser_config or {})["csv_url"]
+        with aioresponses() as m:
+            m.get(url, status=200, body=csv_text)
+            async with aiohttp.ClientSession() as session:
+                events = await SheetTaplistParser(self.VENUE).parse(session)
+        assert summary(events) == [
+            ["Animal Cookies Fresh Hop Hazy IPA", "fresh-hop", "Block 15 · 7%"],
+            ["Wet Season Citra FH Hazy IPA", "fresh-hop", "Ravenna · 6.8%"],
+            ["Bug Hazy FH IPA", "fresh-hop", "Human People · 7%"],
+            ["Wet Season Centennial FH Hazy IPA", "fresh-hop", "Ravenna · 6.3%"],
+            ["Wet Season Amarillo FH WC IPA", "fresh-hop", "Ravenna · 6.5%"],
+        ]
+
+    @pytest.mark.asyncio
+    async def test_needs_sheet_or_csv_url(self) -> None:
+        venue = Venue("x-taps", "X", "https://example.com", "sheet-taplist", {})
+        async with aiohttp.ClientSession() as session:
+            with pytest.raises(ValueError, match="or csv_url"):
+                await SheetTaplistParser(venue).parse(session)
+
+
 class TestConfiguredVenues:
     def test_jellyfish_numbered_headings(self, html_fixtures_dir: Path) -> None:
         venue = VENUES["jellyfish-taps"]
@@ -242,6 +290,23 @@ class TestConfiguredVenues:
         assert [e.title for e in events] == [
             "Cloudburst Fresh Hop Strata IPA",
             "pFriem Fresh Hop Pale",
+        ]
+
+    def test_outer_planet_tap_cards(self, html_fixtures_dir: Path) -> None:
+        venue = VENUES["outer-planet-taps"]
+        entries = parse_html_taplist(
+            (html_fixtures_dir / "taplist_outer_planet.html").read_text(),
+            venue.parser_config or {},
+        )
+        assert len(entries) == 11
+        assert (entries[0].name, entries[0].style, entries[0].abv) == (
+            "Atmosphere on Titan",
+            "IPA",
+            "7.5%",
+        )
+        events = build_listings(venue, entries, "html", LOGGER)
+        assert summary(events) == [
+            ["Orion Wears Lederhosen Festbier", "festbier", "Lager · 5.6%"]
         ]
 
     @pytest.mark.parametrize(

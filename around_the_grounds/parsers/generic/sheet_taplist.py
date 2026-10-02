@@ -13,10 +13,16 @@ Config (``source_type: "sheet-taplist"``)::
       "sheet_name": "GW",
       "header_contains": "Greenwood",       # optional, checked in header row
       "columns": {"name": 2, "style": 1, "abv": 9},  # zero-based; name required
+                                            #   (also "brewery")
       "brewery_separator": ":",             # optional, splits "Brewery: Beer"
       "skip_prefix": "-",                   # optional, e.g. kicked kegs
       "name_remove": "\\s*\\(\\.?\\d.*L\\b.*\\)$"  # optional regex cut from names
     }
+
+A sheet shared with "Publish to the web" instead (The Beer Authority) is read
+from its published CSV address: give ``csv_url`` in place of ``sheet_id`` /
+``sheet_name``, and ``"header_rows": 0`` when its first row is already a beer.
+A bare number in the ABV column ("6.8") is shown as a percentage.
 
 Decorative symbols (emoji markers such as 🌿) are stripped from the ends of
 names.
@@ -35,6 +41,7 @@ from ..base import BaseParser
 from .listing_common import TapEntry, build_listings, fetch_listing_text
 
 SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq"
+_BARE_NUMBER = re.compile(r"^\d+(?:\.\d+)?$")
 
 
 def _strip_symbols(text: str) -> str:
@@ -74,7 +81,9 @@ def parse_sheet_rows(csv_text: str, config: Dict[str, Any]) -> List[TapEntry]:
     rows = list(csv.reader(io.StringIO(csv_text)))
     if not rows:
         return []
-    header, body = rows[0], rows[1:]
+    header_rows = int(config.get("header_rows", 1))
+    header = [cell for row in rows[:header_rows] for cell in row]
+    body = rows[header_rows:]
     expected = config.get("header_contains")
     if expected and not any(expected.lower() in h.lower() for h in header):
         raise ValueError(
@@ -97,12 +106,15 @@ def parse_sheet_rows(csv_text: str, config: Dict[str, Any]) -> List[TapEntry]:
                 brewery, name = left.strip(), right.strip()
         if not name:
             continue
+        abv = _cell(row, columns.get("abv"))
+        if abv and _BARE_NUMBER.match(abv):
+            abv = f"{float(abv):g}%"
         entries.append(
             TapEntry(
                 name=name,
-                brewery=brewery,
+                brewery=brewery or _cell(row, columns.get("brewery")),
                 style=_cell(row, columns.get("style")),
-                abv=_cell(row, columns.get("abv")),
+                abv=abv,
             )
         )
     return entries
@@ -115,14 +127,18 @@ class SheetTaplistParser(BaseParser):
         config = self.venue.parser_config or {}
         sheet_id = config.get("sheet_id")
         sheet_name = config.get("sheet_name")
-        if not sheet_id or not sheet_name:
+        if config.get("csv_url"):
+            csv_text = await fetch_listing_text(session, str(config["csv_url"]))
+        elif not sheet_id or not sheet_name:
             raise ValueError(
-                f"{self.venue.key}: sheet-taplist needs sheet_id and sheet_name"
+                f"{self.venue.key}: sheet-taplist needs sheet_id and sheet_name, "
+                "or csv_url"
             )
-        csv_text = await fetch_listing_text(
-            session,
-            SHEET_CSV_URL.format(sheet_id=sheet_id),
-            params={"tqx": "out:csv", "sheet": sheet_name},
-        )
+        else:
+            csv_text = await fetch_listing_text(
+                session,
+                SHEET_CSV_URL.format(sheet_id=sheet_id),
+                params={"tqx": "out:csv", "sheet": sheet_name},
+            )
         entries = parse_sheet_rows(csv_text, config)
         return build_listings(self.venue, entries, "sheet", self.logger)
