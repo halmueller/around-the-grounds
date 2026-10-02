@@ -247,7 +247,7 @@ Available templates in `public_templates/`:
 - `food-trucks` — dark theme, food truck oriented
 - `music` — dark theme, music/show oriented
 - `kids` — bright/playful theme, children's event oriented
-- `fresh-hop` — tap-list ("listing") sites: five pages sharing `app.js`/`styles.css` under a pinned tab bar — fresh hops at breweries (`index.html`), festbiers at breweries (`festbier.html`), pumpkin beers at breweries (`pumpkin.html`), all three at bottle shops and taprooms (`taprooms.html`, the "Taprooms" tab, venues with `venue_type: "taproom"`), and dated events (`events.html`)
+- `fresh-hop` — tap-list ("listing") sites: five pages sharing `app.js`/`styles.css` under a pinned tab bar — fresh hops at breweries (`fresh-hops.html`), festbiers at breweries (`festbier.html`), pumpkin beers at breweries (`pumpkin.html`), all three at bottle shops and taprooms (`taprooms.html`, the "Taprooms" tab, venues with `venue_type: "taproom"`), and dated events (`events.html`). Its `index.html` only redirects to the in-season list, so every list keeps its own URL year-round
 
 To create a new template, add a directory under `public_templates/` with at least an `index.html`.
 

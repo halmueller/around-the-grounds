@@ -120,7 +120,22 @@ lines), then:
 
 ```bash
 sudo apachectl configtest && sudo systemctl reload apache2
-curl -sI https://seattlefreshies.com/ | grep -i "strict-transport\|referrer\|content-type"
+curl -sI https://seattlefreshies.com/ | grep -i "strict-transport\|referrer\|location"
+```
+
+## Changing the home page with the season
+
+`/` is a temporary (302) redirect to the list that is in season, so each
+seasonal list keeps its own URL, and its search ranking, all year. To switch,
+change the page name in the `RedirectMatch` line of **both** Apache files on
+the droplet (and in the repo's `seattlefreshies.com.conf`), and in
+`public_templates/fresh-hop/index.html`, which is the same redirect for local
+previews. Keep it a 302, leave the out-of-season pages and their tabs in
+place, and never put a year in a page name.
+
+```bash
+sudo apachectl configtest && sudo systemctl reload apache2
+curl -sI https://seattlefreshies.com/ | grep -i "^HTTP\|^location"   # 302, new page
 ```
 
 ## Analytics (optional)

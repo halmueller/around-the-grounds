@@ -3,7 +3,7 @@
      template and the site's public_url. The data changes hourly, so each
      page says changefreq hourly and there is no lastmod. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://seattlefreshies.com/</loc><changefreq>hourly</changefreq></url>
+  <url><loc>https://seattlefreshies.com/fresh-hops.html</loc><changefreq>hourly</changefreq></url>
   <url><loc>https://seattlefreshies.com/festbier.html</loc><changefreq>hourly</changefreq></url>
   <url><loc>https://seattlefreshies.com/pumpkin.html</loc><changefreq>hourly</changefreq></url>
   <url><loc>https://seattlefreshies.com/taprooms.html</loc><changefreq>hourly</changefreq></url>

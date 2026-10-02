@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Taprooms · Seattle Freshies</title>
-    <meta name="description" content="Fresh-hop beers, festbiers, and pumpkin beers on tap right now at Seattle bottle shops and taprooms.">
-    <link rel="canonical" href="https://seattlefreshies.com/taprooms.html">
+    <title>Fresh hops · Seattle Freshies</title>
+    <meta name="description" content="Fresh-hop beers on tap right now at Seattle breweries.">
+    <link rel="canonical" href="https://seattlefreshies.com/fresh-hops.html">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Seattle Freshies">
-    <meta property="og:title" content="Taprooms · Seattle Freshies">
-    <meta property="og:description" content="Fresh-hop beers, festbiers, and pumpkin beers on tap right now at Seattle bottle shops and taprooms.">
-    <meta property="og:url" content="https://seattlefreshies.com/taprooms.html">
+    <meta property="og:title" content="Fresh hops · Seattle Freshies">
+    <meta property="og:description" content="Fresh-hop beers on tap right now at Seattle breweries.">
+    <meta property="og:url" content="https://seattlefreshies.com/fresh-hops.html">
     <meta property="og:image" content="https://seattlefreshies.com/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -24,29 +24,32 @@
     <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="stylesheet" href="styles.css">
+    <script type="application/ld+json">
+    {"@context": "https://schema.org", "@type": "WebSite", "name": "Seattle Freshies", "url": "https://seattlefreshies.com/"}
+    </script>
 </head>
 <!-- fresh-hops.html, festbier.html, pumpkin.html, taprooms.html, and events.html share
      this layout and differ only in data-page, title, description, URL (canonical, og:*),
      heading emoji, tagline, and the current tab.
      Keep them in step. -->
-<body data-page="taprooms">
+<body data-page="freshhop">
 <header class="topbar">
     <div class="bar-inner">
-        <h1><span class="leaf">🍺</span> Seattle Freshies</h1>
+        <h1><span class="leaf">🌿</span> Seattle Freshies</h1>
         <p class="byline">By Ballard resident <a href="https://www.linkedin.com/in/halmueller/">Hal Mueller</a> with the help of <a href="https://claude.ai">Claude Code</a></p>
         <p class="byline">For food trucks at Ballard breweries, see <a href="https://www.ballardfoodtrucks.com">ballardfoodtrucks.com</a></p>
         <nav class="tabs" aria-label="Lists">
-            <a href="fresh-hops.html">Fresh hops</a>
+            <a href="fresh-hops.html" aria-current="page">Fresh hops</a>
             <a href="festbier.html">Festbiers</a>
             <a href="pumpkin.html">Pumpkin</a>
-            <a href="taprooms.html" aria-current="page">Taprooms<span class="tab-extra">/Bottle Shops</span></a>
+            <a href="taprooms.html">Taprooms<span class="tab-extra">/Bottle Shops</span></a>
             <a href="events.html">Events</a>
         </nav>
     </div>
 </header>
 
 <div class="container">
-    <p class="tagline">Fresh-hop beers, festbiers, and pumpkin beers on tap right now at Seattle bottle shops and taprooms.</p>
+    <p class="tagline">Fresh-hop beers on tap right now at Seattle breweries.</p>
     <p class="summary" id="summary"></p>
 
     <input class="search" id="search" type="search" placeholder="Search beers, breweries, or places…" aria-label="Search beers, breweries, or places" hidden>

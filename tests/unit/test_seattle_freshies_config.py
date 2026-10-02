@@ -13,6 +13,8 @@ from around_the_grounds.models import SiteConfig
 from around_the_grounds.parsers.registry import ParserRegistry
 
 TEMPLATES = Path(__file__).resolve().parents[2] / "public_templates"
+DEPLOY = Path(__file__).resolve().parents[2] / "deploy" / "digitalocean"
+HOME = "index.html"
 
 
 @pytest.fixture(scope="module")
@@ -94,6 +96,7 @@ def test_bottle_shops_and_taprooms_are_typed(site: SiteConfig) -> None:
 def test_template_has_every_page() -> None:
     for page in (
         "index.html",
+        "fresh-hops.html",
         "festbier.html",
         "pumpkin.html",
         "taprooms.html",
@@ -103,7 +106,7 @@ def test_template_has_every_page() -> None:
     ):
         assert (TEMPLATES / "fresh-hop" / page).is_file(), page
     for page, data_page in (
-        ("index.html", "freshhop"),
+        ("fresh-hops.html", "freshhop"),
         ("festbier.html", "festbier"),
         ("pumpkin.html", "pumpkin"),
         ("taprooms.html", "taprooms"),
@@ -133,7 +136,7 @@ def test_template_has_every_page() -> None:
         assert "Seattle Freshies" in html
         hrefs = re.findall(r'<nav class="tabs".*?</nav>', html, re.S)[0]
         assert re.findall(r'href="([^"]+)"', hrefs) == [
-            "./",
+            "fresh-hops.html",
             "festbier.html",
             "pumpkin.html",
             "taprooms.html",
@@ -145,11 +148,26 @@ def test_sitemap_lists_every_page(site: SiteConfig) -> None:
     root = ElementTree.parse(TEMPLATES / "fresh-hop" / "sitemap.xml").getroot()
     ns = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
     locs = [el.text or "" for el in root.findall("sm:url/sm:loc", ns)]
-    pages = sorted(p.name for p in (TEMPLATES / "fresh-hop").glob("*.html"))
-    expected = [
-        f"{site.public_url}/" + ("" if page == "index.html" else page) for page in pages
-    ]
-    assert sorted(locs) == sorted(expected)
+    # index.html is not a page of its own: / redirects to the in-season list.
+    pages = sorted(
+        p.name for p in (TEMPLATES / "fresh-hop").glob("*.html") if p.name != HOME
+    )
+    assert sorted(locs) == [f"{site.public_url}/{page}" for page in pages]
+
+
+def test_home_redirects_to_the_in_season_page(site: SiteConfig) -> None:
+    # Apache answers / with a temporary redirect so each seasonal list keeps
+    # its own URL; index.html is the same redirect for hosts without that rule.
+    conf = (DEPLOY / "seattlefreshies.com.conf").read_text()
+    rule = re.search(
+        r'^\s*RedirectMatch 302 "\^/\(index\\\.html\)\?\$" "/(.+)"$', conf, re.M
+    )
+    assert rule, "home page redirect missing or not a 302"
+    target = rule.group(1)
+    assert target != HOME and (TEMPLATES / "fresh-hop" / target).is_file()
+    head = (TEMPLATES / "fresh-hop" / HOME).read_text().split("</head>")[0]
+    assert f'<meta http-equiv="refresh" content="0; url={target}">' in head
+    assert f'<link rel="canonical" href="{site.public_url}/{target}">' in head
 
 
 def test_robots_points_at_sitemap(site: SiteConfig) -> None:
@@ -161,7 +179,7 @@ def test_robots_points_at_sitemap(site: SiteConfig) -> None:
 @pytest.mark.parametrize(
     "page, path",
     [
-        ("index.html", ""),
+        ("fresh-hops.html", "fresh-hops.html"),
         ("festbier.html", "festbier.html"),
         ("pumpkin.html", "pumpkin.html"),
         ("taprooms.html", "taprooms.html"),
@@ -200,7 +218,13 @@ ICON_LINKS = (
 
 @pytest.mark.parametrize(
     "page",
-    ["index.html", "festbier.html", "pumpkin.html", "taprooms.html", "events.html"],
+    [
+        "fresh-hops.html",
+        "festbier.html",
+        "pumpkin.html",
+        "taprooms.html",
+        "events.html",
+    ],
 )
 def test_pages_link_the_favicon_files(page: str) -> None:
     head = (TEMPLATES / "fresh-hop" / page).read_text().split("</head>")[0]
