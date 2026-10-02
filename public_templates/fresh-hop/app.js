@@ -29,29 +29,47 @@ function count(n, one, many) { return `${n} ${n === 1 ? one : many}`; }
 
 const BREWERIES = n => count(n, 'brewery', 'breweries');
 const CATEGORY_LABELS = { 'fresh-hop': 'Fresh hop', festbier: 'Festbier', pumpkin: 'Pumpkin' };
+// A seasonal list has `months`, its season as [first, last] month numbers
+// (inclusive; may wrap the new year), and `offSeason`, shown instead of
+// "Found no …" when the list is empty outside those months. Each page's
+// tagline spells the season out; keep the two in step.
 const PAGES = {
     freshhop: {
+        href: 'fresh-hops.html',
+        label: 'Fresh hops',
         venueType: type => type !== 'taproom',
         categories: ['fresh-hop'],
         places: BREWERIES,
         beers: n => count(n, 'fresh-hop beer', 'fresh-hop beers'),
         none: 'no fresh hops',
+        months: [8, 10],
+        offSeason: 'Fresh hops are out of season.',
     },
     festbier: {
+        href: 'festbier.html',
+        label: 'Festbiers',
         venueType: type => type !== 'taproom',
         categories: ['festbier'],
         places: BREWERIES,
         beers: n => count(n, 'festbier or Oktoberfest beer', 'festbiers and Oktoberfest beers'),
         none: 'no festbiers',
+        months: [9, 10],
+        offSeason: 'Festbiers are out of season.',
     },
     pumpkin: {
+        href: 'pumpkin.html',
+        label: 'Pumpkin',
         venueType: type => type !== 'taproom',
         categories: ['pumpkin'],
         places: BREWERIES,
         beers: n => count(n, 'pumpkin beer', 'pumpkin beers'),
         none: 'no pumpkin beers',
+        months: [9, 11],
+        offSeason: 'Pumpkin beers are out of season.',
     },
     taprooms: {
+        href: 'taprooms.html',
+        label: 'Taprooms',
         venueType: type => type === 'taproom',
         categories: ['fresh-hop', 'festbier', 'pumpkin'],
         places: n => count(n, 'bottle shop or taproom', 'bottle shops and taprooms'),
@@ -143,11 +161,38 @@ function renderEventsPage(data, listingsEl, summaryEl) {
         <p class="notice"><a class="calendar-link" href="events.ics">Subscribe to these events in your calendar</a></p>`;
 }
 
+// The listings that belong on a list page.
+function pageListings(page, data, venueInfo) {
+    return (data.events || []).filter(e => e.kind === 'listing'
+        && page.venueType((venueInfo.get(e.venue_key) || {}).type || 'brewery')
+        && page.categories.includes(e.category || 'fresh-hop'));
+}
+
+// Whether the data was gathered outside a seasonal page's months (site time).
+function outOfSeason(page, data) {
+    if (!page.months) return false;
+    const month = Number(new Date(data.updated || Date.now()).toLocaleString('en-US', {
+        month: 'numeric', timeZone: data.timezone || 'America/Los_Angeles'
+    }));
+    const [first, last] = page.months;
+    return first <= last ? month < first || month > last : month < first && month > last;
+}
+
+// Shown in place of an empty out-of-season list: what is pouring instead.
+function renderOffSeason(data, venueInfo) {
+    const others = Object.values(PAGES)
+        .filter(p => p !== PAGE && p.categories)
+        .map(p => ({ page: p, n: pageListings(p, data, venueInfo).length }))
+        .filter(o => o.n)
+        .map(o => `<a href="${esc(o.page.href)}">${esc(o.page.label)}</a> (${o.n})`);
+    return `<div class="empty">${esc(PAGE.offSeason)}`
+        + (others.length ? `<br>Pouring now: ${others.join(', ')}.` : '') + '</div>';
+}
+
 function renderListingsPage(data, venueInfo, listingsEl, summaryEl) {
     const onThisPage = key => PAGE.venueType((venueInfo.get(key) || {}).type || 'brewery');
     const pageVenues = [...venueInfo.values()].filter(v => onThisPage(v.key));
-    const listings = (data.events || []).filter(e => e.kind === 'listing'
-        && onThisPage(e.venue_key) && PAGE.categories.includes(e.category || 'fresh-hop'));
+    const listings = pageListings(PAGE, data, venueInfo);
 
     // Group listings by venue, keeping the config order the data arrives in.
     const venues = new Map();
@@ -165,7 +210,10 @@ function renderListingsPage(data, venueInfo, listingsEl, summaryEl) {
             .join(' ').toLowerCase();
     });
 
-    if (!venues.size) {
+    const offSeason = !venues.size && outOfSeason(PAGE, data);
+    if (offSeason) {
+        listingsEl.innerHTML = renderOffSeason(data, venueInfo);
+    } else if (!venues.size) {
         listingsEl.innerHTML = `<div class="empty">Found ${esc(PAGE.none)} on tap right now.</div>`;
     } else {
         const summary = `<strong>${esc(PAGE.beers(listings.length))}</strong> pouring at ${esc(PAGE.places(venues.size))}.`;
@@ -175,10 +223,10 @@ function renderListingsPage(data, venueInfo, listingsEl, summaryEl) {
     }
 
     // Places checked that have nothing on right now (failed ones are named in
-    // the errors line instead).
+    // the errors line instead). Out of season that is every place, so skip it.
     const failed = new Set((data.failed_venues || []).map(v => v.key));
     const quiet = pageVenues.filter(v => !venues.has(v.key) && !failed.has(v.key));
-    if (quiet.length) {
+    if (quiet.length && !offSeason) {
         showNotice('quiet', `Checked, ${esc(PAGE.none)} on right now: ` + quiet.map(v =>
             safeUrl(v.url)
                 ? `<a href="${esc(v.url)}" target="_blank" rel="noopener">${esc(v.name)}</a>`

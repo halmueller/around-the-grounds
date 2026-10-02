@@ -104,33 +104,24 @@ Also update the category comment on `Event.category` in
 - **`og-image.png`**: check whether the card text or its alt text should
   mention winter ales (source in `deploy/images/`, rendered by `render.py`).
 
-### 3. Out-of-season message
+### 3. Out-of-season message (done 2026-10-02)
 
-Today an out-of-season list just says "Found no fresh hops on tap right now."
-Give every list page a season line so pages that stay up all year read as
-intentional rather than broken.
+Shipped for the three existing lists. In `app.js`, each seasonal entry in
+`PAGES` has `months` ([first, last], inclusive, may wrap the new year) and an
+`offSeason` sentence. An empty list outside its months shows that sentence
+plus links to the lists that have beers pouring, and hides the "Checked, no …"
+notice. A list with beers always shows them. The month comes from
+`data.updated` in site time. Each page's tagline states the season in static
+HTML for crawlers. Tests: `tests/unit/test_fresh_hop_seasons.py` (runs
+`app.js` in Node with a stub DOM).
 
-- In `app.js`, add to each list's `PAGES` entry a `season` sentence and a
-  `months` range used to tell whether the list is in season today:
-  - fresh hops: "Fresh-hop season runs from late August through October."
-  - festbier: "Festbier season runs from September through October."
-  - pumpkin: "Pumpkin beer season runs from September through November."
-  - winter ales: "Winter ale season runs from November through February."
-  Confirm the ranges before shipping.
-- When a list is empty **and** out of season, replace the "Found no …" line
-  with the season sentence plus links to the lists that are in season (those
-  with anything pouring). When it is empty in season, keep today's wording.
-  When it has beers, show them as now, in or out of season.
-- The "Checked, no … on right now" venue notice is noise out of season; hide it
-  when the out-of-season message is showing.
-- Put the season sentence in each page's static HTML too (a `<noscript>` line
-  or the tagline), so crawlers that do not run the script still see real text
-  on an out-of-season page.
-- `taprooms.html` spans every season, so it keeps today's wording.
-- Tests: the browser check does not cover this template, so add the
-  fresh-hop template to `tests/browser/check_templates.mjs` (it would need
-  multi-page serving) or keep the season logic in a small pure function and
-  assert the strings in `test_seattle_freshies_config.py`.
+Current ranges, still to be confirmed: fresh hops August through October,
+festbier September through October, pumpkin September through November.
+
+Left for the winter work: give the `winter` page `href`, `label`,
+`months: [11, 2]`, and `offSeason: 'Winter ales are out of season.'`; add
+"Winter ale season runs from November through February." to its tagline; and
+add the page to the two parametrized tests.
 
 ### 4. Events page: all beer events (done 2026-10-01)
 
