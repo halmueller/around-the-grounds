@@ -52,6 +52,25 @@ def test_non_fresh_hop_text_does_not_match(matcher: ListingMatcher, text: str) -
     assert not matcher.matches(text)
 
 
+@pytest.mark.parametrize(
+    "text",
+    ["Bug Hazy FH IPA", "FH Italian Pilsner", "Wet Season Citra fh Hazy IPA"],
+)
+def test_fh_abbreviation_matches(matcher: ListingMatcher, text: str) -> None:
+    assert matcher.matches(text)
+
+
+@pytest.mark.parametrize("text", ["FHB Lager", "Chief Hop IPA", "UFH Stout"])
+def test_fh_inside_other_words_does_not_match(
+    matcher: ListingMatcher, text: str
+) -> None:
+    assert not matcher.matches(text)
+
+
+def test_fh_in_a_description_does_not_count(matcher: ListingMatcher) -> None:
+    assert not matcher.matches_description("Brewed for FH season", "Pale Ale")
+
+
 def test_matches_any_of_several_fields(matcher: ListingMatcher) -> None:
     # Stoup puts "Fresh Hop" only in the style tags, not the beer name.
     assert matcher.matches(

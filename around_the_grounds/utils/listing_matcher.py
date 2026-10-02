@@ -7,7 +7,8 @@ patterns. The built-in excludes look at the name only.
 
 Built-in categories:
 
-- ``fresh-hop``: fresh/wet-hop beers. Venues extend it with
+- ``fresh-hop``: fresh/wet-hop beers, including the abbreviation "FH" in a
+  name or style. Venues extend it with
   ``listing_include`` / ``listing_exclude`` for beers whose names never say
   "fresh hop".
 - ``festbier``: Oktoberfest-season beers (Festbier, Oktoberfest, Märzen,
@@ -32,6 +33,10 @@ PUMPKIN = "pumpkin"
 # "hop" right after "fresh"/"wet" keeps out "Fresh Squeezed IPA" and
 # "brewed with fresh Simcoe hops".
 DEFAULT_INCLUDE = [r"\b(?:fresh|wet)[\s-]*hop(?:s|ped)?\b"]
+
+# Counted by name or style only: tap lists abbreviate fresh hop as "FH"
+# ("Bug Hazy FH IPA", style "FH Italian Pilsner").
+FRESH_HOP_INCLUDE = DEFAULT_INCLUDE + [r"\bFH\b"]
 
 # Fresh-hop festivals show up in tap-list pages alongside the beers. Checked
 # against the name only: a beer "brewed for Fresh Hop Ale Festival" stays.
@@ -65,7 +70,7 @@ PUMPKIN_INCLUDE = [
 # category -> (include patterns, exclude patterns, config key prefix,
 #              include patterns for descriptions)
 CATEGORIES: Dict[str, Tuple[List[str], List[str], str, List[str]]] = {
-    FRESH_HOP: (DEFAULT_INCLUDE, DEFAULT_EXCLUDE, "listing", DEFAULT_INCLUDE),
+    FRESH_HOP: (FRESH_HOP_INCLUDE, DEFAULT_EXCLUDE, "listing", DEFAULT_INCLUDE),
     FESTBIER: (FESTBIER_INCLUDE, [], "festbier", FESTBIER_CORE),
     PUMPKIN: (PUMPKIN_INCLUDE, [], "pumpkin", PUMPKIN_INCLUDE),
 }

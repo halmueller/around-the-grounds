@@ -33,7 +33,7 @@
       "url": "https://www.seattlebeerauthority.com/",
       "source_type": "sheet-taplist",
       "parser_config": {
-        "note": "The home page's 'Current tap list' is this published sheet: tap, brewery, beer, size, ABV, price, with no header row. The shop writes fresh hop as FH.",
+        "note": "The home page's 'Current tap list' is this published sheet: tap, brewery, beer, size, ABV, price, with no header row.",
         "csv_url": "https://docs.google.com/spreadsheets/d/1ZB8jsUWf5nkftw1hEunE4S1qN2OQjR75LlXppNgLPQ8/pub?gid=0&single=true&output=csv",
         "header_rows": 0,
         "columns": {
@@ -41,9 +41,6 @@
           "name": 2,
           "abv": 4
         },
-        "listing_include": [
-          "\\bFH\\b"
-        ],
         "venue_type": "taproom"
       }
     },
@@ -148,11 +145,7 @@
       "url": "https://www.burkegilmanbrewing.com/on-tap",
       "source_type": "menu-tools",
       "parser_config": {
-        "display_path": "bgbc/my-location/main-menu",
-        "note": "Guest fresh hops are styled 'FH Hazy IPA'.",
-        "listing_include": [
-          "\\bFH\\b"
-        ]
+        "display_path": "bgbc/my-location/main-menu"
       }
     },
     {

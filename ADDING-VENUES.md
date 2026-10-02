@@ -137,7 +137,7 @@ skip the 7-day window and stay out of `events.ics`.
 | PDF menu (e.g. El Sueñito) | `"pdf-taplist"` | `line_pattern` with a `(?P<name>…)` group, matched against each line of the PDF's text (optional `style`, `abv`, `brewery` groups; a following line that starts with a percentage supplies the ABV). Optional `link_pattern`: venue `url` is then a web page, and its first `.pdf` link whose text or `aria-label` matches is the menu — use it when the file name changes with every upload (Wix). Without it, venue `url` is the PDF |
 | Free text, one beer per line | `"text-taplist"` | `line_pattern` with a `(?P<name>…)` group, optional `section_tag`, `include_sections`, `exclude_sections`, `line_tags` (elements that hold entries; default `p`, `li` — set `["h2"]` when beers are headings) |
 
-Listings are sorted into **categories**: `fresh-hop` (fresh/wet hop),
+Listings are sorted into **categories**: `fresh-hop` (fresh/wet hop, or the abbreviation "FH" in a name or style),
 `festbier` (Festbier, Oktoberfest/-toberfest, Märzen, Wiesn/Wies'n, plus harvest
 lagers, Dunkels/Munich Dark, and Weizenbocks; not Dunkelweizen), and `pumpkin`
 (pumpkin, gourd, jack-o'-lantern, calabaza).
