@@ -107,9 +107,10 @@ function renderEvent(e) {
     const time = e.start_time_raw
         ? (e.end_time_raw ? `${e.start_time_raw} – ${e.end_time_raw}` : e.start_time_raw)
         : '';
-    // Aggregated lists put the host venue in the description; the source
-    // venue is then shown as "via".
-    const where = e.description ? `${esc(e.description)} · via ${esc(e.venue)}` : esc(e.venue);
+    // Aggregated lists name the host venue in `place`; the source venue is
+    // then shown as "via".
+    const details = [e.place, e.description].filter(Boolean).map(esc).join(' · ');
+    const where = details ? `${details} · via ${esc(e.venue)}` : esc(e.venue);
     // The event's own page when the source links one, else the source itself.
     const link = safeUrl(e.url) || safeUrl(e.venue_url);
     const title = link

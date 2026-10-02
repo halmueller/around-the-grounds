@@ -49,6 +49,8 @@ class ScrapeActivities:
             payload["category"] = event.category
         if event.url:
             payload["url"] = event.url
+        if event.place:
+            payload["place"] = event.place
         return payload
 
     @staticmethod
@@ -144,6 +146,7 @@ class DeploymentActivities:
                 kind=event_data.get("kind", "event"),
                 category=event_data.get("category"),
                 url=event_data.get("url"),
+                place=event_data.get("place"),
             )
             reconstructed_events.append(event)
 

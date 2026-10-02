@@ -63,9 +63,11 @@ class TestGeorgetownEventList:
         # 6 of the 13 items are tagged Seattle; Yakima's festival is not.
         # Beveridge Place's fest is left out: its own events page lists it.
         assert len(events) == 5
-        assert not any("State Fair Park" in (e.description or "") for e in events)
-        assert not any("Beveridge" in (e.description or "") for e in events)
-        ravenna = next(e for e in events if "Ravenna" in (e.description or ""))
+        assert not any("State Fair Park" in (e.place or "") for e in events)
+        assert not any("Beveridge" in (e.place or "") for e in events)
+        # The host venue is the event's place, not its description.
+        assert all(e.place and e.description is None for e in events)
+        ravenna = next(e for e in events if e.place == "Ravenna Brewing, Ravenna")
         assert ravenna.title == "Fresh Hop Fest!"
         # 2026-10-10T18:00:00Z is 11 AM Pacific, stored naive.
         assert ravenna.date == datetime(2026, 10, 10, 11, 0)
@@ -117,7 +119,7 @@ def test_timezone_is_opt_in(fixtures_dir: Path) -> None:
         date_selector=config["date_selector"],
         date_attribute=config["date_attribute"],
         time_selector=None,
-        desc_selector=config["description_selector"],
+        desc_selector=None,
         date_format="auto",
     )
     assert event is not None and event.date.tzinfo is not None
@@ -294,6 +296,12 @@ class TestEventLinks:
         assert [e.url for e in events] == ["https://v.example/events/one", None, None]
 
     @pytest.mark.asyncio
-    async def test_no_links_without_link_selector(self) -> None:
+    async def test_no_links_or_places_without_their_selectors(self) -> None:
         events = await self._parse({})
         assert [e.url for e in events] == [None, None, None]
+        assert [e.place for e in events] == [None, None, None]
+
+    @pytest.mark.asyncio
+    async def test_place_selector_reads_where_the_event_is_held(self) -> None:
+        events = await self._parse({"place_selector": ".more"})
+        assert [e.place for e in events] == ["One", "Two", None]

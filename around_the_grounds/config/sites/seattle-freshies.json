@@ -801,13 +801,13 @@
         "event_filter": true,
         "event_window_days": 365,
         "event_include": ["."],
-        "note": "Georgetown's list of events pouring its beer, so every entry is kept (event_include matches anything); the host venue is in the description. Seattle-tagged items only, minus Beveridge Place Pub, which is read from its own events page (beveridge-place-events).",
+        "note": "Georgetown's list of events pouring its beer, so every entry is kept (event_include matches anything); the host venue is read as the event's place. Seattle-tagged items only, minus Beveridge Place Pub, which is read from its own events page (beveridge-place-events).",
         "event_container": "article.article-event-item[data-tags*=\"Seattle\"]:not(:has(.article-location:-soup-contains(\"Beveridge Place\")))",
         "title_selector": ".article__title",
         "link_selector": ".article__title a",
         "date_selector": "time.article-event-date",
         "date_attribute": "datetime",
-        "description_selector": ".article-location",
+        "place_selector": ".article-location",
         "timezone": "America/Los_Angeles"
       }
     },

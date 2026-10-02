@@ -109,6 +109,14 @@ def _build_description(web_event: Dict[str, Any]) -> Optional[str]:
     if web_event.get("extraction_method") == "vision":
         lines.append("Vendor name extracted by AI image analysis.")
 
+    # An event held somewhere other than the venue that listed it.
+    if web_event.get("place") and web_event.get("venue"):
+        lines.append(f"Listed by {web_event['venue']}.")
+
+    url = str(web_event.get("url") or "")
+    if url.startswith(("http://", "https://")):
+        lines.append(f"Details: {url}")
+
     return "\n".join(lines) if lines else None
 
 
@@ -132,7 +140,12 @@ def _build_vevent(
     cal_event.add("transp", "TRANSPARENT")
 
     title = str(web_event.get("title") or "Event")
-    venue = str(web_event.get("venue") or web_event.get("location") or "")
+    venue = str(
+        web_event.get("place")
+        or web_event.get("venue")
+        or web_event.get("location")
+        or ""
+    )
     cal_event.add("summary", title)
 
     start = _parse_iso(web_event.get("start_iso"))

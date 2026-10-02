@@ -311,3 +311,39 @@ class TestMalformedInput:
     def test_missing_title_gets_a_placeholder(self):
         ve = vevents(make_web_data([make_web_event(title=None)]))[0]
         assert str(ve["SUMMARY"]) == "Event"
+
+
+class TestEventPageAndPlace:
+    def test_event_url_becomes_a_details_line(self):
+        url = "https://georgetownbeer.com/blogs/news/pna-winter-beer-taste"
+        [event] = vevents(make_web_data([make_web_event(url=url)]))
+
+        assert f"Details: {url}" in str(event["DESCRIPTION"]).splitlines()
+
+    def test_no_details_line_without_an_http_url(self):
+        for url in (None, "", "javascript:alert(1)"):
+            [event] = vevents(make_web_data([make_web_event(url=url)]))
+            assert "Details:" not in str(event.get("DESCRIPTION", ""))
+
+    def test_place_is_the_location_and_the_source_is_credited(self):
+        web_event = make_web_event(
+            venue="Georgetown Brewing", place="Ravenna Brewing, Ravenna"
+        )
+        [event] = vevents(make_web_data([web_event]))
+
+        assert event["LOCATION"] == "Ravenna Brewing, Ravenna"
+        assert "Listed by Georgetown Brewing." in str(event["DESCRIPTION"])
+
+    def test_location_is_the_venue_without_a_place(self):
+        [event] = vevents(make_web_data())
+
+        assert event["LOCATION"] == "Stoup Brewing"
+        assert "Listed by" not in str(event.get("DESCRIPTION", ""))
+
+    def test_place_and_url_do_not_change_the_uid(self):
+        [plain] = vevents(make_web_data())
+        [rich] = vevents(
+            make_web_data([make_web_event(place="A Pub", url="https://a.example/e")])
+        )
+
+        assert plain["UID"] == rich["UID"]

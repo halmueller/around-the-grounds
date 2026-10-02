@@ -11,6 +11,8 @@ text has no match is skipped.
 ``link_selector`` picks the link to the event's own page inside each
 container (or the container itself, when it is the link and nothing inside
 matches); its ``href`` becomes ``Event.url``, resolved against the venue URL.
+``place_selector`` picks the text naming where the event is held, for a
+source that lists events at other venues; it becomes ``Event.place``.
 """
 
 import re
@@ -50,6 +52,7 @@ class HtmlSelectorParser(BaseParser):
         time_selector: Optional[str] = config.get("time_selector")
         desc_selector: Optional[str] = config.get("description_selector")
         link_selector: Optional[str] = config.get("link_selector")
+        place_selector: Optional[str] = config.get("place_selector")
         date_format: str = config.get("date_format", "auto")
         # Optional: convert timezone-aware dates (e.g. ISO "...Z" attributes)
         # to this zone so a late-evening UTC timestamp keeps its local day.
@@ -86,6 +89,8 @@ class HtmlSelectorParser(BaseParser):
             if event:
                 if link_selector:
                     event.url = self._event_url(container, link_selector)
+                if place_selector:
+                    event.place = self._event_place(container, place_selector)
                 events.append(self._localize(event, tz_name) if tz_name else event)
 
         self.logger.info(
@@ -173,6 +178,16 @@ class HtmlSelectorParser(BaseParser):
             return url if url.startswith(("http://", "https://")) else None
         except Exception as e:
             self.logger.debug(f"Error reading event link: {e}")
+            return None
+
+    def _event_place(self, container: Tag, place_selector: str) -> Optional[str]:
+        """The text naming where the event is held, if the container has it."""
+        try:
+            place_el = container.select_one(place_selector)
+            text = place_el.get_text(separator=" ", strip=True) if place_el else ""
+            return " ".join(text.split()) or None
+        except Exception as e:
+            self.logger.debug(f"Error reading event place: {e}")
             return None
 
     @staticmethod

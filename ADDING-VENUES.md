@@ -80,6 +80,12 @@ Add `"link_selector"` to link each event to its own page: it picks the `<a>`
 inside the container (or the container itself, when the container is the link
 and nothing inside matches). The `href` is resolved against the venue URL and
 emitted as `"url"` in `data.json`; without it, templates link the venue URL.
+The calendar feed adds it to the entry as a "Details:" line.
+
+Add `"place_selector"` when the source lists events held at other venues
+(Georgetown's list of events pouring its beer): its text becomes `"place"` in
+`data.json`, and the calendar entry's location, with a "Listed by …" line
+naming the source.
 
 When the date or hours share an element with other text (Beveridge Place's
 "Saturday, Oct 17, 1-7pm THIRTY+ fresh hop beers…"), add `date_pattern` and/or

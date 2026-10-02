@@ -23,6 +23,9 @@ class Event:
     # The event's own page, when the source links one; templates fall back
     # to the venue URL.
     url: Optional[str] = None
+    # Where the event is held, when that is not the source venue (a brewery's
+    # list of events it pours at elsewhere).
+    place: Optional[str] = None
 
     def __str__(self) -> str:
         date_str = self.date.strftime("%Y-%m-%d") if self.date else "None"
