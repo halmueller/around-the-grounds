@@ -196,6 +196,27 @@ class TestCategory:
         )
         assert data["events"][0]["category"] == "festbier"
 
+    @pytest.mark.asyncio
+    async def test_event_url_reaches_data_json_only_when_set(self) -> None:
+        linked = Event("k", "Venue", "Fest", _now(), url="https://v.example/fest")
+        data = await generate_web_data([linked, Event("k", "Venue", "Show", _now())])
+        assert data["events"][0]["url"] == "https://v.example/fest"
+        assert "url" not in data["events"][1]
+
+    @pytest.mark.asyncio
+    async def test_event_url_round_trips_through_activities(self) -> None:
+        linked = Event("k", "Venue", "Fest", _now(), url="https://v.example/fest")
+        payload = ScrapeActivities._serialize_event(linked)
+        assert payload["url"] == "https://v.example/fest"
+        assert "url" not in ScrapeActivities._serialize_event(
+            Event("k", "Venue", "Show", _now())
+        )
+
+        data = await DeploymentActivities().generate_web_data(
+            {"events": [payload], "errors": []}
+        )
+        assert data["events"][0]["url"] == "https://v.example/fest"
+
     def test_one_beer_can_be_in_two_categories(self) -> None:
         venue = Venue("bar", "Bar", "https://example.com")
         events = build_listings(

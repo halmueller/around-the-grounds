@@ -16,6 +16,7 @@ import re
 from datetime import datetime, timezone
 from html import unescape
 from typing import Any, Dict, List, Optional
+from urllib.parse import urljoin
 
 import aiohttp
 
@@ -43,8 +44,21 @@ def _local(epoch_ms: Any, zone: ZoneInfo) -> Optional[datetime]:
     return moment.astimezone(zone).replace(tzinfo=None, microsecond=0)
 
 
+def _event_url(item: Dict[str, Any], base_url: str) -> Optional[str]:
+    """The item's own page ("fullUrl" is site-relative), as an http(s) URL."""
+    path = item.get("fullUrl")
+    if not isinstance(path, str) or not path.strip() or not base_url:
+        return None
+    url = urljoin(base_url, path.strip())
+    return url if url.startswith(("http://", "https://")) else None
+
+
 def parse_squarespace_events(
-    payload: Dict[str, Any], venue_key: str, venue_name: str, tz_name: str
+    payload: Dict[str, Any],
+    venue_key: str,
+    venue_name: str,
+    tz_name: str,
+    base_url: str = "",
 ) -> List[Event]:
     zone = ZoneInfo(tz_name)
     seen = set()
@@ -74,6 +88,7 @@ def parse_squarespace_events(
                     end_time=_local(item.get("endDate"), zone),
                     description=" · ".join(details) or None,
                     extraction_method="api",
+                    url=_event_url(item, base_url),
                 )
             )
     return events
@@ -95,4 +110,5 @@ class SquarespaceEventsParser(BaseParser):
             self.venue.key,
             self.venue.name,
             config.get("timezone", DEFAULT_TIMEZONE),
+            base_url=url,
         )

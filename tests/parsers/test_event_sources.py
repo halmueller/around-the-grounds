@@ -6,7 +6,7 @@ Squarespace events collection (JSON)."""
 import json
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, Iterator
+from typing import Any, Dict, Iterator, List
 from zoneinfo import ZoneInfo
 
 import aiohttp
@@ -69,6 +69,14 @@ class TestGeorgetownEventList:
         assert ravenna.title == "Fresh Hop Fest!"
         # 2026-10-10T18:00:00Z is 11 AM Pacific, stored naive.
         assert ravenna.date == datetime(2026, 10, 10, 11, 0)
+        # Each event links its own page, not the list.
+        assert {e.title: e.url for e in events}["PNA Winter Beer Taste"] == (
+            "https://georgetownbeer.com/blogs/news/pna-winter-beer-taste"
+        )
+        assert all(
+            (e.url or "").startswith("https://georgetownbeer.com/blogs/news/")
+            for e in events
+        )
 
     @freeze_time(NOW)
     @pytest.mark.asyncio
@@ -142,6 +150,7 @@ class TestBeveridgePlaceEvents:
                 datetime(2026, 10, 17, 19, 0),
             )
         ]
+        assert (events[0].url or "").startswith("https://beveridgeplacepub.com/events/")
 
     @freeze_time(NOW)
     @pytest.mark.asyncio
@@ -173,6 +182,11 @@ class TestStoupEvents:
         assert len(events) == 5
         # The Yakima Valley showcase is in Stoup's "other" (offsite) section.
         assert not any("Fresh Hop" in e.title for e in events)
+        # The container is itself the link to the event's page.
+        assert all(
+            (e.url or "").startswith("https://www.stoupbrewing.com/stoup-event/")
+            for e in events
+        )
         first = events[0]
         assert first.date.year == 2026
         assert first.start_time is not None
@@ -188,9 +202,18 @@ class TestSquarespaceEvents:
 
     def test_parses_items_in_local_time(self, payload: Dict[str, Any]) -> None:
         events = parse_squarespace_events(
-            payload, "fremont-events", "Fremont", "America/Los_Angeles"
+            payload,
+            "fremont-events",
+            "Fremont",
+            "America/Los_Angeles",
+            base_url="https://www.fremontbrewing.com/fremont-ubg-events",
         )
         assert len(events) == 4
+        party = next(e for e in events if "Oktoberfest" in e.title)
+        assert party.url == (
+            "https://www.fremontbrewing.com/fremont-ubg-events/"
+            "fremont-brewing-oktoberfest-party"
+        )
         release = next(e for e in events if e.title == "Fresh Hop Releases")
         assert release.start_time is not None
         assert release.start_time.tzinfo is None
@@ -241,3 +264,36 @@ class TestSquarespaceEvents:
             async with aiohttp.ClientSession() as session:
                 with pytest.raises(ValueError, match="not JSON"):
                     await SquarespaceEventsParser(venue).parse(session)
+
+
+class TestEventLinks:
+    HTML = """
+    <div class="item"><a class="more" href="/events/one">One</a>
+      <span class="title">One</span><span class="date">2026-10-10</span></div>
+    <div class="item"><a class="more" href="javascript:alert(1)">Two</a>
+      <span class="title">Two</span><span class="date">2026-10-11</span></div>
+    <div class="item">
+      <span class="title">Three</span><span class="date">2026-10-12</span></div>
+    """
+
+    async def _parse(self, config: Dict[str, Any]) -> List[Any]:
+        base = {
+            "event_container": ".item",
+            "title_selector": ".title",
+            "date_selector": ".date",
+        }
+        venue = Venue("v", "V", "https://v.example/events/", "html", {**base, **config})
+        with aioresponses() as m:
+            m.get(venue.url, status=200, body=self.HTML)
+            async with aiohttp.ClientSession() as session:
+                return await HtmlSelectorParser(venue).parse(session)
+
+    @pytest.mark.asyncio
+    async def test_link_selector_gives_absolute_http_urls_only(self) -> None:
+        events = await self._parse({"link_selector": "a.more"})
+        assert [e.url for e in events] == ["https://v.example/events/one", None, None]
+
+    @pytest.mark.asyncio
+    async def test_no_links_without_link_selector(self) -> None:
+        events = await self._parse({})
+        assert [e.url for e in events] == [None, None, None]

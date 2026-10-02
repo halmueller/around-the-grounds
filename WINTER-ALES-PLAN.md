@@ -115,7 +115,7 @@ notice. A list with beers always shows them. The month comes from
 HTML for crawlers. Tests: `tests/unit/test_fresh_hop_seasons.py` (runs
 `app.js` in Node with a stub DOM).
 
-Current ranges, still to be confirmed: fresh hops August through October,
+Ranges (confirmed 2026-10-02): fresh hops August through October,
 festbier September through October, pumpkin September through November.
 
 Left for the winter work: give the `winter` page `href`, `label`,

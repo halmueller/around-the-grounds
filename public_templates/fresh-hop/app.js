@@ -110,8 +110,10 @@ function renderEvent(e) {
     // Aggregated lists put the host venue in the description; the source
     // venue is then shown as "via".
     const where = e.description ? `${esc(e.description)} · via ${esc(e.venue)}` : esc(e.venue);
-    const title = safeUrl(e.venue_url)
-        ? `<a href="${esc(e.venue_url)}" target="_blank" rel="noopener">${esc(e.title)}</a>`
+    // The event's own page when the source links one, else the source itself.
+    const link = safeUrl(e.url) || safeUrl(e.venue_url);
+    const title = link
+        ? `<a href="${esc(link)}" target="_blank" rel="noopener">${esc(e.title)}</a>`
         : esc(e.title);
     const tag = CATEGORY_LABELS[e.category]
         ? ` <span class="tag tag-${esc(e.category)}">${esc(CATEGORY_LABELS[e.category])}</span>`

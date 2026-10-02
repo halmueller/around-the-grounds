@@ -7,6 +7,10 @@ When the date or time shares an element with other text ("Saturday, Oct 17,
 1-7pm THIRTY+ fresh hop beers…"), ``date_pattern`` / ``time_pattern`` pick
 it out: a regex whose first group (or whole match) is parsed. An item whose
 text has no match is skipped.
+
+``link_selector`` picks the link to the event's own page inside each
+container (or the container itself, when it is the link and nothing inside
+matches); its ``href`` becomes ``Event.url``, resolved against the venue URL.
 """
 
 import re
@@ -14,6 +18,8 @@ import re
 import logging
 from datetime import datetime
 from typing import Any, Dict, List, Optional
+
+from urllib.parse import urljoin
 
 import aiohttp
 from bs4 import BeautifulSoup, Tag
@@ -43,6 +49,7 @@ class HtmlSelectorParser(BaseParser):
         date_attribute: Optional[str] = config.get("date_attribute")
         time_selector: Optional[str] = config.get("time_selector")
         desc_selector: Optional[str] = config.get("description_selector")
+        link_selector: Optional[str] = config.get("link_selector")
         date_format: str = config.get("date_format", "auto")
         # Optional: convert timezone-aware dates (e.g. ISO "...Z" attributes)
         # to this zone so a late-evening UTC timestamp keeps its local day.
@@ -77,6 +84,8 @@ class HtmlSelectorParser(BaseParser):
                 time_pattern=time_pattern,
             )
             if event:
+                if link_selector:
+                    event.url = self._event_url(container, link_selector)
                 events.append(self._localize(event, tz_name) if tz_name else event)
 
         self.logger.info(
@@ -151,6 +160,19 @@ class HtmlSelectorParser(BaseParser):
             )
         except Exception as e:
             self.logger.debug(f"Error parsing container: {e}")
+            return None
+
+    def _event_url(self, container: Tag, link_selector: str) -> Optional[str]:
+        """The http(s) URL of the event's own page, if the container links one."""
+        try:
+            link = container.select_one(link_selector) or container
+            href = str(link.get("href") or "").strip()
+            if not href:
+                return None
+            url = urljoin(self.venue.url, href)
+            return url if url.startswith(("http://", "https://")) else None
+        except Exception as e:
+            self.logger.debug(f"Error reading event link: {e}")
             return None
 
     @staticmethod

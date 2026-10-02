@@ -20,6 +20,9 @@ class Event:
     # For listings: which list the entry belongs to ("fresh-hop", "festbier",
     # "pumpkin").
     category: Optional[str] = None
+    # The event's own page, when the source links one; templates fall back
+    # to the venue URL.
+    url: Optional[str] = None
 
     def __str__(self) -> str:
         date_str = self.date.strftime("%Y-%m-%d") if self.date else "None"

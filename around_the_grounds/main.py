@@ -234,6 +234,8 @@ async def generate_web_data(
             web_event["kind"] = event.kind
         if event.category:
             web_event["category"] = event.category
+        if event.url:
+            web_event["url"] = event.url
         web_events.append(web_event)
 
     unique_error_messages = list(dict.fromkeys(error_messages or []))
