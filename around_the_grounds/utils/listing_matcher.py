@@ -129,13 +129,16 @@ class ListingMatcher:
 
     @classmethod
     def for_venue(
-        cls, parser_config: Optional[Dict[str, Any]]
+        cls, parser_config: Optional[Dict[str, Any]], default_exclude: bool = True
     ) -> List["ListingMatcher"]:
         """One matcher per category the venue lists (``listing_categories``,
         default: every built-in category)."""
         config = parser_config or {}
         categories = cls._as_list(config.get("listing_categories")) or list(CATEGORIES)
-        return [cls.from_config(config, category=c) for c in categories]
+        return [
+            cls.from_config(config, default_exclude=default_exclude, category=c)
+            for c in categories
+        ]
 
     def matches(self, *texts: Optional[str]) -> bool:
         """*texts* are an entry's fields, name first."""

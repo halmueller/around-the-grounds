@@ -4,7 +4,7 @@
 //   festbier  festbiers, Oktoberfests, and Märzens at breweries
 //   pumpkin   pumpkin beers at breweries
 //   taprooms  all three, at bottle shops and taprooms
-//   events    upcoming fresh-hop events
+//   events    upcoming beer events
 
 // Escape text for safe insertion into innerHTML (text nodes and
 // double-quoted attribute values). Scraped strings are data, not markup.
@@ -95,9 +95,12 @@ function renderEvent(e) {
     const title = safeUrl(e.venue_url)
         ? `<a href="${esc(e.venue_url)}" target="_blank" rel="noopener">${esc(e.title)}</a>`
         : esc(e.title);
+    const tag = CATEGORY_LABELS[e.category]
+        ? ` <span class="tag tag-${esc(e.category)}">${esc(CATEGORY_LABELS[e.category])}</span>`
+        : '';
     return `<div class="event">
         <div class="event-date">${esc(formatDate(e.date.split('T')[0]))}${time ? ' · ' + esc(time) : ''}</div>
-        <div class="beer-name">${title}</div>
+        <div class="beer-name">${title}${tag}</div>
         <div class="beer-meta">${where}</div>
     </div>`;
 }
@@ -132,10 +135,10 @@ function showNotice(id, html) {
 function renderEventsPage(data, listingsEl, summaryEl) {
     const events = (data.events || []).filter(e => e.kind !== 'listing');
     if (!events.length) {
-        listingsEl.innerHTML = '<div class="empty">No upcoming fresh-hop events found.</div>';
+        listingsEl.innerHTML = '<div class="empty">No upcoming beer events found.</div>';
         return;
     }
-    summaryEl.innerHTML = `<strong>${esc(count(events.length, 'upcoming fresh-hop event', 'upcoming fresh-hop events'))}</strong> in and around Seattle.`;
+    summaryEl.innerHTML = `<strong>${esc(count(events.length, 'upcoming beer event', 'upcoming beer events'))}</strong> in and around Seattle.`;
     listingsEl.innerHTML = `<section class="venue">${events.map(renderEvent).join('')}</section>
         <p class="notice"><a class="calendar-link" href="events.ics">Subscribe to these events in your calendar</a></p>`;
 }

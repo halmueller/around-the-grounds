@@ -72,9 +72,11 @@ class TestGeorgetownEventList:
 
     @freeze_time(NOW)
     @pytest.mark.asyncio
-    async def test_coordinator_keeps_upcoming_fresh_hop_events(
+    async def test_coordinator_keeps_every_event_and_tags_the_seasonal(
         self, venue: Venue, fixtures_dir: Path
     ) -> None:
+        # The list is all beer events, so the venue's event_include keeps
+        # everything; only the fresh-hop fest carries a category.
         with aioresponses() as m:
             m.get(
                 venue.url,
@@ -84,8 +86,11 @@ class TestGeorgetownEventList:
             events, error = await ScraperCoordinator().scrape_one(venue)
 
         assert error is None
-        assert [(e.date.date().isoformat(), e.description) for e in events] == [
-            ("2026-10-10", "Ravenna Brewing, Ravenna"),
+        assert [(e.title, e.category) for e in events] == [
+            ("Fresh Hop Fest!", "fresh-hop"),
+            ("Night of the Bodhi", None),
+            ("PNA Winter Beer Taste", None),
+            ("Winter Beer Fest", None),
         ]
 
 

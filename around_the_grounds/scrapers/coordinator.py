@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import re
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple
 
@@ -13,6 +14,33 @@ except ImportError:
 from ..models import Venue, Event
 from ..parsers import ParserRegistry
 from ..utils.listing_matcher import ListingMatcher
+
+# Beer events that belong to no seasonal category: festivals, releases,
+# tastings, and the like. Checked against the title only, for venues with
+# ``event_filter``; a description mentions "release" or "tasting" too freely.
+EVENT_INCLUDE = [
+    r"\bfest(?:ival)?\b",  # Winter Beer Fest, Harvest Fest
+    r"\bbeer[\s-]*(?:fest|taste|tasting|dinner|pairing|week|release)",
+    r"\breleases?\b",  # Rusty Nail Barrel-Aged Release
+    r"\btappings?\b",
+    r"\btap[\s-]*takeover\b",
+    r"\bbrewer(?:s|'s|’s|y)?[\s-]*night\b",
+    r"\bpint[\s-]*night\b",
+    r"\banniversary\b",  # Fremont Brewing 17th Anniversary Party
+    r"\bcollab(?:oration)?\b",
+    r"\bbarrel[\s-]*aged\b",
+    r"\b(?:cask|firkin)s?\b",
+    r"\bbottle[\s-]*share\b",
+    r"\bvertical\b",
+    r"\bbarley[\s-]*wine",
+]
+
+# Calendar entries that use one of those words without being an event.
+# Checked against the title only.
+EVENT_EXCLUDE = [
+    r"\bclosed\b",  # "Closed for Oktoberfest setup"
+    r"\bhours\b",  # "Oktoberfest weekend hours"
+]
 
 
 class ScrapingError:
@@ -252,21 +280,50 @@ class ScraperCoordinator:
         return windows
 
     def _apply_event_filter(self, venue: Venue, events: List[Event]) -> List[Event]:
-        """Keep only fresh-hop events when the venue sets ``event_filter``.
+        """Keep only beer events when the venue sets ``event_filter``.
 
-        Uses the listing matcher (including the venue's ``listing_include`` /
-        ``listing_exclude``) but keeps festivals. Listings are already
-        filtered by their parsers and pass through untouched.
+        An event is kept when it matches one of the venue's listing
+        categories (the listing matchers, with the venue's ``*_include`` /
+        ``*_exclude`` patterns, but keeping festivals), which also records
+        the first category matched, or when it is a beer event of no season:
+        ``EVENT_INCLUDE`` on the title, the venue's ``event_include`` on
+        title and description. Notices (``EVENT_EXCLUDE`` on the title, the
+        venue's ``event_exclude`` on title and description) are dropped.
+        Listings are already filtered by their parsers and pass through
+        untouched.
         """
         config = venue.parser_config or {}
         if not config.get("event_filter"):
             return events
-        matcher = ListingMatcher.from_config(config, default_exclude=False)
-        kept = [
-            e
-            for e in events
-            if e.kind == "listing" or matcher.matches(e.title, e.description)
-        ]
+        matchers = ListingMatcher.for_venue(config, default_exclude=False)
+        title_include = [re.compile(p, re.IGNORECASE) for p in EVENT_INCLUDE]
+        title_exclude = [re.compile(p, re.IGNORECASE) for p in EVENT_EXCLUDE]
+        venue_include = ListingMatcher._compile(
+            ListingMatcher._as_list(config.get("event_include")), "event_include"
+        )
+        venue_exclude = ListingMatcher._compile(
+            ListingMatcher._as_list(config.get("event_exclude")), "event_exclude"
+        )
+        kept = []
+        for e in events:
+            if e.kind == "listing":
+                kept.append(e)
+                continue
+            texts = [t for t in (e.title, e.description) if t]
+            if any(p.search(e.title) for p in title_exclude) or any(
+                p.search(t) for p in venue_exclude for t in texts
+            ):
+                continue
+            for matcher in matchers:
+                if matcher.matches(e.title, e.description):
+                    e.category = matcher.category
+                    kept.append(e)
+                    break
+            else:
+                if any(p.search(e.title) for p in title_include) or any(
+                    p.search(t) for p in venue_include for t in texts
+                ):
+                    kept.append(e)
         self.logger.info(
             f"{venue.name}: {len(kept)} of {len(events)} events match event_filter"
         )

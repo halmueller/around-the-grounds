@@ -1,5 +1,5 @@
 """Tests for per-venue event filtering (event_filter) and upcoming windows
-(event_window_days) in the coordinator, used by fresh-hop event sources."""
+(event_window_days) in the coordinator, used by beer event sources."""
 
 from datetime import datetime, timedelta
 from typing import Any, Dict, List
@@ -50,14 +50,113 @@ class TestMatcherForEvents:
 
 class TestEventFilter:
     @pytest.mark.asyncio
-    async def test_keeps_only_fresh_hop_events(self) -> None:
+    async def test_keeps_fresh_hop_events(self) -> None:
         events = [
             _event("Fresh Hop Fest!"),
             _event("Trivia Night"),
-            _event("Release party", description="Our wet hop IPA is here"),
+            _event("Party", description="Our wet hop IPA is here"),
         ]
         result = await _scrape({"event_filter": True}, events)
-        assert [e.title for e in result] == ["Fresh Hop Fest!", "Release party"]
+        assert [e.title for e in result] == ["Fresh Hop Fest!", "Party"]
+        assert [e.category for e in result] == ["fresh-hop", "fresh-hop"]
+
+    @pytest.mark.asyncio
+    async def test_keeps_events_of_every_seasonal_category(self) -> None:
+        events = [
+            _event("Oktoberfest Party"),
+            _event("Pumpkin Beer Tapping"),
+            _event("Tapping", description="Our Märzen returns"),
+            _event("Fresh Hop Festbier Release"),
+            _event("Trivia Night"),
+        ]
+        result = await _scrape({"event_filter": True}, events)
+        assert [(e.title, e.category) for e in result] == [
+            ("Oktoberfest Party", "festbier"),
+            ("Pumpkin Beer Tapping", "pumpkin"),
+            ("Tapping", "festbier"),
+            ("Fresh Hop Festbier Release", "fresh-hop"),  # first category wins
+        ]
+
+    @pytest.mark.asyncio
+    async def test_venue_categories_limit_the_filter(self) -> None:
+        events = [_event("Oktoberfest Party"), _event("Fresh Hop Fest!")]
+        config = {"event_filter": True, "listing_categories": ["fresh-hop"]}
+        result = await _scrape(config, events)
+        assert [e.title for e in result] == ["Fresh Hop Fest!"]
+
+    @pytest.mark.asyncio
+    async def test_keeps_beer_events_of_no_season_untagged(self) -> None:
+        events = [
+            _event("Winter Beer Fest"),
+            _event("PNA Winter Beer Taste"),
+            _event("Harvest Fest"),
+            _event("Rusty Nail Barrel-Aged Release"),
+            _event("Fremont Brewing 17th Anniversary Party"),
+            _event("Brewers Night: Holy Mountain"),
+            _event("Cask Tapping"),
+            _event("Barleywine Vertical"),
+        ]
+        result = await _scrape({"event_filter": True}, events)
+        assert [e.title for e in result] == [e.title for e in events]
+        assert {e.category for e in result} == {None}
+
+    @pytest.mark.asyncio
+    async def test_drops_events_that_are_not_about_beer(self) -> None:
+        events = [
+            _event("Trivia Night"),
+            _event("#StoupBeerRunners"),
+            _event("Bingo Night", description="Prizes and good fun!"),
+            _event("Mahjong Night!"),
+            # Only the title is checked for the general words.
+            _event("Macrame Workshop", description="A release from the week"),
+        ]
+        assert await _scrape({"event_filter": True}, events) == []
+
+    @pytest.mark.asyncio
+    async def test_venue_event_include_covers_title_and_description(self) -> None:
+        events = [
+            _event("Night of the Bodhi"),
+            _event("Meet the maker", description="Bodhizafa on cask"),
+            _event("Trivia Night"),
+        ]
+        config = {"event_filter": True, "event_include": ["bodhi"]}
+        result = await _scrape(config, events)
+        assert [e.title for e in result] == ["Night of the Bodhi", "Meet the maker"]
+        # A curated list keeps everything, and still tags the seasonal ones.
+        config = {"event_filter": True, "event_include": ["."]}
+        events.append(_event("Fresh Hop Fest!"))
+        result = await _scrape(config, events)
+        assert [e.category for e in result] == [None, None, None, "fresh-hop"]
+
+    @pytest.mark.asyncio
+    async def test_notices_are_dropped(self) -> None:
+        events = [
+            _event("Closed for Oktoberfest setup"),
+            _event("Oktoberfest weekend hours"),
+            _event("Closed for a private festival"),
+            # Only the title is checked: a real event may mention its hours.
+            _event("Oktoberfest", description="Extended hours all weekend"),
+            # Family events with a seasonal word stay.
+            _event("Pumpkin Carving Night"),
+        ]
+        result = await _scrape({"event_filter": True}, events)
+        assert [e.title for e in result] == ["Oktoberfest", "Pumpkin Carving Night"]
+
+    @pytest.mark.asyncio
+    async def test_venue_event_exclude_covers_title_and_description(self) -> None:
+        events = [
+            _event("Oktoberfest Fun Run"),
+            _event("Oktoberfest", description="A private party"),
+            _event("Oktoberfest Party"),
+        ]
+        config = {"event_filter": True, "event_exclude": ["fun run", "private"]}
+        result = await _scrape(config, events)
+        assert [e.title for e in result] == ["Oktoberfest Party"]
+
+    @pytest.mark.asyncio
+    async def test_unfiltered_events_get_no_category(self) -> None:
+        result = await _scrape({}, [_event("Oktoberfest Party")])
+        assert [e.category for e in result] == [None]
 
     @pytest.mark.asyncio
     async def test_no_filter_without_config(self) -> None:

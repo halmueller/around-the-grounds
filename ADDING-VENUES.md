@@ -185,8 +185,10 @@ These `parser_config` options work with every event parser (`html`,
 
 | Option | Effect |
 |--------|--------|
-| `"event_filter": true` | Keep only events whose title/description match the fresh-hop matcher (festivals are kept; `listing_include` / `listing_exclude` apply) |
-| `"event_window_days": 60` | Keep events up to this many days ahead instead of the default 7 (fests are announced weeks out) |
+| `"event_filter": true` | Keep only beer events. Kept and tagged with a category: events whose title/description match one of the venue's listing categories (fresh hop, festbier, pumpkin; narrow with `listing_categories`; the per-category `*_include` / `*_exclude` patterns apply; festivals are kept). Kept untagged: events whose title has a general beer-event word (fest, release, tapping, tap takeover, anniversary, cask, barrel-aged, brewers night, …; `EVENT_INCLUDE` in `scrapers/coordinator.py`). Dropped: titles that say "closed" or "hours" |
+| `"event_include": ["bodhi"]` | With `event_filter`: extra patterns that keep an event when its title or description matches. `["."]` keeps everything from a source that lists only beer events, while still tagging the seasonal ones |
+| `"event_exclude": ["fun run"]` | With `event_filter`: extra patterns that drop an event when its title or description matches |
+| `"event_window_days": 365` | Keep events up to this many days ahead instead of the default 7 (fests are announced months out) |
 | `"timezone": "America/Los_Angeles"` | `html` parser only: convert timezone-aware dates (e.g. ISO `...Z` attributes) to local time so evening events keep their day |
 
 `squarespace-events` reads a Squarespace events collection page as JSON

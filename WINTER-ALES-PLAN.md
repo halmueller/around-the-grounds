@@ -33,8 +33,7 @@ winter beers do not reach taps until roughly November. So:
   tuned against live lists right away.
 - Tuning the winter and holiday names (step 7) waits until those beers are
   actually pouring.
-- The events change (step 4) does not depend on winter at all, and festbier
-  and pumpkin events are in season now. It can ship first, on its own.
+- The events change (step 4) did not depend on winter and has shipped.
 - Publish the page and its tab a few weeks before making it the home page, so
   it is crawled and indexed with real content first.
 
@@ -133,39 +132,30 @@ intentional rather than broken.
   multi-page serving) or keep the season logic in a small pure function and
   assert the strings in `test_seattle_freshies_config.py`.
 
-### 4. Events page: all seasonal events
+### 4. Events page: all beer events (done 2026-10-01)
 
-`event_filter` keeps only fresh-hop events today
-(`ScraperCoordinator._apply_event_filter` builds one fresh-hop matcher).
+Shipped ahead of the rest, and wider than first planned: the calendar shows
+anything known today that is of interest to beer nerds, not only seasonal
+events.
 
-- **Coordinator**: build a matcher for every category the venue lists
-  (`ListingMatcher.for_venue`, with `default_exclude=False` so festivals stay)
-  and keep an event that matches any of them. Set `Event.category` to the first
-  match so the page can tag it. The filter travels in `parser_config`, so the
-  Temporal path picks it up too.
-- **Event patterns are narrower than beer patterns.** "Oktoberfest party" and
-  "Pumpkin beer tapping" are right; "Holiday hours", "Christmas Eve: closed",
-  "Holiday market", and "Barrel-aged cheese pairing" are not. Plan for an
-  event-only exclude list (closed, hours, market, trivia unless a beer term is
-  also present) and check it against what the six event sources publish.
-- **`event_window_days`** is already set past 7 for all six sources; no change.
-- **Page copy**: `events.html` title stays "Events"; the meta description, `og:`
-  description, and tagline become "Upcoming seasonal beer festivals and
-  tappings in and around Seattle." In `app.js`, `renderEventsPage` says
-  "upcoming fresh-hop event(s)" and "No upcoming fresh-hop events found";
-  reword to "seasonal beer event(s)", and show the category tag
-  (`CATEGORY_LABELS`) on each event.
-- **Calendar feed**: `events.ics` gains the same events with no code change.
-  Check that the calendar name and description do not say "fresh hop".
-- **Tests**: `tests/unit/test_event_filtering.py` (festbier, pumpkin, and winter
-  events kept; hours and closure notices dropped; listings untouched) and
-  `test_event_sources_filter_for_fresh_hop_and_look_ahead` in
-  `test_seattle_freshies_config.py` (rename; the assertions still hold).
-- **Docs**: the `event_filter` row in `ADDING-VENUES.md`, the docstring in
-  `squarespace_events.py`, and the tap-list paragraph in `CLAUDE.md`, which all
-  say "fresh-hop events".
-- More event sources (other breweries' calendars) are a separate question once
-  the filter is general.
+- `event_filter` keeps events matching any of the venue's listing categories
+  (setting `Event.category`, shown as a tag) plus untagged general beer events
+  by title (`EVENT_INCLUDE` in `scrapers/coordinator.py`: fest, release,
+  tapping, anniversary, cask, and so on). Titles saying "closed" or "hours"
+  are dropped (`EVENT_EXCLUDE`). Family events with a seasonal word, such as
+  pumpkin carving, are kept on purpose.
+- Venues adjust it with `event_include` / `event_exclude`. Georgetown's list is
+  all beer events, so it sets `event_include: ["."]`.
+- All six sources look 365 days ahead, so "Winter Beer Fest" and "PNA Winter
+  Beer Taste" already show.
+
+Left for the winter work:
+
+- Once the `winter` category exists, those events gain a "Winter" tag with no
+  further change. Add winter cases to `tests/unit/test_event_filtering.py`.
+- Winter words are the risky ones for tagging: extend `EVENT_EXCLUDE` for
+  "Holiday market", "Christmas Eve", and similar when they turn up.
+- More event sources (other breweries' calendars) are a separate question.
 
 ### 5. Tests
 

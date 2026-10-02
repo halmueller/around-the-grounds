@@ -48,7 +48,9 @@ def test_bale_breaker_is_the_seattle_taproom_not_yakima(site: SiteConfig) -> Non
     assert [v.parser_config["location_id"] for v in bale_breaker] == [36760]
 
 
-def test_event_sources_filter_for_fresh_hop_and_look_ahead(site: SiteConfig) -> None:
+def test_event_sources_filter_for_beer_events_and_look_ahead(
+    site: SiteConfig,
+) -> None:
     event_sources = [
         v for v in site.venues if v.source_type in ("html", "squarespace-events")
     ]
@@ -63,7 +65,8 @@ def test_event_sources_filter_for_fresh_hop_and_look_ahead(site: SiteConfig) -> 
     for venue in event_sources:
         config = venue.parser_config or {}
         assert config.get("event_filter") is True, venue.key
-        assert config.get("event_window_days", 0) > 7, venue.key
+        # Everything announced so far shows up, however far out.
+        assert config.get("event_window_days", 0) >= 365, venue.key
 
 
 def test_bottle_shops_and_taprooms_are_typed(site: SiteConfig) -> None:

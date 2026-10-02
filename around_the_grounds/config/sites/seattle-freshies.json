@@ -779,7 +779,7 @@
       "source_type": "squarespace-events",
       "parser_config": {
         "event_filter": true,
-        "event_window_days": 60
+        "event_window_days": 365
       }
     },
     {
@@ -789,7 +789,7 @@
       "source_type": "squarespace-events",
       "parser_config": {
         "event_filter": true,
-        "event_window_days": 60
+        "event_window_days": 365
       }
     },
     {
@@ -799,8 +799,9 @@
       "source_type": "html",
       "parser_config": {
         "event_filter": true,
-        "event_window_days": 60,
-        "note": "Georgetown's list of events pouring its beer; the host venue is in the description. Seattle-tagged items only, minus Beveridge Place Pub, which is read from its own events page (beveridge-place-events).",
+        "event_window_days": 365,
+        "event_include": ["."],
+        "note": "Georgetown's list of events pouring its beer, so every entry is kept (event_include matches anything); the host venue is in the description. Seattle-tagged items only, minus Beveridge Place Pub, which is read from its own events page (beveridge-place-events).",
         "event_container": "article.article-event-item[data-tags*=\"Seattle\"]:not(:has(.article-location:-soup-contains(\"Beveridge Place\")))",
         "title_selector": ".article__title",
         "date_selector": "time.article-event-date",
@@ -816,7 +817,7 @@
       "source_type": "html",
       "parser_config": {
         "event_filter": true,
-        "event_window_days": 60,
+        "event_window_days": 365,
         "note": "WordPress (Elementor) event cards; the date and hours start the card's excerpt, e.g. 'Saturday, Oct 17, 1-7pm'. Cards without a date (weekly quiz, monthly book club) are skipped.",
         "event_container": ".premium-blog-content-wrapper-inner",
         "title_selector": ".premium-blog-entry-title",
@@ -833,7 +834,7 @@
       "source_type": "html",
       "parser_config": {
         "event_filter": true,
-        "event_window_days": 60,
+        "event_window_days": 365,
         "event_container": ".location-events[data-location=\"ballard\"] a.event",
         "title_selector": ".event-title",
         "date_selector": ".date-date",
@@ -847,7 +848,7 @@
       "source_type": "html",
       "parser_config": {
         "event_filter": true,
-        "event_window_days": 60,
+        "event_window_days": 365,
         "event_container": ".location-events[data-location=\"capitol-hill\"] a.event",
         "title_selector": ".event-title",
         "date_selector": ".date-date",
