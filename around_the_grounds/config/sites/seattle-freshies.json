@@ -78,6 +78,18 @@
       }
     },
     {
+      "key": "die-bierstube-taps",
+      "name": "Die Bierstube (Roosevelt)",
+      "url": "https://www.diebierstube.com/bier",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "venue_type": "taproom",
+        "item": ".menus > .menu:first-of-type .menu-item",
+        "name": ".menu-item-title",
+        "match_whole_item": true
+      }
+    },
+    {
       "key": "big-time-taps",
       "name": "Big Time Brewery (University District)",
       "url": "https://www.bigtimebrewery.com/drinks",
@@ -221,18 +233,6 @@
       "source_type": "craftpeak-wot"
     },
     {
-      "key": "die-bierstube-taps",
-      "name": "Die Bierstube (Roosevelt)",
-      "url": "https://www.diebierstube.com/bier",
-      "source_type": "html-taplist",
-      "parser_config": {
-        "venue_type": "taproom",
-        "item": ".menus > .menu:first-of-type .menu-item",
-        "name": ".menu-item-title",
-        "match_whole_item": true
-      }
-    },
-    {
       "key": "dirty-couch-taps",
       "name": "Dirty Couch Brewing (Ballard)",
       "url": "https://dirtycouchbrewing.com/tap-list",
@@ -240,17 +240,6 @@
       "parser_config": {
         "location_id": 16762,
         "theme_id": 62873
-      }
-    },
-    {
-      "key": "el-suenito-taps",
-      "name": "El Sueñito Brewing (Fremont)",
-      "url": "https://www.elsuenitobrewing.com/seattle",
-      "source_type": "pdf-taplist",
-      "parser_config": {
-        "note": "The page's BEER & DRINKS button links a PDF menu (Wix renames it on every upload). Beers are 'Name | Style' lines; prices and the ABV lines under each beer hold $ or %.",
-        "link_pattern": "beer",
-        "line_pattern": "^(?P<name>[^|$%]+?)\\s*\\|\\s*(?P<style>[^|$%]+)$"
       }
     },
     {
@@ -718,6 +707,17 @@
         "item": "section.template-whats-on-tap-2023-design a.reveal-toggle",
         "name": ".title",
         "abv": ".abv"
+      }
+    },
+    {
+      "key": "el-suenito-taps",
+      "name": "El Sueñito Brewing (Fremont)",
+      "url": "https://www.elsuenitobrewing.com/seattle",
+      "source_type": "pdf-taplist",
+      "parser_config": {
+        "note": "The page's BEER & DRINKS button links a PDF menu (Wix renames it on every upload). Beers are 'Name | Style' lines; prices and the ABV lines under each beer hold $ or %.",
+        "link_pattern": "beer",
+        "line_pattern": "^(?P<name>[^|$%]+?)\\s*\\|\\s*(?P<style>[^|$%]+)$"
       }
     },
     {

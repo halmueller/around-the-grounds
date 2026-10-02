@@ -3,6 +3,7 @@
 import html
 import re
 import struct
+import unicodedata
 from pathlib import Path
 from xml.etree import ElementTree
 
@@ -32,6 +33,22 @@ def test_site_basics(site: SiteConfig) -> None:
 def test_venue_keys_are_unique(site: SiteConfig) -> None:
     keys = [v.key for v in site.venues]
     assert len(keys) == len(set(keys))
+
+
+def test_tap_list_venues_are_alphabetical_ignoring_articles(site: SiteConfig) -> None:
+    # Pages show venues in config order. "The", the German "Die", and the
+    # Spanish "El" are skipped, so The Pine Box sorts under P, Die Bierstube
+    # under B, and El Sueñito under S.
+    def sort_key(name: str) -> str:
+        plain = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode()
+        return re.sub(r"^(?:the|die|el)\s+", "", plain.casefold())
+
+    names = [
+        v.name
+        for v in site.venues
+        if v.source_type not in ("html", "squarespace-events")
+    ]
+    assert names == sorted(names, key=sort_key)
 
 
 def test_venues_use_generic_listing_parsers(site: SiteConfig) -> None:
