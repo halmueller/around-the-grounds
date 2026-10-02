@@ -28,6 +28,9 @@ _ABV_PATTERNS = [
     re.compile(r"(\d+(?:\.\d+)?)\s*%"),
 ]
 
+# "Marzen" / "Maerzen" in any case; the vowel is respelled "ä".
+_MARZEN = re.compile(r"(m)(ae?)(rzen)", re.I)
+
 
 @dataclass
 class TapEntry:
@@ -52,6 +55,14 @@ def normalize_abv(text: Optional[str]) -> Optional[str]:
         if match:
             return f"{float(match.group(1)):g}%"
     return None
+
+
+def spell_marzen(name: str) -> str:
+    """Respell "Marzen" and "Maerzen" in *name* as "Märzen", keeping case."""
+    return _MARZEN.sub(
+        lambda m: m.group(1) + ("Ä" if m.group(2).isupper() else "ä") + m.group(3),
+        name,
+    )
 
 
 async def _fetch_listing(
@@ -149,7 +160,9 @@ def build_listings(
     total = 0
     for entry in entries:
         total += 1
-        details = [d for d in (entry.brewery, entry.style, entry.abv) if d]
+        name = spell_marzen(entry.name)
+        style = spell_marzen(entry.style) if entry.style else entry.style
+        details = [d for d in (entry.brewery, style, entry.abv) if d]
         for matcher in matchers:
             fields = (entry.name, entry.style, entry.match_text)
             if not matcher.matches(*fields) and not matcher.matches_description(
@@ -158,7 +171,7 @@ def build_listings(
                 continue
             identity = tuple(
                 (field or "").casefold()
-                for field in (entry.name, entry.brewery, entry.style, matcher.category)
+                for field in (name, entry.brewery, style, matcher.category)
             )
             if identity in seen:
                 continue
@@ -167,7 +180,7 @@ def build_listings(
                 Event(
                     venue_key=venue.key,
                     venue_name=venue.name,
-                    title=entry.name,
+                    title=name,
                     date=date,
                     description=" · ".join(details) or None,
                     extraction_method=extraction_method,

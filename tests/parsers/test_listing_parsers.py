@@ -321,7 +321,7 @@ class TestUntappdEmbedParser:
         assert all(e.kind == "listing" for e in events)
         assert [e.title for e in events if e.category == "festbier"] == [
             "Bobtoberfest",
-            "Oktoberfest Marzen",
+            "Oktoberfest Märzen",
             "Festbier",
         ]
         assert fresh_hops[0].title == "Aqua Seafoam Shame"

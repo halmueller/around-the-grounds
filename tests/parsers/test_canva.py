@@ -74,7 +74,7 @@ def test_pike_place_listings(html: str) -> None:
     events = build_listings(VENUE, parse_design(decode_design(html)), "canva", LOGGER)
     assert [(e.category, e.title) for e in events] == [
         ("festbier", "Festbier"),
-        ("festbier", "Smoked Marzen"),
+        ("festbier", "Smoked Märzen"),
         (
             "fresh-hop",
             "Ask your server about our fresh hop beers! "
@@ -106,7 +106,7 @@ def test_ship_canal_layout_with_style_under_abv(html_fixtures_dir: Path) -> None
         ("fresh-hop", "Fresh hop strata", "Fresh Hop West Coast IPA · 7.7%"),
         ("festbier", "OkStoverFest", "Festbier · 6.2%"),
         ("fresh-hop", "Fresh Hop Citra", "Fresh Hop Hazy Pale Ale · 6%"),
-        ("festbier", "The Claw!", "Cherrywood Smoked Marzen · 5.6%"),
+        ("festbier", "The Claw!", "Cherrywood Smoked Märzen · 5.6%"),
         ("festbier", "BEST DAY Oktoberfest", None),  # non-alcoholic, no ABV line
     ]
 

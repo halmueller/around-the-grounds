@@ -29,6 +29,7 @@ from around_the_grounds.parsers.generic.listing_common import (
     TapEntry,
     build_listings,
     normalize_abv,
+    spell_marzen,
 )
 from around_the_grounds.parsers.generic.text_taplist import (
     TextTaplistParser,
@@ -115,6 +116,37 @@ def test_source_types_are_registered(source_type: str, parser: type) -> None:
 )
 def test_normalize_abv(text: Any, expected: Any) -> None:
     assert normalize_abv(text) == expected
+
+
+@pytest.mark.parametrize(
+    "name,expected",
+    [
+        ("Marzen", "Märzen"),
+        ("Hi-Fi Maerzen Lager", "Hi-Fi Märzen Lager"),
+        ("SMOKED MARZEN", "SMOKED MÄRZEN"),
+        ("OLD MAERZEN", "OLD MÄRZEN"),
+        ("fresh hop marzen", "fresh hop märzen"),
+        ("Märzen", "Märzen"),
+        ("Fresh Hop IPA", "Fresh Hop IPA"),
+    ],
+)
+def test_spell_marzen(name: str, expected: str) -> None:
+    assert spell_marzen(name) == expected
+
+
+def test_listing_titles_spell_marzen() -> None:
+    venue = Venue("some-taproom", "Some Taproom", "https://example.com", "html")
+    entries = [
+        TapEntry("Maerzen"),
+        TapEntry("Märzen"),  # the same beer once respelled
+        TapEntry("Fresh Hop Marzen", style="Marzen"),
+    ]
+    events = build_listings(venue, entries, "html", LOGGER)
+    assert [(e.title, e.category, e.description) for e in events] == [
+        ("Märzen", "festbier", None),
+        ("Fresh Hop Märzen", "fresh-hop", "Märzen"),
+        ("Fresh Hop Märzen", "festbier", "Märzen"),
+    ]
 
 
 class TestHtmlTaplistConfig:
@@ -406,7 +438,7 @@ class TestHtmlTaplistVenues:
         assert "Fresh Pine (Fresh Amarillo Hopped)" in titles
         assert [e.title for e in events if e.category == "festbier"] == [
             "Festbier",
-            "Oktorok -- Marzen Lager",
+            "Oktorok -- Märzen Lager",
         ]
 
     @pytest.mark.asyncio
