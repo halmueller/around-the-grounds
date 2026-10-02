@@ -80,6 +80,8 @@ def test_bottle_shops_and_taprooms_are_typed(site: SiteConfig) -> None:
         "pine-box-taps",
         "prost-phinney-taps",
         "prost-west-seattle-taps",
+        "trailbend-taps",
+        "uber-tavern-taps",
         "watershed-taps",
     }
     assert {(v.parser_config or {}).get("venue_type") for v in site.venues} == {

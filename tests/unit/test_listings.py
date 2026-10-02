@@ -161,6 +161,8 @@ class TestListingVenues:
             "text-taplist",
             "pdf-taplist",
             "airtable",
+            "taphunter",
+            "menu-tools",
         }
         for source_type, parser in ParserRegistry._generic.items():
             assert parser.PRODUCES_LISTINGS == (

@@ -14,9 +14,11 @@ from .generic import (
     HtmlSelectorParser,
     HtmlTaplistParser,
     JsonLdParser,
+    MenuToolsParser,
     PdfTaplistParser,
     SheetTaplistParser,
     SquarespaceEventsParser,
+    TapHunterParser,
     TextTaplistParser,
     UntappdEmbedParser,
     UntappdVenueParser,
@@ -50,6 +52,8 @@ class ParserRegistry:
         "text-taplist": TextTaplistParser,
         "pdf-taplist": PdfTaplistParser,
         "airtable": AirtableParser,
+        "taphunter": TapHunterParser,
+        "menu-tools": MenuToolsParser,
         "squarespace-events": SquarespaceEventsParser,
     }
 

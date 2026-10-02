@@ -123,6 +123,15 @@
       }
     },
     {
+      "key": "burke-gilman-taps",
+      "name": "Burke-Gilman Brewing (Laurelhurst)",
+      "url": "https://www.burkegilmanbrewing.com/on-tap",
+      "source_type": "menu-tools",
+      "parser_config": {
+        "display_path": "bgbc/my-location/main-menu"
+      }
+    },
+    {
       "key": "chucks-central-district-taps",
       "name": "Chuck's Hop Shop (Central District)",
       "url": "https://www.chuckshopshop.com/taplistcd",
@@ -228,6 +237,27 @@
       }
     },
     {
+      "key": "elysian-capitol-hill-taps",
+      "name": "Elysian Brewing (Capitol Hill)",
+      "url": "https://www.elysianbrewing.com/locations/capitol-hill",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "note": "Embedded as an iframe: business.untappd.com/embeds/iframes/<location>/<theme>.",
+        "location_id": 3067,
+        "theme_id": 8744
+      }
+    },
+    {
+      "key": "elysian-fields-taps",
+      "name": "Elysian Fields (SoDo)",
+      "url": "https://www.elysianbrewing.com/locations/elysian-fields",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 3050,
+        "theme_id": 8676
+      }
+    },
+    {
       "key": "fair-isle-taps",
       "name": "Fair Isle Brewing (Ballard)",
       "url": "https://fairislebrewing.com/location/taproom/",
@@ -312,6 +342,43 @@
       }
     },
     {
+      "key": "ghostfish-taps",
+      "name": "Ghostfish Brewing (SoDo)",
+      "url": "https://ghostfishbrewing.com/taproom/",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 19802,
+        "theme_id": 75033
+      }
+    },
+    {
+      "key": "good-society-queen-anne-taps",
+      "name": "The Good Society (Queen Anne)",
+      "url": "https://goodsocietybeer.com/menu/qa/",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "Sippo embed (<script src=…@kegshoe/sippo menu=\"0qj45\">); its API answers with JSON holding the menu HTML.",
+        "source_url": "https://app.sippo.io/api/embed/0qj45",
+        "json_html_key": "html",
+        "item": ".menu-item",
+        "name": ".menu-item__name",
+        "style": ".menu-item__style",
+        "brewery": ".menu-item__producer",
+        "abv": ".menu-item__abv"
+      }
+    },
+    {
+      "key": "good-society-west-seattle-taps",
+      "name": "The Good Society (West Seattle)",
+      "url": "https://goodsocietybeer.com/menus/menu/",
+      "source_type": "taphunter",
+      "parser_config": {
+        "note": "The page's first TapHunter widget (Beer, Cider & Wine); the others are non-alcoholic drinks and food.",
+        "location_id": "4908654823079936",
+        "menu_id": "5330337463664640"
+      }
+    },
+    {
       "key": "growler-guys-taps",
       "name": "The Growler Guys (Lake City)",
       "url": "https://thegrowlerguys.com/locations/seattle-northeast/",
@@ -350,6 +417,19 @@
       "name": "Holy Mountain Brewing (Phinney Ridge)",
       "url": "https://holymountainbrewing.com/location/phinney-taproom/",
       "source_type": "craftpeak-wot"
+    },
+    {
+      "key": "jellyfish-taps",
+      "name": "Jellyfish Brewing (Georgetown)",
+      "url": "https://jellyfishbrewing.com/",
+      "source_type": "text-taplist",
+      "parser_config": {
+        "note": "The home page lists the taps as numbered h4 headings ('5. Medusa Oktoberfest'); bottles and cans below are unnumbered.",
+        "line_tags": [
+          "h4"
+        ],
+        "line_pattern": "^\\d+\\.\\s*(?P<name>.+)$"
+      }
     },
     {
       "key": "ladd-and-lass-taps",
@@ -609,6 +689,38 @@
         "item": "section.template-whats-on-tap-2023-design a.reveal-toggle",
         "name": ".title",
         "abv": ".abv"
+      }
+    },
+    {
+      "key": "trailbend-taps",
+      "name": "Trailbend Taproom (Ballard)",
+      "url": "https://trailbendtaproom.com/#drinks",
+      "source_type": "sheet-taplist",
+      "parser_config": {
+        "note": "The page fills its ON DRAFT list from this sheet's Drafts tab. Names include the brewery; the location column also holds pour sizes and prices.",
+        "sheet_id": "1Dw6A7zVZLmuQ16EayqaHzUu4W1Q8zjrkZuzadcmewyM",
+        "sheet_name": "Drafts",
+        "header_contains": "beername",
+        "columns": {
+          "name": 1,
+          "abv": 3
+        },
+        "venue_type": "taproom"
+      }
+    },
+    {
+      "key": "uber-tavern-taps",
+      "name": "Über Tavern (Green Lake)",
+      "url": "https://www.ubertavern.com/",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "The tavern's menu board (uberbier.com/mobilemenu) loads this table. Style and ABV are loose text in the name cell, so the whole row is matched.",
+        "source_url": "https://www.uberbier.com/menu/menuPage.php?page=-1",
+        "item": "#menu tr",
+        "name": "td.beerName h1",
+        "brewery": "td.beerName h2",
+        "match_whole_item": true,
+        "venue_type": "taproom"
       }
     },
     {

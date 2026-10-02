@@ -12,18 +12,29 @@ Config (``source_type: "html-taplist"``; the venue ``url`` is fetched)::
       "name_pattern": "^(?P<name>.+?)\\s*\\(",  # optional: trim the name text
       "match_whole_item": false,          # also match on the item's full text
       "name_fallback_to_style": false,    # unnamed item: use its style as name
-      "exclude_sections": ["\\\\bto go\\\\b"]  # skip items under these headings
+      "exclude_sections": ["\\\\bto go\\\\b"],  # skip items under these headings
+      "source_url": "https://…",          # fetch this instead of the venue url
+      "json_html_key": "html"             # the response is JSON; HTML is here
     }
 
-Two platform presets supply the selectors:
+``source_url`` is for menus a page loads from elsewhere (Über Tavern's table,
+Sippo embeds at ``app.sippo.io/api/embed/<menu>``, which answer with JSON
+holding the menu's HTML); the venue ``url`` stays the page people visit.
+
+Three platform presets supply the selectors:
 
 - ``craftpeak-wot``: Craftpeak/Arryved "What's On Tap" modules on brewery
   WordPress sites (Cloudburst, Holy Mountain, Fair Isle). Unnamed items are
   taps whose beer page is not yet published; their style stands in as name.
 - ``digitalpour``: DigitalPour's embeddable menu page. Config needs
   ``company_id`` and ``location_id`` (from the venue's iframe URL).
+- ``taphunter``: TapHunter web-menu widgets
+  (``taphunter.com/widgets/location/v3/<location>/wm/<menu>.js``). Config
+  needs ``location_id`` and ``menu_id`` (from the widget's script URL). The
+  script carries the menu HTML as a JSON string inside ``JSON.parse("…")``.
 """
 
+import json
 import re
 from typing import Any, Dict, List, Optional, Set
 
@@ -138,12 +149,26 @@ class HtmlTaplistParser(BaseParser):
         return {**self.PRESET, **(self.venue.parser_config or {})}
 
     def source_url(self, config: Dict[str, Any]) -> str:
-        return self.venue.url
+        return str(config.get("source_url") or self.venue.url)
+
+    def extract_html(self, text: str, config: Dict[str, Any]) -> str:
+        """The menu HTML inside the fetched *text* (by default, all of it)."""
+        key = config.get("json_html_key")
+        if not key:
+            return text
+        try:
+            html = json.loads(text)[key]
+        except (json.JSONDecodeError, KeyError, TypeError) as e:
+            raise ValueError(f"{self.venue.key}: no {key!r} HTML in response") from e
+        if not isinstance(html, str):
+            raise ValueError(f"{self.venue.key}: {key!r} in response is not HTML")
+        return html
 
     async def parse(self, session: aiohttp.ClientSession) -> List[Event]:
         config = self.config()
         url = self.source_url(config)
-        entries = parse_html_taplist(await fetch_listing_text(session, url), config)
+        text = await fetch_listing_text(session, url)
+        entries = parse_html_taplist(self.extract_html(text, config), config)
         if not entries:
             self.logger.warning(f"{self.venue.name}: no tap-list items at {url}")
         return build_listings(self.venue, entries, "html", self.logger)
@@ -177,3 +202,35 @@ class DigitalPourParser(HtmlTaplistParser):
                 f"{self.venue.key}: digitalpour needs company_id and location_id"
             )
         return f"{self.MENU_URL}?companyID={company}&locationID={location}"
+
+
+class TapHunterParser(HtmlTaplistParser):
+    WIDGET_URL = "https://www.taphunter.com/widgets/location/v3/{location}/wm/{menu}.js"
+    PRESET = {
+        "item": ".taphunter-row:has(.beer-name)",
+        "name": ".beer-name",
+        "style": ".beer-style",
+        "abv": ".beer-abv",
+    }
+    _JSON_PARSE = re.compile(r'JSON\.parse\("((?:[^"\\]|\\.)*)"\)', re.S)
+
+    def source_url(self, config: Dict[str, Any]) -> str:
+        location, menu = config.get("location_id"), config.get("menu_id")
+        if not location or not menu:
+            raise ValueError(
+                f"{self.venue.key}: taphunter needs location_id and menu_id"
+            )
+        return self.WIDGET_URL.format(location=location, menu=menu)
+
+    def extract_html(self, text: str, config: Dict[str, Any]) -> str:
+        match = self._JSON_PARSE.search(text)
+        if not match:
+            raise ValueError(f"{self.venue.key}: TapHunter widget has no menu HTML")
+        try:
+            # A JavaScript string literal holding a JSON string holding HTML.
+            html = json.loads(json.loads(f'"{match.group(1)}"'))
+        except json.JSONDecodeError as e:
+            raise ValueError(f"Could not decode TapHunter widget: {e}") from e
+        if not isinstance(html, str):
+            raise ValueError(f"{self.venue.key}: TapHunter widget menu is not HTML")
+        return html

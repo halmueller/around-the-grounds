@@ -1,0 +1,236 @@
+{
+ "subscriberName": "Burke-Gilman Brewing Company",
+ "menuName": "Main Menu",
+ "sections": [
+  {
+   "name": "our beers",
+   "items": [
+    {
+     "name": "Semiquincentennial",
+     "itemType": "BEER",
+     "abv": 4.8,
+     "style": "American Pale Ale",
+     "available": true,
+     "sortOrder": 1,
+     "sizes": []
+    },
+    {
+     "name": "Kaimiškas Alus",
+     "itemType": "BEER",
+     "abv": 6.5,
+     "style": "Lithuanian Farmhouse Ale",
+     "available": true,
+     "sortOrder": 3,
+     "sizes": []
+    },
+    {
+     "name": "This Email Should Have Been A Meeting",
+     "itemType": "BEER",
+     "abv": 7.0,
+     "style": "WCIPA",
+     "available": true,
+     "sortOrder": 5,
+     "sizes": []
+    },
+    {
+     "name": "In A Westerly Direction",
+     "itemType": "BEER",
+     "abv": 7.0,
+     "style": "WCIPA",
+     "description": "Riwaka, Krush, Mosaic",
+     "available": true,
+     "sortOrder": 6,
+     "sizes": []
+    },
+    {
+     "name": "We Don’t Talk About Brno",
+     "itemType": "BEER",
+     "abv": 5.2,
+     "style": "Czech Pilsner",
+     "available": true,
+     "sortOrder": 7,
+     "sizes": []
+    },
+    {
+     "name": "Festbier",
+     "itemType": "BEER",
+     "abv": 5.8,
+     "style": "Bavarian Festbier",
+     "available": true,
+     "sortOrder": 8,
+     "sizes": []
+    },
+    {
+     "name": "Cerny Kov",
+     "itemType": "BEER",
+     "abv": 4.8,
+     "style": "Czech Dark Lager",
+     "available": true,
+     "sortOrder": 9,
+     "sizes": []
+    },
+    {
+     "name": "Furlongs Firkins Fortnights Fahrenheit",
+     "itemType": "BEER",
+     "abv": 6.3,
+     "style": "Hazy IPA",
+     "available": true,
+     "sortOrder": 10,
+     "sizes": []
+    },
+    {
+     "name": "Zvezda",
+     "itemType": "BEER",
+     "abv": 13.0,
+     "style": "Barrel Aged Russian Imperial Stout",
+     "description": "Aged in Elijah Craig Whiskey barrels",
+     "available": true,
+     "sortOrder": 11,
+     "sizes": []
+    }
+   ]
+  },
+  {
+   "name": "guest ciders",
+   "items": [
+    {
+     "name": "Bone Dry",
+     "itemType": "CIDER",
+     "abv": 6.9,
+     "style": "Cider",
+     "manufacturer": "Tieton Cider",
+     "available": true,
+     "sortOrder": 0,
+     "sizes": []
+    },
+    {
+     "name": "Habanero Lime",
+     "itemType": "CIDER",
+     "abv": 6.5,
+     "style": "Fruited Cider",
+     "available": true,
+     "sortOrder": 1,
+     "sizes": []
+    },
+    {
+     "name": "Hibiscus Lime",
+     "itemType": "CIDER",
+     "abv": 6.9,
+     "manufacturer": "Greenwood Cider",
+     "available": true,
+     "sortOrder": 2,
+     "sizes": []
+    },
+    {
+     "name": "Staycation",
+     "itemType": "CIDER",
+     "abv": 6.5,
+     "style": "Fruited Cider",
+     "manufacturer": "One Tree Cider",
+     "description": "Pineapple & Mango",
+     "available": true,
+     "sortOrder": 5,
+     "sizes": []
+    },
+    {
+     "name": "Dry Pear",
+     "itemType": "CIDER",
+     "abv": 6.5,
+     "style": "Perry",
+     "manufacturer": "Channel Marker Cider",
+     "available": true,
+     "sortOrder": 6,
+     "sizes": []
+    }
+   ]
+  },
+  {
+   "name": "guest beers, GF & N/A beer",
+   "items": [
+    {
+     "name": "Grapefruit IPA",
+     "itemType": "BEER",
+     "abv": 5.5,
+     "style": "GF WCIPA",
+     "manufacturer": "Ghostfish Brewing",
+     "serveType": "CAN",
+     "available": true,
+     "sortOrder": 0,
+     "sizes": []
+    },
+    {
+     "name": "West Coast IPA (NA)",
+     "itemType": "BEER",
+     "abv": 0.0,
+     "style": "NA WCIPA",
+     "manufacturer": "Best Day Brewing",
+     "serveType": "CAN",
+     "available": true,
+     "sortOrder": 1,
+     "sizes": []
+    },
+    {
+     "name": "Hazy IPA (NA)",
+     "itemType": "BEER",
+     "abv": 0.0,
+     "style": "Hazy IPA (non-alcoholic)",
+     "manufacturer": "Best Day Brewing",
+     "serveType": "CAN",
+     "available": true,
+     "sortOrder": 2,
+     "sizes": []
+    },
+    {
+     "name": "Pink Guava Sour",
+     "itemType": "BEER",
+     "abv": 5.0,
+     "style": "Fruited Sour",
+     "manufacturer": "Everybody’s Brewing",
+     "available": true,
+     "sortOrder": 3,
+     "sizes": []
+    },
+    {
+     "name": "Crushable",
+     "itemType": "BEER",
+     "abv": 5.2,
+     "style": "Hazy Pale Ale",
+     "manufacturer": "Reuben’s Brews",
+     "available": true,
+     "sortOrder": 7,
+     "sizes": []
+    },
+    {
+     "name": "Coal King",
+     "itemType": "BEER",
+     "abv": 6.1,
+     "style": "Oatmeal Stout",
+     "manufacturer": "Sig Brewing",
+     "available": true,
+     "sortOrder": 8,
+     "sizes": []
+    },
+    {
+     "name": "Skyfinder",
+     "itemType": "BEER",
+     "abv": 6.8,
+     "style": "FH Hazy IPA",
+     "manufacturer": "Single Hill",
+     "available": true,
+     "sortOrder": 9,
+     "sizes": []
+    },
+    {
+     "name": "Fresh Hop Fiend Simcoe Italian Pils",
+     "itemType": "BEER",
+     "abv": 5.0,
+     "style": "FH Italian Pilsner",
+     "manufacturer": "Stoup Brewing",
+     "available": true,
+     "sortOrder": 10,
+     "sizes": []
+    }
+   ]
+  }
+ ]
+}

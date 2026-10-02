@@ -3,8 +3,14 @@ from .ajax import AjaxParser
 from .bevwerk import BevwerkParser
 from .canva import CanvaParser
 from .html_selector import HtmlSelectorParser
-from .html_taplist import CraftpeakWotParser, DigitalPourParser, HtmlTaplistParser
+from .html_taplist import (
+    CraftpeakWotParser,
+    DigitalPourParser,
+    HtmlTaplistParser,
+    TapHunterParser,
+)
 from .json_ld import JsonLdParser
+from .menu_tools import MenuToolsParser
 from .pdf_taplist import PdfTaplistParser
 from .sheet_taplist import SheetTaplistParser
 from .squarespace_events import SquarespaceEventsParser
@@ -29,5 +35,7 @@ __all__ = [
     "TextTaplistParser",
     "PdfTaplistParser",
     "AirtableParser",
+    "TapHunterParser",
+    "MenuToolsParser",
     "SquarespaceEventsParser",
 ]

@@ -128,7 +128,7 @@ Create `around_the_grounds/config/sites/<your-site-key>.json`. Cribbing from `pa
 }
 ```
 
-The supported `source_type` values for dated events are `wordpress`, `html` (CSS selectors), `ajax` (JSON API), `json-ld` (schema.org JSON-LD), and `squarespace-events`. Tap-list sites use the listing parsers instead: `untappd-embed`, `untappd-venue`, `sheet-taplist`, `html-taplist`, `craftpeak-wot`, `digitalpour`, `bevwerk`, `canva`, `text-taplist`, `pdf-taplist`, and `airtable`. Each has its own `parser_config` shape — see [ADDING-VENUES.md](./ADDING-VENUES.md) for the field-by-field reference and examples for each platform.
+The supported `source_type` values for dated events are `wordpress`, `html` (CSS selectors), `ajax` (JSON API), `json-ld` (schema.org JSON-LD), and `squarespace-events`. Tap-list sites use the listing parsers instead: `untappd-embed`, `untappd-venue`, `sheet-taplist`, `html-taplist`, `craftpeak-wot`, `digitalpour`, `bevwerk`, `canva`, `text-taplist`, `pdf-taplist`, `airtable`, `taphunter`, and `menu-tools`. Each has its own `parser_config` shape — see [ADDING-VENUES.md](./ADDING-VENUES.md) for the field-by-field reference and examples for each platform.
 
 If a venue uses a platform none of these handle, you can add a venue-specific parser in `around_the_grounds/parsers/` and register it in `parsers/registry.py`. There are nine such hand-written parsers already in the repo (Stoup, Yonder/Bale Breaker, Obec, Urban Family, Wheelie Pop, Chuck's, Saleh's, Channel Marker, Lucky Envelope) you can use as templates.
 
@@ -282,7 +282,7 @@ GIT_REPOSITORY_URL=https://github.com/username/target-repo.git
 - **Web data + deploy**: `main.py:generate_web_data` and `main.py:_deploy_with_github_auth` — the single source of truth for both CLI and Temporal paths
 - **Temporal**: `temporal/workflows.py` (workflow), `temporal/activities.py` (activities), `temporal/worker.py` (worker process). The workflow resolves a `site_key`, calls a `load_site` activity to fetch `SiteConfig`, scrapes per-venue in parallel batches, and delegates `generate_web_data` and `deploy_to_git` to the same `main.py` functions the CLI uses
 - **Templates**: `public_templates/<template>/` — one directory per template, copied verbatim into the target repo at deploy time
-- **Tests**: 984 tests (`uv run python -m pytest`) covering parsers, generic platforms, tap-list matching, scraper coordinator, AI utilities, weather, multi-site deploy strategies, and Temporal activity contracts
+- **Tests**: 1004 tests (`uv run python -m pytest`) covering parsers, generic platforms, tap-list matching, scraper coordinator, AI utilities, weather, multi-site deploy strategies, and Temporal activity contracts
 
 For the full architecture rundown including the deploy strategy decision tree, the AI subsystems, and the testing strategy, see [CLAUDE.md](./CLAUDE.md).
 
@@ -306,7 +306,7 @@ For the full architecture rundown including the deploy strategy decision tree, t
 
 ```bash
 uv sync --dev                          # Install dev dependencies
-uv run python -m pytest                # Full test suite (984 tests)
+uv run python -m pytest                # Full test suite (1004 tests)
 uv run black .                         # Format
 uv run flake8                          # Lint
 uv run mypy around_the_grounds/        # Type check
