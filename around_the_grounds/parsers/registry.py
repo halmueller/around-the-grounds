@@ -14,6 +14,7 @@ from .generic import (
     HtmlSelectorParser,
     HtmlTaplistParser,
     JsonLdParser,
+    FirestoreTaplistParser,
     MenuToolsParser,
     PdfTaplistParser,
     SheetTaplistParser,
@@ -54,6 +55,7 @@ class ParserRegistry:
         "airtable": AirtableParser,
         "taphunter": TapHunterParser,
         "menu-tools": MenuToolsParser,
+        "firestore-taplist": FirestoreTaplistParser,
         "squarespace-events": SquarespaceEventsParser,
     }
 

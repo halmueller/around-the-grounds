@@ -1,0 +1,446 @@
+[
+ {
+  "document": {
+   "name": "projects/project9brewing/databases/(default)/documents/beers/04rxotB4zs024ejKYmWY",
+   "fields": {
+    "tapNumber": {
+     "integerValue": "18"
+    },
+    "abv": {
+     "doubleValue": 5.4
+    },
+    "name": {
+     "stringValue": "Herr Hopfen"
+    },
+    "description": {
+     "stringValue": "A crisp, refreshing Märzen with a smooth medium body and clean amber malt character, an easy-drinking lager made for the fall season."
+    },
+    "beerStyle": {
+     "stringValue": "Oktoberfest"
+    },
+    "menuNotes": {
+     "stringValue": ""
+    }
+   },
+   "createTime": "2024-09-27T19:14:19.595807Z",
+   "updateTime": "2026-09-14T20:50:39.603167Z"
+  }
+ },
+ {
+  "document": {
+   "name": "projects/project9brewing/databases/(default)/documents/beers/0UHiDrG5IbRC1HLvruKU",
+   "fields": {
+    "tapNumber": {
+     "integerValue": "5"
+    },
+    "abv": {
+     "doubleValue": 5.5
+    },
+    "name": {
+     "stringValue": "Fresh Pathfinder"
+    },
+    "description": {
+     "stringValue": "Fresh Strata edition! Crisp, crushable modern pils made with Linc malt and PNW hops. Light fruit notes and mild bitterness."
+    },
+    "beerStyle": {
+     "stringValue": "PNW Pils"
+    },
+    "menuNotes": {
+     "stringValue": "Coleman Farms, 2026 Best of Craft Bronze!"
+    }
+   },
+   "createTime": "2025-01-06T19:35:59.052863Z",
+   "updateTime": "2026-09-21T22:57:21.193535Z"
+  }
+ },
+ {
+  "document": {
+   "name": "projects/project9brewing/databases/(default)/documents/beers/7tFbTwolR5qSEAMj5uoh",
+   "fields": {
+    "tapNumber": {
+     "integerValue": "10"
+    },
+    "abv": {
+     "doubleValue": 6.3
+    },
+    "name": {
+     "stringValue": "Jimothy & the Trash Pandas"
+    },
+    "description": {
+     "stringValue": "Brewed in collaboration with Bumbershoot to be served at the festival over Labor Day weekend. Refreshing hazy IPA that leans toward the dry side for maximum drinkability. Citra, Simcoe, Superdelic."
+    },
+    "beerStyle": {
+     "stringValue": "(Light) Hazy IPA"
+    }
+   },
+   "createTime": "2026-08-21T21:38:48.055503Z",
+   "updateTime": "2026-09-21T22:55:48.714367Z"
+  }
+ },
+ {
+  "document": {
+   "name": "projects/project9brewing/databases/(default)/documents/beers/9QkOVyO6kCi6JfZbV5oy",
+   "fields": {
+    "tapNumber": {
+     "integerValue": "6"
+    },
+    "abv": {
+     "integerValue": "6"
+    },
+    "name": {
+     "stringValue": "Analog Signal"
+    },
+    "description": {
+     "stringValue": "Crisp, dry, with lemon-lime and floral notes. This \"Extra Pale Ale\" is a collab with Indie Hops showcasing Lórien hops."
+    },
+    "beerStyle": {
+     "stringValue": "XPA"
+    },
+    "menuNotes": {
+     "stringValue": "\"Extra Pale Ale\" Collab with Indie Hops"
+    }
+   },
+   "createTime": "2026-06-12T20:08:49.461167Z",
+   "updateTime": "2026-09-21T22:55:55.610463Z"
+  }
+ },
+ {
+  "document": {
+   "name": "projects/project9brewing/databases/(default)/documents/beers/ClpE45aSW6PaI0N4EGHq",
+   "fields": {
+    "tapNumber": {
+     "integerValue": "14"
+    },
+    "abv": {
+     "doubleValue": 6.6
+    },
+    "name": {
+     "stringValue": "UNICORN DREAM"
+    },
+    "description": {
+     "stringValue": ""
+    },
+    "beerStyle": {
+     "stringValue": "Rainbow Sherbert Sour"
+    }
+   },
+   "createTime": "2023-04-04T22:49:59.538127Z",
+   "updateTime": "2026-09-14T20:50:20.516335Z"
+  }
+ },
+ {
+  "document": {
+   "name": "projects/project9brewing/databases/(default)/documents/beers/IonJKrOcdY7IWOHLXNLt",
+   "fields": {
+    "tapNumber": {
+     "integerValue": "2"
+    },
+    "abv": {
+     "doubleValue": 5.2
+    },
+    "name": {
+     "stringValue": "Voilà"
+    },
+    "description": {
+     "stringValue": "Light and refreshing with floral and light berry notes."
+    },
+    "beerStyle": {
+     "stringValue": "French Pils"
+    },
+    "menuNotes": {
+     "stringValue": ""
+    }
+   },
+   "createTime": "2026-01-20T01:05:25.481951Z",
+   "updateTime": "2026-09-13T00:14:12.662047Z"
+  }
+ },
+ {
+  "document": {
+   "name": "projects/project9brewing/databases/(default)/documents/beers/J5035DLO88trxOXrM93I",
+   "fields": {
+    "tapNumber": {
+     "integerValue": "1"
+    },
+    "abv": {
+     "doubleValue": 5.2
+    },
+    "name": {
+     "stringValue": "Regal Beast"
+    },
+    "description": {
+     "stringValue": "Big flavor in an extremely drinkable dark lager with just a hit of roast character."
+    },
+    "beerStyle": {
+     "stringValue": "Czech Dark Lager"
+    }
+   },
+   "createTime": "2025-10-27T19:59:45.324719Z",
+   "updateTime": "2026-09-08T05:52:49.737887Z"
+  }
+ },
+ {
+  "document": {
+   "name": "projects/project9brewing/databases/(default)/documents/beers/OTDwpQqOxDZbi5SndcNk",
+   "fields": {
+    "tapNumber": {
+     "integerValue": "8"
+    },
+    "abv": {
+     "doubleValue": 6.8
+    },
+    "name": {
+     "stringValue": "TASTY WAVES"
+    },
+    "description": {
+     "stringValue": "Modern West Coast with big hop complexity and dry, drinkable finish."
+    },
+    "beerStyle": {
+     "stringValue": "West Coast IPA"
+    },
+    "menuNotes": {
+     "stringValue": "2025 US Beer Open Silver / Sip GOLD"
+    }
+   },
+   "createTime": "2023-03-31T18:51:32.484303Z",
+   "updateTime": "2026-09-14T20:46:31.138863Z"
+  }
+ },
+ {
+  "document": {
+   "name": "projects/project9brewing/databases/(default)/documents/beers/RhHGrd5THvcX92MHN82C",
+   "fields": {
+    "tapNumber": {
+     "integerValue": "15"
+    },
+    "abv": {
+     "doubleValue": 6.4
+    },
+    "name": {
+     "stringValue": "Lemon Granita"
+    },
+    "description": {
+     "stringValue": ""
+    },
+    "beerStyle": {
+     "stringValue": "Fruited Sour"
+    }
+   },
+   "createTime": "2023-04-27T20:53:04.839023Z",
+   "updateTime": "2026-09-18T21:34:35.955919Z"
+  }
+ },
+ {
+  "document": {
+   "name": "projects/project9brewing/databases/(default)/documents/beers/Tt9RkXaOjksJGJhyKSjQ",
+   "fields": {
+    "tapNumber": {
+     "integerValue": "4"
+    },
+    "abv": {
+     "doubleValue": 5.9
+    },
+    "name": {
+     "stringValue": "Pinch Hitter"
+    },
+    "description": {
+     "stringValue": "Punchy notes of citrus peel and peachy rings. Light refreshing body. Citra, Riwaka, and Alora hops."
+    },
+    "beerStyle": {
+     "stringValue": "West Coast Pale Ale"
+    },
+    "menuNotes": {
+     "stringValue": ""
+    }
+   },
+   "createTime": "2025-05-02T20:12:24.657631Z",
+   "updateTime": "2026-09-27T22:25:09.472623Z"
+  }
+ },
+ {
+  "document": {
+   "name": "projects/project9brewing/databases/(default)/documents/beers/aBPrJxQ7U3VPnOrlv99P",
+   "fields": {
+    "tapNumber": {
+     "integerValue": "11"
+    },
+    "abv": {
+     "doubleValue": 7.5
+    },
+    "name": {
+     "stringValue": "King Lupu's Happy Juice"
+    },
+    "description": {
+     "stringValue": "2024 World Beer Cup medal winner! This beer is happiness in a glass. A royal helping of Simcoe, Mosaic, El Dorado, and Citra. Perfect balance of a big ABV without being cloyingly sweet."
+    },
+    "beerStyle": {
+     "stringValue": "Hazy IPA"
+    },
+    "menuNotes": {
+     "stringValue": "2024 WORLD BEER CUP BRONZE!"
+    }
+   },
+   "createTime": "2023-02-06T05:34:24.785359Z",
+   "updateTime": "2026-08-25T21:46:20.110399Z"
+  }
+ },
+ {
+  "document": {
+   "name": "projects/project9brewing/databases/(default)/documents/beers/eg2ZqnsrkZBNM1xxJRnd",
+   "fields": {
+    "tapNumber": {
+     "integerValue": "9"
+    },
+    "abv": {
+     "integerValue": "7"
+    },
+    "name": {
+     "stringValue": "Lab Notes"
+    },
+    "description": {
+     "stringValue": "Collab with Roy Farms featuring ADHA 218."
+    },
+    "beerStyle": {
+     "stringValue": "West Coast IPA"
+    },
+    "menuNotes": {
+     "stringValue": "Roy Farms Collab featuring ADHA 218!"
+    }
+   },
+   "createTime": "2026-07-16T21:45:45.985407Z",
+   "updateTime": "2026-09-25T21:20:16.332111Z"
+  }
+ },
+ {
+  "document": {
+   "name": "projects/project9brewing/databases/(default)/documents/beers/isBIl8qhEaA0gpsoJhvq",
+   "fields": {
+    "tapNumber": {
+     "integerValue": "13"
+    },
+    "abv": {
+     "doubleValue": 6.3
+    },
+    "name": {
+     "stringValue": "Public Nuisance"
+    },
+    "description": {
+     "stringValue": "This \"delicate\" IPA was made with hot weather in mind. Moderate ABV in a super drinkable package. Strata, Audacia, NZ Cascade and Limequat Hop Kief. Collab with Roses by the Stairs brewing out of Phoenix."
+    },
+    "beerStyle": {
+     "stringValue": "West Coast IPA"
+    },
+    "menuNotes": {
+     "stringValue": "Collab with Roses by the Stairs Brewing"
+    }
+   },
+   "createTime": "2026-08-03T03:57:08.061359Z",
+   "updateTime": "2026-09-08T05:52:53.285375Z"
+  }
+ },
+ {
+  "document": {
+   "name": "projects/project9brewing/databases/(default)/documents/beers/kAbfO7pcIvCj6yRyar5m",
+   "fields": {
+    "tapNumber": {
+     "integerValue": "12"
+    },
+    "abv": {
+     "integerValue": "7"
+    },
+    "name": {
+     "stringValue": "GNOMEBREW"
+    },
+    "description": {
+     "stringValue": ""
+    },
+    "beerStyle": {
+     "stringValue": "Hazy IPA"
+    }
+   },
+   "createTime": "2023-06-27T21:38:59.161967Z",
+   "updateTime": "2026-09-14T20:46:50.523311Z"
+  }
+ },
+ {
+  "document": {
+   "name": "projects/project9brewing/databases/(default)/documents/beers/sFqB53wGFu9OHz43zf6V",
+   "fields": {
+    "tapNumber": {
+     "integerValue": "3"
+    },
+    "abv": {
+     "doubleValue": 4.8
+    },
+    "name": {
+     "stringValue": "Luchador Lager"
+    },
+    "description": {
+     "stringValue": "Light, refreshing, a hint of corn and floral notes."
+    },
+    "beerStyle": {
+     "stringValue": "Pale Mexican Lager"
+    },
+    "menuNotes": {
+     "stringValue": ""
+    }
+   },
+   "createTime": "2024-06-11T22:01:32.187407Z",
+   "updateTime": "2026-09-14T20:47:37.289359Z"
+  }
+ },
+ {
+  "document": {
+   "name": "projects/project9brewing/databases/(default)/documents/beers/wNcmI1mVTyhma30P1KiT",
+   "fields": {
+    "tapNumber": {
+     "integerValue": "7"
+    },
+    "abv": {
+     "doubleValue": 7.1
+    },
+    "name": {
+     "stringValue": "FRESH CITRA"
+    },
+    "description": {
+     "stringValue": "Citra-licious West Coast IPA loaded up with Fresh Citra, Citra Cryo, Citra T90s and a touch of Simcoe in the dry hop. Big mango and tropical notes with balanced bitterness."
+    },
+    "beerStyle": {
+     "stringValue": "Fresh Hop WC IPA"
+    },
+    "menuNotes": {
+     "stringValue": "Roy Farms"
+    }
+   },
+   "createTime": "2023-08-28T19:31:10.252063Z",
+   "updateTime": "2026-09-25T21:23:54.619855Z"
+  }
+ },
+ {
+  "document": {
+   "name": "projects/project9brewing/databases/(default)/documents/beers/wcCBz8oZqMv3dkiHt5bh",
+   "fields": {
+    "tapNumber": {
+     "nullValue": null
+    },
+    "soldOutTime": {
+     "timestampValue": "2026-09-04T01:51:31.021Z"
+    },
+    "abv": {
+     "doubleValue": 11.5
+    },
+    "name": {
+     "stringValue": "LIGHTS OUT - 2025 BARREL AGED"
+    },
+    "description": {
+     "stringValue": "Our '24 Light's Out Stout aged for one year in Copperworks and Buffalo Trace Bourbon barrels."
+    },
+    "beerStyle": {
+     "stringValue": "Barrel Aged Imperial Stout"
+    }
+   },
+   "createTime": "2025-11-25T01:21:23.537231Z",
+   "updateTime": "2026-09-19T22:40:29.044927Z"
+  }
+ }
+]

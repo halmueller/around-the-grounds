@@ -596,6 +596,17 @@
       }
     },
     {
+      "key": "project-9-taps",
+      "name": "Project 9 Brewing (Maple Leaf)",
+      "url": "https://www.project9brewing.com/beer",
+      "source_type": "firestore-taplist",
+      "parser_config": {
+        "project": "project9brewing",
+        "note": "Their own web app; the beer page reads this Firestore collection in the browser. Fresh-hop editions are named 'Fresh <beer>' (Fresh Pathfinder, Fresh Citra) and do not always say 'fresh hop'.",
+        "listing_include": ["^fresh\\b"]
+      }
+    },
+    {
       "key": "prost-phinney-taps",
       "name": "Prost! (Phinney Ridge)",
       "url": "https://www.prosttavern.net/bier",

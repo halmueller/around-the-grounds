@@ -21,7 +21,7 @@ Key features:
 - **Self-hosted Temporal worker** alternative scheduling path (Ballard production setup)
 - **Comprehensive error handling** with retry logic, isolation, and graceful degradation
 - **Temporal workflow integration** with cloud deployment support (local, Temporal Cloud, custom servers)
-- **Extensive test suite** with 1050 tests covering unit, integration, vision analysis, haiku generation, weather, and error scenarios
+- **Extensive test suite** with 1060 tests covering unit, integration, vision analysis, haiku generation, weather, and error scenarios
 - **Modern Python tooling** with uv for dependency management and packaging
 
 ## Development Commands
@@ -141,7 +141,7 @@ See [SCHEDULES.md](./SCHEDULES.md)
 
 ### Testing
 ```bash
-# Full test suite (1050 tests)
+# Full test suite (1060 tests)
 uv run python -m pytest                    # Run all tests
 uv run python -m pytest tests/unit/        # Unit tests only
 uv run python -m pytest tests/parsers/     # Parser-specific tests
@@ -180,7 +180,7 @@ around_the_grounds/
 │   │   ├── ballard-food-trucks.json   # Ballard food trucks (9 venues, deploy_subdir="public")
 │   │   ├── park-slope-music.json      # Park Slope music venues (2 venues, deploy to repo root)
 │   │   ├── childrens-events.json      # Brooklyn children's events (2 venues, deploy to repo root)
-│   │   └── seattle-freshies.json    # Seattle fresh-hop tap lists (66 listing venues + 6
+│   │   └── seattle-freshies.json    # Seattle fresh-hop tap lists (67 listing venues + 6
 │   │                                  #   beer event sources; no target_repo → preview-only)
 │   ├── loader.py                  # Site config loader (load_site_config, load_all_sites)
 │   ├── haiku_prompt.txt           # Weather-grounded haiku prompt template (Ballard-specific)
@@ -209,6 +209,7 @@ around_the_grounds/
 │   │   ├── pdf_taplist.py         # PdfTaplistParser (PDF menu text, found via a page link)
 │   │   ├── airtable.py            # AirtableParser (shared Airtable interface page rows)
 │   │   ├── menu_tools.py          # MenuToolsParser (Menu Tools display JSON)
+│   │   ├── firestore_taplist.py   # FirestoreTaplistParser (public Firestore collection)
 │   │   └── squarespace_events.py  # SquarespaceEventsParser (collection ?format=json)
 │   ├── stoup_ballard.py           # Stoup Brewing parser (venue-specific)
 │   ├── bale_breaker.py            # Bale Breaker parser (venue-specific)
@@ -278,7 +279,7 @@ public/                            # Generated files (git-ignored)
 ├── events.ics                     # Subscribable calendar feed (all sites)
 └── index.html                     # Copied from the active template
 
-tests/                             # Comprehensive test suite (1050 tests)
+tests/                             # Comprehensive test suite (1060 tests)
 ├── conftest.py                    # Shared test fixtures
 ├── fixtures/
 │   ├── csv/                       # CSV samples (channel_marker)
@@ -305,7 +306,7 @@ tests/                             # Comprehensive test suite (1050 tests)
     - `HtmlSelectorParser`: Extracts events via CSS selectors (`source_type: "html"`)
     - `AjaxParser`: Fetches from JSON API endpoints (`source_type: "ajax"`)
     - `JsonLdParser`: Extracts events from schema.org JSON-LD blocks (`source_type: "json-ld"`)
-    - **Tap-list ("listing") parsers** for sites that show what is available now rather than dated events: `untappd-embed`, `untappd-venue`, `sheet-taplist`, `html-taplist`, `craftpeak-wot`, `digitalpour`, `bevwerk`, `canva`, `text-taplist`, `pdf-taplist`, `airtable`, `taphunter`, `menu-tools`. They keep entries accepted by `utils/listing_matcher.py` in one or more categories (`fresh-hop`, `festbier`, `pumpkin`; extendable per venue) and emit `Event(kind="listing", category=...)`, which bypasses the coordinator's 7-day window, is excluded from `events.ics`, and carries `"kind"` in `data.json`/Temporal payloads only when non-default. Any event source can opt into `event_filter` (coordinator keeps only beer events: those matching the venue's listing categories, tagged with the category, plus festivals, releases, and other general beer events; `event_include` / `event_exclude` adjust it) and `event_window_days` (look further ahead than 7 days); both travel in `parser_config`, so the Temporal path honors them too. See [ADDING-VENUES.md](./ADDING-VENUES.md)
+    - **Tap-list ("listing") parsers** for sites that show what is available now rather than dated events: `untappd-embed`, `untappd-venue`, `sheet-taplist`, `html-taplist`, `craftpeak-wot`, `digitalpour`, `bevwerk`, `canva`, `text-taplist`, `pdf-taplist`, `airtable`, `taphunter`, `menu-tools`, `firestore-taplist`. They keep entries accepted by `utils/listing_matcher.py` in one or more categories (`fresh-hop`, `festbier`, `pumpkin`; extendable per venue) and emit `Event(kind="listing", category=...)`, which bypasses the coordinator's 7-day window, is excluded from `events.ics`, and carries `"kind"` in `data.json`/Temporal payloads only when non-default. Any event source can opt into `event_filter` (coordinator keeps only beer events: those matching the venue's listing categories, tagged with the category, plus festivals, releases, and other general beer events; `event_include` / `event_exclude` adjust it) and `event_window_days` (look further ahead than 7 days); both travel in `parser_config`, so the Temporal path honors them too. See [ADDING-VENUES.md](./ADDING-VENUES.md)
   - **Venue-specific parsers** (9 for Ballard food trucks): StoupBallard, BaleBreaker, Obec, UrbanFamily, WheeliePop, ChucksGreenwood, SalehsCorner, ChannelMarker, LuckyEnvelope
 - **Registry**: Two-tier lookup — by `venue.key` (specific) then by `venue.source_type` (generic)
 - **Scrapers**: Async coordinator with concurrent processing, retry logic, and error isolation
@@ -316,7 +317,7 @@ tests/                             # Comprehensive test suite (1050 tests)
 - **Web Interface**: Per-site templates in `public_templates/<template>/` deployed to the site's configured host (GitHub Pages or Vercel-via-GitHub)
 - **Web Deployment**: Two git strategies selected by `SiteConfig.deploy_subdir` — see Deployment Strategies below. `deploy_subdir` is validated before authentication (relative, no parent traversal, never `.git`), re-checked against the resolved clone path so a committed symlink cannot redirect writes, and staged with a literal pathspec. Preview and deploy share `_write_site_output` so both emit identical files
 - **Scheduling**: Google Cloud Run Jobs with Cloud Scheduler (jredding's sites) OR a self-hosted Temporal worker (Ballard site) OR cron + `--output-dir` on a web host (Seattle Freshies; see `deploy/digitalocean/`). Both paths read the same `SiteConfig` and call the same `main.py:_deploy_with_github_auth` for git operations
-- **Tests**: 1050 tests covering all scenarios including generic parsers, error handling, vision analysis, haiku generation, weather fetching, multi-site deploy configuration, the Temporal `load_site` / `generate_web_data` / `deploy_to_git` activity contracts, end-to-end `FoodTruckWorkflow` runs against a real local Temporal server (venue isolation, cancellation, replay of recorded histories in `tests/fixtures/temporal/`), real-Git deployment into temporary bare repositories, and a Playwright browser check of all three templates (`tests/browser/check_templates.mjs`, skipped when Node + Playwright are unavailable)
+- **Tests**: 1060 tests covering all scenarios including generic parsers, error handling, vision analysis, haiku generation, weather fetching, multi-site deploy configuration, the Temporal `load_site` / `generate_web_data` / `deploy_to_git` activity contracts, end-to-end `FoodTruckWorkflow` runs against a real local Temporal server (venue isolation, cancellation, replay of recorded histories in `tests/fixtures/temporal/`), real-Git deployment into temporary bare repositories, and a Playwright browser check of all three templates (`tests/browser/check_templates.mjs`, skipped when Node + Playwright are unavailable)
 
 ## Deployment Strategies
 
@@ -391,7 +392,7 @@ See [ERROR-HANDLING.md](./ERROR-HANDLING.md) for the complete error handling str
 
 ## Testing Strategy
 
-The project includes a comprehensive test suite with 1050 tests covering unit, integration, generic parsers, vision analysis, haiku generation, weather fetching, and error scenarios.
+The project includes a comprehensive test suite with 1060 tests covering unit, integration, generic parsers, vision analysis, haiku generation, weather fetching, and error scenarios.
 
 See [TESTING.md](./TESTING.md) for the complete testing strategy and guide.
 

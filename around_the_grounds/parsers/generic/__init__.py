@@ -10,6 +10,7 @@ from .html_taplist import (
     TapHunterParser,
 )
 from .json_ld import JsonLdParser
+from .firestore_taplist import FirestoreTaplistParser
 from .menu_tools import MenuToolsParser
 from .pdf_taplist import PdfTaplistParser
 from .sheet_taplist import SheetTaplistParser
@@ -36,6 +37,7 @@ __all__ = [
     "PdfTaplistParser",
     "AirtableParser",
     "TapHunterParser",
+    "FirestoreTaplistParser",
     "MenuToolsParser",
     "SquarespaceEventsParser",
 ]
