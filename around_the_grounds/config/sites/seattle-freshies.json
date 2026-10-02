@@ -184,6 +184,17 @@
       }
     },
     {
+      "key": "el-suenito-taps",
+      "name": "El Sueñito Brewing (Fremont)",
+      "url": "https://www.elsuenitobrewing.com/seattle",
+      "source_type": "pdf-taplist",
+      "parser_config": {
+        "note": "The page's BEER & DRINKS button links a PDF menu (Wix renames it on every upload). Beers are 'Name | Style' lines; prices and the ABV lines under each beer hold $ or %.",
+        "link_pattern": "beer",
+        "line_pattern": "^(?P<name>[^|$%]+?)\\s*\\|\\s*(?P<style>[^|$%]+)$"
+      }
+    },
+    {
       "key": "fair-isle-taps",
       "name": "Fair Isle Brewing (Ballard)",
       "url": "https://fairislebrewing.com/location/taproom/",

@@ -4,6 +4,7 @@ from .canva import CanvaParser
 from .html_selector import HtmlSelectorParser
 from .html_taplist import CraftpeakWotParser, DigitalPourParser, HtmlTaplistParser
 from .json_ld import JsonLdParser
+from .pdf_taplist import PdfTaplistParser
 from .sheet_taplist import SheetTaplistParser
 from .squarespace_events import SquarespaceEventsParser
 from .text_taplist import TextTaplistParser
@@ -25,5 +26,6 @@ __all__ = [
     "BevwerkParser",
     "CanvaParser",
     "TextTaplistParser",
+    "PdfTaplistParser",
     "SquarespaceEventsParser",
 ]

@@ -9,7 +9,7 @@ import logging
 import re
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, Iterable, List, Optional
+from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 import aiohttp
 
@@ -54,18 +54,13 @@ def normalize_abv(text: Optional[str]) -> Optional[str]:
     return None
 
 
-async def fetch_listing_text(
+async def _fetch_listing(
     session: aiohttp.ClientSession,
     url: str,
     params: Optional[Dict[str, Any]] = None,
     json_body: Optional[Any] = None,
     headers: Optional[Dict[str, str]] = None,
-) -> str:
-    """Fetch *url* politely and return its body, raising ValueError on failure.
-
-    With *json_body*, POSTs it as JSON (for GraphQL APIs) instead of a GET.
-    *headers* override the session's for this request.
-    """
+) -> Tuple[bytes, str]:
     await listing_throttle.wait(url)
     if json_body is None:
         request = session.get(url, params=params, headers=headers)
@@ -88,12 +83,38 @@ async def fetch_listing_text(
                 raise ValueError(f"Rate limited (429): {url}")
             if response.status != 200:
                 raise ValueError(f"HTTP {response.status}: {url}")
-            text = await response.text()
+            body = await response.read()
+            encoding = response.get_encoding()
     except aiohttp.ClientError as e:
         raise ValueError(f"Network error fetching {url}: {e}") from e
+    if not body.strip():
+        raise ValueError(f"Empty response from: {url}")
+    return body, encoding
+
+
+async def fetch_listing_text(
+    session: aiohttp.ClientSession,
+    url: str,
+    params: Optional[Dict[str, Any]] = None,
+    json_body: Optional[Any] = None,
+    headers: Optional[Dict[str, str]] = None,
+) -> str:
+    """Fetch *url* politely and return its body, raising ValueError on failure.
+
+    With *json_body*, POSTs it as JSON (for GraphQL APIs) instead of a GET.
+    *headers* override the session's for this request.
+    """
+    body, encoding = await _fetch_listing(session, url, params, json_body, headers)
+    text = body.decode(encoding, errors="replace")
     if not text.strip():
         raise ValueError(f"Empty response from: {url}")
     return text
+
+
+async def fetch_listing_bytes(session: aiohttp.ClientSession, url: str) -> bytes:
+    """Like ``fetch_listing_text``, for binary bodies (PDF menus)."""
+    body, _ = await _fetch_listing(session, url)
+    return body
 
 
 def listing_date(venue: Venue) -> datetime:

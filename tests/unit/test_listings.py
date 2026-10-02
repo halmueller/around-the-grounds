@@ -159,6 +159,7 @@ class TestListingVenues:
             "bevwerk",
             "canva",
             "text-taplist",
+            "pdf-taplist",
         }
         for source_type, parser in ParserRegistry._generic.items():
             assert parser.PRODUCES_LISTINGS == (

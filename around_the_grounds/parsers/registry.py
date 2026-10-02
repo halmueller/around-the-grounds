@@ -13,6 +13,7 @@ from .generic import (
     HtmlSelectorParser,
     HtmlTaplistParser,
     JsonLdParser,
+    PdfTaplistParser,
     SheetTaplistParser,
     SquarespaceEventsParser,
     TextTaplistParser,
@@ -46,6 +47,7 @@ class ParserRegistry:
         "bevwerk": BevwerkParser,
         "canva": CanvaParser,
         "text-taplist": TextTaplistParser,
+        "pdf-taplist": PdfTaplistParser,
         "squarespace-events": SquarespaceEventsParser,
     }
 
