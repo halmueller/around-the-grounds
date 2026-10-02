@@ -13,7 +13,7 @@ Four sites publish from this repo today, on three different host setups, all fro
 | **Brooklyn Children's Events** | <https://jredding.github.io/atg-childrens-events/> | GitHub Pages from [`jredding/atg-childrens-events`](https://github.com/jredding/atg-childrens-events) repo root | Google Cloud Run Job, daily |
 | **Seattle Freshies** | <https://seattlefreshies.com> | Apache on a DigitalOcean droplet; published straight into the web root with `--output-dir` (no target repo) | cron, hourly |
 
-Seattle Freshies is a tap-list site rather than an event calendar: it shows which fresh-hop, festbier, and pumpkin beers are pouring right now at 46 Seattle breweries and taprooms, plus upcoming beer events from 6 more sources. It can easily be expanded to include other seasonal beers, such as winter ales.
+Seattle Freshies is a tap-list site rather than an event calendar: it shows which fresh-hop, festbier, and pumpkin beers are pouring right now at 66 Seattle breweries and taprooms, plus upcoming beer events from 6 more sources. It can easily be expanded to include other seasonal beers, such as winter ales.
 
 The Ballard site adds AI haikus (Claude Sonnet 4.6, grounded in real-time weather from Open-Meteo) and AI vision analysis (Claude Vision API) for vendor names extracted from food-truck logo posts where text scraping isn't enough.
 
@@ -282,7 +282,7 @@ GIT_REPOSITORY_URL=https://github.com/username/target-repo.git
 - **Web data + deploy**: `main.py:generate_web_data` and `main.py:_deploy_with_github_auth` — the single source of truth for both CLI and Temporal paths
 - **Temporal**: `temporal/workflows.py` (workflow), `temporal/activities.py` (activities), `temporal/worker.py` (worker process). The workflow resolves a `site_key`, calls a `load_site` activity to fetch `SiteConfig`, scrapes per-venue in parallel batches, and delegates `generate_web_data` and `deploy_to_git` to the same `main.py` functions the CLI uses
 - **Templates**: `public_templates/<template>/` — one directory per template, copied verbatim into the target repo at deploy time
-- **Tests**: 1046 tests (`uv run python -m pytest`) covering parsers, generic platforms, tap-list matching, scraper coordinator, AI utilities, weather, multi-site deploy strategies, and Temporal activity contracts
+- **Tests**: 1050 tests (`uv run python -m pytest`) covering parsers, generic platforms, tap-list matching, scraper coordinator, AI utilities, weather, multi-site deploy strategies, and Temporal activity contracts
 
 For the full architecture rundown including the deploy strategy decision tree, the AI subsystems, and the testing strategy, see [CLAUDE.md](./CLAUDE.md).
 
@@ -306,7 +306,7 @@ For the full architecture rundown including the deploy strategy decision tree, t
 
 ```bash
 uv sync --dev                          # Install dev dependencies
-uv run python -m pytest                # Full test suite (1046 tests)
+uv run python -m pytest                # Full test suite (1050 tests)
 uv run black .                         # Format
 uv run flake8                          # Lint
 uv run mypy around_the_grounds/        # Type check

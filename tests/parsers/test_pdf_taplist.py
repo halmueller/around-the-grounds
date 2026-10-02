@@ -20,9 +20,8 @@ from around_the_grounds.parsers.generic.pdf_taplist import (
 from around_the_grounds.parsers.registry import ParserRegistry
 from around_the_grounds.utils.host_throttle import listing_throttle
 
-VENUE = {v.key: v for v in load_site_config("seattle-freshies").venues}[
-    "el-suenito-taps"
-]
+VENUES = {v.key: v for v in load_site_config("seattle-freshies").venues}
+VENUE = VENUES["el-suenito-taps"]
 CONFIG: Dict[str, Any] = dict(VENUE.parser_config or {})
 PDF_URL = "https://www.elsuenitobrewing.com/_files/ugd/3b652b_beer.pdf"
 PAGE = (
@@ -138,6 +137,43 @@ class TestParsePdfTaplist:
             "Ch.ch.Cherry Bomb",
         ]
 
+    def test_kochendorfers_menu(self, fixtures_dir: Path) -> None:
+        # The whole menu is one PDF; only the drafts have a detail line.
+        lines = (
+            (fixtures_dir / "text" / "pdf_kochendorfers.txt").read_text().splitlines()
+        )
+        config = dict(VENUES["kochendorfers-taps"].parser_config or {})
+        entries = parse_pdf_taplist(lines, config)
+        assert [(e.name, e.brewery, e.style, e.abv) for e in entries] == [
+            ("KOCHENDORFER’S ORIGINAL LAGER", None, "Munich Helles", "4.8%"),
+            ("KOCHENDORFER’S DARK LAGER", None, "Munich Dunkel", "5.3%"),
+            ("KOCHENDORFER’S LIGHT", None, "Light German Lager", "4.3%"),
+            ("KOCHENDORFER’S HEFE", None, "German Hefeweizen", "4.8%"),
+            ("MORPHEUS I.P.A.", "District Brewing", "West Coast IPA", "7.5%"),
+            ("JUICE ALMIGHTY I.P.A.", "District Brewing", "Hazy IPA", "5.6%"),
+            ("SIERRA NEVADA PALE ALE", "Sierra Nevada", "American Pale Ale", "5.6%"),
+            ("GEORGETOWN TAVERN BEER", None, "Light American Lager", "4.2%"),
+        ]
+
+    def test_detail_pattern_requires_the_next_line_to_match(self) -> None:
+        config = {
+            "line_pattern": r"^(?P<name>[A-Z ]+)$",
+            "detail_pattern": r"^(?P<style>.+?) (?P<abv>\d+%)$",
+        }
+        lines = ["SMALL PLATES", "FRIES", "Served hot", "FEST BIER", "Festbier 6%"]
+        entries = parse_pdf_taplist(lines, config)
+        assert [(e.name, e.style, e.abv) for e in entries] == [
+            ("FEST BIER", "Festbier", "6%")
+        ]
+
+    def test_name_line_groups_win_over_the_detail_line(self) -> None:
+        config = {
+            "line_pattern": r"^(?P<name>[A-Z ]+) - (?P<style>.+)$",
+            "detail_pattern": r"^(?P<style>.+?) (?P<abv>\d+%)$",
+        }
+        entries = parse_pdf_taplist(["FEST - Lager", "Amber 6%"], config)
+        assert [(e.name, e.style, e.abv) for e in entries] == [("FEST", "Lager", "6%")]
+
     def test_abv_group_wins_over_following_line(self) -> None:
         entries = parse_pdf_taplist(
             ["Fresh Hop IPA 6%", "7.5% | hoppy"],
@@ -151,6 +187,10 @@ class TestParsePdfTaplist:
             ({}, "needs line_pattern"),
             ({"line_pattern": "("}, "Invalid line_pattern"),
             ({"line_pattern": "^(.+)$"}, "needs a"),
+            (
+                {"line_pattern": "^(?P<name>.+)$", "detail_pattern": "("},
+                "Invalid detail_pattern",
+            ),
         ],
     )
     def test_bad_config(self, config: Dict[str, Any], message: str) -> None:

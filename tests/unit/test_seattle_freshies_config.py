@@ -99,6 +99,7 @@ def test_bottle_shops_and_taprooms_are_typed(site: SiteConfig) -> None:
         "chucks-seward-park-taps",
         "die-bierstube-taps",
         "growler-guys-taps",
+        "kochendorfers-taps",
         "latona-pub-taps",
         "pine-box-taps",
         "prost-phinney-taps",

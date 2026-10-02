@@ -5,6 +5,12 @@ The PDF's text is read line by line, and each line is matched against
 Lines that don't match are ignored. When the line after an entry starts with
 a percentage ("6.5% | The use of freshly picked…"), that is its ABV.
 
+Some menus put the name on one line and the rest on the next
+("KOCHENDORFER’S DARK LAGER" / "House Draft - Munich Dunkel 5.3%"). With
+``detail_pattern``, the line after a name must match it, and its named groups
+supply the brewery, style, and ABV; a name line not followed by a matching
+line is ignored, which keeps a menu's other headings out.
+
 Site builders (Wix) give every upload a new file name, so the PDF is usually
 found through the page linking to it rather than addressed directly.
 
@@ -12,6 +18,7 @@ Config (``source_type: "pdf-taplist"``)::
 
     "parser_config": {
       "line_pattern": "^(?P<name>[^|]+)\\\\|(?P<style>[^|]+)$",  # needs name
+      "detail_pattern": "^(?P<style>.+) (?P<abv>[\\\\d.]+%)$",  # optional
       "link_pattern": "beer"   # optional regex, case-insensitive
     }
 
@@ -90,6 +97,12 @@ def parse_pdf_taplist(lines: List[str], config: Dict[str, Any]) -> List[TapEntry
         raise ValueError(f"Invalid line_pattern: {e}") from e
     if "name" not in pattern.groupindex:
         raise ValueError("pdf-taplist line_pattern needs a (?P<name>...) group")
+    detail_pattern: Optional["re.Pattern[str]"] = None
+    if config.get("detail_pattern"):
+        try:
+            detail_pattern = re.compile(config["detail_pattern"])
+        except (re.error, TypeError) as e:
+            raise ValueError(f"Invalid detail_pattern: {e}") from e
 
     entries = []
     for index, line in enumerate(lines):
@@ -99,15 +112,25 @@ def parse_pdf_taplist(lines: List[str], config: Dict[str, Any]) -> List[TapEntry
         name = (_group(match, "name") or "").strip("* ")
         if not name:
             continue
-        abv = _group(match, "abv")
         following = lines[index + 1] if index + 1 < len(lines) else ""
+        # With detail_pattern, the next line completes the entry; the name
+        # line's own groups win where both have one.
+        detail = detail_pattern.search(following) if detail_pattern else None
+        if detail_pattern and not detail:
+            continue
+        found = [match] + ([detail] if detail else [])
+
+        def pick(group: str) -> Optional[str]:
+            return next((v for v in (_group(m, group) for m in found) if v), None)
+
+        abv = pick("abv")
         if not abv and _ABV_LINE.match(following):
             abv = following
         entries.append(
             TapEntry(
                 name=name,
-                brewery=_group(match, "brewery"),
-                style=_group(match, "style"),
+                brewery=pick("brewery"),
+                style=pick("style"),
                 abv=normalize_abv(abv),
             )
         )
