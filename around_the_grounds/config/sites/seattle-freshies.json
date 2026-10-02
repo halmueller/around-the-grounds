@@ -543,6 +543,16 @@
       }
     },
     {
+      "key": "rooftop-taps",
+      "name": "Rooftop × Maritime Pacific (Ballard)",
+      "url": "https://www.rooftopbrew.co/beer",
+      "source_type": "airtable",
+      "parser_config": {
+        "note": "Rooftop now runs Maritime Pacific; both brands pour at the Jolly Roger Taproom. The tap list is an embedded Airtable interface page.",
+        "share_url": "https://airtable.com/embed/appgD6ErPhbVR1opf/shr4MCunGaXTu3WbV"
+      }
+    },
+    {
       "key": "seapine-taps",
       "name": "Seapine Brewing (SoDo)",
       "url": "https://www.seapinebrewing.com/the-taproom",

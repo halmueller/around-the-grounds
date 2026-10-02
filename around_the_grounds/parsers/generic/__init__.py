@@ -1,3 +1,4 @@
+from .airtable import AirtableParser
 from .ajax import AjaxParser
 from .bevwerk import BevwerkParser
 from .canva import CanvaParser
@@ -27,5 +28,6 @@ __all__ = [
     "CanvaParser",
     "TextTaplistParser",
     "PdfTaplistParser",
+    "AirtableParser",
     "SquarespaceEventsParser",
 ]

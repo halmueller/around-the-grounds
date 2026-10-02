@@ -5,6 +5,7 @@ from .base import BaseParser
 from .channel_marker import ChannelMarkerParser
 from .chucks_greenwood import ChucksGreenwoodParser
 from .generic import (
+    AirtableParser,
     AjaxParser,
     BevwerkParser,
     CanvaParser,
@@ -48,6 +49,7 @@ class ParserRegistry:
         "canva": CanvaParser,
         "text-taplist": TextTaplistParser,
         "pdf-taplist": PdfTaplistParser,
+        "airtable": AirtableParser,
         "squarespace-events": SquarespaceEventsParser,
     }
 

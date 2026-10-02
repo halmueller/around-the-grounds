@@ -1,0 +1,641 @@
+{
+ "msg": "SUCCESS",
+ "data": {
+  "tableSchemas": [
+   {
+    "id": "tbl28RL2ZgelmKWye",
+    "name": "Table",
+    "primaryColumnId": "fld8nJtmpBPvyaSnC",
+    "columns": [
+     {
+      "id": "fld8nJtmpBPvyaSnC",
+      "name": "Field",
+      "type": "text"
+     },
+     {
+      "id": "fldGqyNK3zJioyof2",
+      "name": "IBU",
+      "type": "number",
+      "typeOptions": {
+       "format": "integer",
+       "negative": false,
+       "validatorName": "positive"
+      }
+     },
+     {
+      "id": "fld5Th6vA2qQBqDGA",
+      "name": "ABV",
+      "type": "number",
+      "typeOptions": {
+       "format": "percentV2",
+       "precision": 1,
+       "negative": false,
+       "validatorName": "positive"
+      }
+     },
+     {
+      "id": "fldbZGtEsBWpueUcG",
+      "name": "Description",
+      "type": "multilineText"
+     },
+     {
+      "id": "fldenHJ4d2t0GekhF",
+      "name": "Style",
+      "type": "select",
+      "typeOptions": {
+       "choiceOrder": [
+        "selCPfhYgpzyf0yNO",
+        "selCJm2w3ZgxuCLYl",
+        "selD1v0uQhYhAGMRc",
+        "selRj44zXOcBjVFqO",
+        "seliNK3busMdI9vpX",
+        "selVRTypcynBsnlkf",
+        "sels4plfrL6z2Od53"
+       ],
+       "choices": {
+        "selRj44zXOcBjVFqO": {
+         "id": "selRj44zXOcBjVFqO",
+         "name": "Imperial IPA",
+         "color": "greenDarker"
+        },
+        "sels4plfrL6z2Od53": {
+         "id": "sels4plfrL6z2Od53",
+         "name": "Other",
+         "color": "gray"
+        },
+        "seliNK3busMdI9vpX": {
+         "id": "seliNK3busMdI9vpX",
+         "name": "Fresh Hop IPA",
+         "color": "greenDark"
+        },
+        "selD1v0uQhYhAGMRc": {
+         "id": "selD1v0uQhYhAGMRc",
+         "name": "IPA",
+         "color": "greenMedium"
+        },
+        "selCJm2w3ZgxuCLYl": {
+         "id": "selCJm2w3ZgxuCLYl",
+         "name": "Pale Ale",
+         "color": "yellow"
+        },
+        "selVRTypcynBsnlkf": {
+         "id": "selVRTypcynBsnlkf",
+         "name": "Red/Amber",
+         "color": "orangeDarker"
+        },
+        "selCPfhYgpzyf0yNO": {
+         "id": "selCPfhYgpzyf0yNO",
+         "name": "Lager",
+         "color": "orange"
+        }
+       },
+       "disableColors": false
+      }
+     },
+     {
+      "id": "fldDSTkc2VVfpxdBC",
+      "name": "Field",
+      "type": "lookup",
+      "typeOptions": {
+       "relationColumnId": "fldZVTiasCXYQKUh5",
+       "foreignTableRollupColumnId": "fldsX0qMy0LD78DJi",
+       "filters": {
+        "conjunction": "and",
+        "filterSet": [
+         {
+          "id": "fltzw2s4C3NHd7oWk",
+          "columnId": "fld4wUwyIDVm3GyVK",
+          "operator": "=",
+          "value": "selNorXUVkRNRu4TK"
+         }
+        ]
+       },
+       "unreversed": true,
+       "dependencies": {
+        "referencedColumnIdsForValue": [
+         "fldZVTiasCXYQKUh5",
+         "fldsX0qMy0LD78DJi"
+        ],
+        "referencedColumnIdsForFilters": [
+         "fld4wUwyIDVm3GyVK"
+        ]
+       },
+       "resultType": "multipleAttachment",
+       "resultIsArray": true,
+       "foreignTableRollupColumnType": "multipleAttachment"
+      }
+     }
+    ]
+   }
+  ],
+  "preloadPageQueryResults": {
+   "querySlices": [
+    {
+     "tableId": "tbl28RL2ZgelmKWye",
+     "rowIds": [
+      "rec1eYgb3i89Rgi8N",
+      "recc7TtGUISMWlykh",
+      "recfAhXuApdd80EK5",
+      "recmxlwLbcTchIppt",
+      "reckF7aEdc8HmsLbi",
+      "recyu1E3G1BoLtcIb",
+      "recME7R0hiAHqpxEk",
+      "reckFikOG5VenhWMI",
+      "recJMnZRBRkXVhAaG",
+      "reclt8bG6XUVKefvB",
+      "recbmgoh5qPiB7pv2",
+      "recHTrEkFUm1sC6Ff",
+      "rec0r4otYAE3icm3V"
+     ]
+    }
+   ],
+   "tableDataById": {
+    "tbl28RL2ZgelmKWye": {
+     "partialRowById": {
+      "rec1eYgb3i89Rgi8N": {
+       "id": "rec1eYgb3i89Rgi8N",
+       "cellValuesByColumnId": {
+        "fld8nJtmpBPvyaSnC": "La Azotea Mexi Lager",
+        "fldbZGtEsBWpueUcG": "Escape en La Azotea!  Our Mexi Lager is meant to be enjoyed in the sunshine, brewed with real lime juice!",
+        "fldenHJ4d2t0GekhF": "selCPfhYgpzyf0yNO",
+        "fld5Th6vA2qQBqDGA": 0.045,
+        "fldGqyNK3zJioyof2": 23,
+        "fldDSTkc2VVfpxdBC": {
+         "valuesByForeignRowId": {
+          "recbUIvWL8hxBoZTL": [
+           {
+            "id": "attby22X1R7qmuLui",
+            "url": "https://dl.airtable.com/.attachments/1a24da714a88f9f859f8f629193cdf8c/9009edec/3DDBF152-4282-4DAF-B8FB-F1F899E407C3.jpeg",
+            "filename": "3DDBF152-4282-4DAF-B8FB-F1F899E407C3.jpeg",
+            "type": "image/jpeg",
+            "size": 1748531,
+            "width": 2806,
+            "height": 3741,
+            "smallThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/492037ec1ee392cf63a083222028b121/0a63b20d",
+            "smallThumbWidth": 27,
+            "smallThumbHeight": 36,
+            "largeThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/f99754b5f1902ae0a3dcd9a622af938f/350b2afc",
+            "largeThumbWidth": 512,
+            "largeThumbHeight": 683,
+            "fullThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/a49a4a02e08a25c52b73cb0a0a6138f0/e293c11b",
+            "fullThumbWidth": 3000,
+            "fullThumbHeight": 3000
+           }
+          ]
+         },
+         "foreignRowIdOrder": [
+          "recbUIvWL8hxBoZTL"
+         ]
+        }
+       }
+      },
+      "recc7TtGUISMWlykh": {
+       "id": "recc7TtGUISMWlykh",
+       "cellValuesByColumnId": {
+        "fld8nJtmpBPvyaSnC": "Tropical Staycation IPA",
+        "fldbZGtEsBWpueUcG": "Rooftop's year-round IPA is well balanced and very drinkable.  The fruit-forward all-star trio of Mosaic, Citra, and El Dorado hops are here to transport you on that dream staycation. It's always 5 o'clock with this IPA.",
+        "fldenHJ4d2t0GekhF": "selD1v0uQhYhAGMRc",
+        "fld5Th6vA2qQBqDGA": 0.069,
+        "fldGqyNK3zJioyof2": 56,
+        "fldDSTkc2VVfpxdBC": {
+         "valuesByForeignRowId": {
+          "recHKUrRhCPrLw6YV": [
+           {
+            "id": "attLI8h2f4p44WwFs",
+            "url": "https://dl.airtable.com/.attachments/bc45344cb6b229fbd184b6ee6c2c6c14/d82c9191/420A2751-E5AA-4E08-8D9E-3220C2F92B63.jpeg",
+            "filename": "420A2751-E5AA-4E08-8D9E-3220C2F92B63.jpeg",
+            "type": "image/jpeg",
+            "size": 1711301,
+            "width": 2792,
+            "height": 3724,
+            "smallThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/e3522f0cf2a8ab203d89b7bc6eb58520/cd0d7beb",
+            "smallThumbWidth": 27,
+            "smallThumbHeight": 36,
+            "largeThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/377ce970bc325a295741e2b2713c00ff/b1959c4c",
+            "largeThumbWidth": 512,
+            "largeThumbHeight": 683,
+            "fullThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/952c2a008bd3646bc538ed07a26f5ad9/8249e09d",
+            "fullThumbWidth": 3000,
+            "fullThumbHeight": 3000
+           }
+          ]
+         },
+         "foreignRowIdOrder": [
+          "recHKUrRhCPrLw6YV"
+         ]
+        }
+       }
+      },
+      "recfAhXuApdd80EK5": {
+       "id": "recfAhXuApdd80EK5",
+       "cellValuesByColumnId": {
+        "fld8nJtmpBPvyaSnC": "Rooftop Festbier",
+        "fldbZGtEsBWpueUcG": "We've been looking forward to releasing our Marzen in time for this year's Oktoberfest season!  Brewed traditionally with locally grown grain and hops, provides a nice balance of malt and hop character.  \nNotes: Sweet, Light, bready, lightly roasty",
+        "fldenHJ4d2t0GekhF": "selCPfhYgpzyf0yNO",
+        "fld5Th6vA2qQBqDGA": 0.046,
+        "fldGqyNK3zJioyof2": 10,
+        "fldDSTkc2VVfpxdBC": {
+         "valuesByForeignRowId": {
+          "reczvEor0EPicl6I3": [
+           {
+            "id": "att4tgFuByDTTXqZK",
+            "url": "https://dl.airtable.com/.directUploadAttachment/58515d4be2312132d12b24bc01bda84f/8fe1f177/2026-09-0909.44.40.jpg",
+            "filename": "2026-09-09 09.44.42.jpg",
+            "type": "image/jpeg",
+            "size": 5163293,
+            "smallThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/d32a11d9c0a20372e15a48737ed5c582/693ad942",
+            "smallThumbWidth": 27,
+            "smallThumbHeight": 36,
+            "largeThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/46b6f2ee42f70615f4c36cf49b7cac89/fb3ff165",
+            "largeThumbWidth": 512,
+            "largeThumbHeight": 683,
+            "fullThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/ae783157f1e9af41b298f874d63f9602/50ac7222",
+            "fullThumbWidth": 2250,
+            "fullThumbHeight": 3000,
+            "width": 3024,
+            "height": 4032
+           }
+          ]
+         },
+         "foreignRowIdOrder": [
+          "reczvEor0EPicl6I3"
+         ]
+        }
+       }
+      },
+      "recmxlwLbcTchIppt": {
+       "id": "recmxlwLbcTchIppt",
+       "cellValuesByColumnId": {
+        "fld8nJtmpBPvyaSnC": "Old Seattle Lager ",
+        "fldbZGtEsBWpueUcG": "Our tribute to the original NW Lagers of Old. Cascade hops give it a delicious hop finish.",
+        "fldenHJ4d2t0GekhF": "selCPfhYgpzyf0yNO",
+        "fld5Th6vA2qQBqDGA": 0.055,
+        "fldGqyNK3zJioyof2": 20,
+        "fldDSTkc2VVfpxdBC": {
+         "valuesByForeignRowId": {
+          "recQRPKkChAewR1KH": [
+           {
+            "id": "attRAXBmTsUEnGOHK",
+            "url": "https://dl.airtable.com/.directUploadAttachment/debe521ebb1da24b11badc77bb08159c/cf853491/OSL1.HEIC",
+            "filename": "OSL1.HEIC",
+            "type": "image/heif",
+            "size": 1256481,
+            "smallThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/62658d570bb390722c12038ba775b61d/39a3aae7",
+            "smallThumbWidth": 27,
+            "smallThumbHeight": 36,
+            "largeThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/85cffeafd5fd95e8c7391cdc2f0a9cac/aa4fc7b7",
+            "largeThumbWidth": 512,
+            "largeThumbHeight": 683,
+            "fullThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/362ef192469080f36d491c8137e2c521/2704d3d4",
+            "fullThumbWidth": 2250,
+            "fullThumbHeight": 3000,
+            "width": 3024,
+            "height": 4032
+           }
+          ]
+         },
+         "foreignRowIdOrder": [
+          "recQRPKkChAewR1KH"
+         ]
+        }
+       }
+      },
+      "reckF7aEdc8HmsLbi": {
+       "id": "reckF7aEdc8HmsLbi",
+       "cellValuesByColumnId": {
+        "fld8nJtmpBPvyaSnC": "NW Kolsch ",
+        "fldbZGtEsBWpueUcG": "A Kolsch style with a lemon-citrus hop profile and crisp malt flavors. Brewed with regionally grown Great Western malt and Amarillo hops from Gamache farms in Toppenish.     ",
+        "fldenHJ4d2t0GekhF": "selCPfhYgpzyf0yNO",
+        "fld5Th6vA2qQBqDGA": 0.051,
+        "fldGqyNK3zJioyof2": 15,
+        "fldDSTkc2VVfpxdBC": {
+         "valuesByForeignRowId": {
+          "recZOa2yeK7JkDuJA": [
+           {
+            "id": "attvjxihBtvc7ORLV",
+            "url": "https://dl.airtable.com/.directUploadAttachment/a26a120e57a59d117b7aae1f878b5ff8/5ae0fc17/MaritimeKolsch2.HEIC",
+            "filename": "MaritimeKolsch2.HEIC",
+            "type": "image/heif",
+            "size": 1223597,
+            "smallThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/5adc1ce5d69db25ee18f638bd53efa0e/49780a7f",
+            "smallThumbWidth": 27,
+            "smallThumbHeight": 36,
+            "largeThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/ada895681340b9c54d166f961e91cd08/b6dcabd9",
+            "largeThumbWidth": 512,
+            "largeThumbHeight": 683,
+            "fullThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/f623b06621f3d40ae835eb4c9e16232b/1ec36bfe",
+            "fullThumbWidth": 2250,
+            "fullThumbHeight": 3000,
+            "width": 3024,
+            "height": 4032
+           }
+          ]
+         },
+         "foreignRowIdOrder": [
+          "recZOa2yeK7JkDuJA"
+         ]
+        }
+       }
+      },
+      "recyu1E3G1BoLtcIb": {
+       "id": "recyu1E3G1BoLtcIb",
+       "cellValuesByColumnId": {
+        "fld8nJtmpBPvyaSnC": "Islander Pale Ale ",
+        "fldbZGtEsBWpueUcG": "A full-bodied Pale Ale using a multitude of hops and malts. Dry hopped with Cascade hops for a big hoppy finish.",
+        "fldenHJ4d2t0GekhF": "selCJm2w3ZgxuCLYl",
+        "fld5Th6vA2qQBqDGA": 0.063,
+        "fldGqyNK3zJioyof2": 40,
+        "fldDSTkc2VVfpxdBC": {
+         "valuesByForeignRowId": {
+          "recEgCuKaSbSOoIBD": [
+           {
+            "id": "attl5T2YRdQdLiSBh",
+            "url": "https://dl.airtable.com/.directUploadAttachment/cdbfa8a1ff0a01e2a95e8b846a2fdc83/5aa3c0df/IPDH2.HEIC",
+            "filename": "IPDH2.HEIC",
+            "type": "image/heif",
+            "size": 1250202,
+            "smallThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/f38832e82dd0ac5cdc8bd696d10f056c/4bdf5890",
+            "smallThumbWidth": 27,
+            "smallThumbHeight": 36,
+            "largeThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/db89b8dde717ee45ee9ff136cf80578f/cb35dc84",
+            "largeThumbWidth": 512,
+            "largeThumbHeight": 683,
+            "fullThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/b6c4c607d45030bb3e543291f5bb4768/8e70044d",
+            "fullThumbWidth": 2250,
+            "fullThumbHeight": 3000,
+            "width": 3024,
+            "height": 4032
+           }
+          ]
+         },
+         "foreignRowIdOrder": [
+          "recEgCuKaSbSOoIBD"
+         ]
+        }
+       }
+      },
+      "recME7R0hiAHqpxEk": {
+       "id": "recME7R0hiAHqpxEk",
+       "cellValuesByColumnId": {
+        "fld8nJtmpBPvyaSnC": "Raccoon Red Ale ",
+        "fldbZGtEsBWpueUcG": "Dark Ruby red in color with a soft malt backbone of Pale and a blend of Caramel malts. Hopped with Czech Saaz and Goldings hops for a well-balanced finish.",
+        "fldenHJ4d2t0GekhF": "selVRTypcynBsnlkf",
+        "fld5Th6vA2qQBqDGA": 0.047,
+        "fldGqyNK3zJioyof2": 26,
+        "fldDSTkc2VVfpxdBC": {
+         "valuesByForeignRowId": {
+          "recvom4k8ASdtjVhh": [
+           {
+            "id": "attAMcPgFtlEcAXa3",
+            "url": "https://dl.airtable.com/.directUploadAttachment/335e164fb2caf80b0a669999198067e0/728e1290/2026-03-1613.45.10.jpg",
+            "filename": "2026-03-16 13.45.15.jpg",
+            "type": "image/jpeg",
+            "size": 5257473,
+            "smallThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/7edb5887a755f9882320c58f3c6ed62e/dceef785",
+            "smallThumbWidth": 27,
+            "smallThumbHeight": 36,
+            "largeThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/c3aee0f4f7e39b8531b0ed0ac137971e/80642009",
+            "largeThumbWidth": 512,
+            "largeThumbHeight": 683,
+            "fullThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/cd5fd152b918f711c22986a4aee1f634/f40653a7",
+            "fullThumbWidth": 2250,
+            "fullThumbHeight": 3000,
+            "width": 3024,
+            "height": 4032
+           }
+          ]
+         },
+         "foreignRowIdOrder": [
+          "recvom4k8ASdtjVhh"
+         ]
+        }
+       }
+      },
+      "reckFikOG5VenhWMI": {
+       "id": "reckFikOG5VenhWMI",
+       "cellValuesByColumnId": {
+        "fld8nJtmpBPvyaSnC": "Nightwatch Dark Amber Ale ",
+        "fldbZGtEsBWpueUcG": "A Smooth Dark Ale with soft Chocolate and roasted malt notes with a light and well-rounded finish",
+        "fldenHJ4d2t0GekhF": "sels4plfrL6z2Od53",
+        "fld5Th6vA2qQBqDGA": 0.058,
+        "fldGqyNK3zJioyof2": 18,
+        "fldDSTkc2VVfpxdBC": {
+         "valuesByForeignRowId": {
+          "recmRgdqtRZ4Prg36": [
+           {
+            "id": "attGYdDLEdXxvaYxI",
+            "url": "https://dl.airtable.com/.directUploadAttachment/d7eabb916b368a459c8c929a9aa3684f/f20a1e2a/Nightwatch1.HEIC",
+            "filename": "Nightwatch1.HEIC",
+            "type": "image/heif",
+            "size": 1261783,
+            "smallThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/4829a9164e762c2120d3dfb922cde205/d0a0ba2a",
+            "smallThumbWidth": 27,
+            "smallThumbHeight": 36,
+            "largeThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/f78db670d9ae5d88c2cff9912d720178/26500713",
+            "largeThumbWidth": 512,
+            "largeThumbHeight": 683,
+            "fullThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/f4b3dafdc64c59a87f05dc35674b8b2c/94ecb56c",
+            "fullThumbWidth": 2250,
+            "fullThumbHeight": 3000,
+            "width": 3024,
+            "height": 4032
+           }
+          ]
+         },
+         "foreignRowIdOrder": [
+          "recmRgdqtRZ4Prg36"
+         ]
+        }
+       }
+      },
+      "recJMnZRBRkXVhAaG": {
+       "id": "recJMnZRBRkXVhAaG",
+       "cellValuesByColumnId": {
+        "fld8nJtmpBPvyaSnC": "Imperial IPA ",
+        "fldbZGtEsBWpueUcG": "A true Imperial IPA with Amarillo hops that is clean and balanced with a smooth malt mid palate and BIG hop flavors.",
+        "fldenHJ4d2t0GekhF": "selRj44zXOcBjVFqO",
+        "fld5Th6vA2qQBqDGA": 0.075,
+        "fldGqyNK3zJioyof2": 50,
+        "fldDSTkc2VVfpxdBC": {
+         "valuesByForeignRowId": {
+          "recuQzsgsbxVRus1E": [
+           {
+            "id": "attGdFQEJ0NIUvbz1",
+            "url": "https://dl.airtable.com/.directUploadAttachment/5fe7fad51287d43cd76d329776dac647/ee028ef0/Imperial1.HEIC",
+            "filename": "Imperial1.HEIC",
+            "type": "image/heif",
+            "size": 1309395,
+            "smallThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/2d8b90c2e0a806bb222bfb3f88064271/ed95d843",
+            "smallThumbWidth": 27,
+            "smallThumbHeight": 36,
+            "largeThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/f30486a03e746900c88f1ef5f420209c/d408e68f",
+            "largeThumbWidth": 512,
+            "largeThumbHeight": 683,
+            "fullThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/5894aba786f17b848c42ffeb1b5ad7df/e953678f",
+            "fullThumbWidth": 2250,
+            "fullThumbHeight": 3000,
+            "width": 3024,
+            "height": 4032
+           }
+          ]
+         },
+         "foreignRowIdOrder": [
+          "recuQzsgsbxVRus1E"
+         ]
+        }
+       }
+      },
+      "reclt8bG6XUVKefvB": {
+       "id": "reclt8bG6XUVKefvB",
+       "cellValuesByColumnId": {
+        "fld8nJtmpBPvyaSnC": "Slack Tide IPA",
+        "fldbZGtEsBWpueUcG": "A crisp, clear West Coast IPA featuring Citra Cryo, Simcoe Dynaboost, Mosaic, and El Dorado hops. ",
+        "fldenHJ4d2t0GekhF": "selD1v0uQhYhAGMRc",
+        "fld5Th6vA2qQBqDGA": 0.065,
+        "fldGqyNK3zJioyof2": 45,
+        "fldDSTkc2VVfpxdBC": {
+         "valuesByForeignRowId": {
+          "recoPLXNqchLNGjys": [
+           {
+            "id": "attpoTe35MBnSQiXV",
+            "url": "https://dl.airtable.com/.directUploadAttachment/b0e52abe7a537e3ea6fa9bb27071318e/6c91814f/SlackTide1.HEIC",
+            "filename": "SlackTide1.HEIC",
+            "type": "image/heif",
+            "size": 1134235,
+            "smallThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/a65e8ffc622c3f93e73f093506a67aac/ccf94017",
+            "smallThumbWidth": 27,
+            "smallThumbHeight": 36,
+            "largeThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/d88dce38295dee8863a80b389a630583/30308a02",
+            "largeThumbWidth": 512,
+            "largeThumbHeight": 683,
+            "fullThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/0ce192afa9de0fc8f3bc5acd0c6e53c7/140284b7",
+            "fullThumbWidth": 2250,
+            "fullThumbHeight": 3000,
+            "width": 3024,
+            "height": 4032
+           }
+          ]
+         },
+         "foreignRowIdOrder": [
+          "recoPLXNqchLNGjys"
+         ]
+        }
+       }
+      },
+      "recbmgoh5qPiB7pv2": {
+       "id": "recbmgoh5qPiB7pv2",
+       "cellValuesByColumnId": {
+        "fld8nJtmpBPvyaSnC": "Palouse Helles Lager",
+        "fldbZGtEsBWpueUcG": "The Palouse Helles Lager is a classic German style Munich-Helles brewed with Baronesse Pilsner malt from Joseph's Grainery in Colfax, Washington.",
+        "fldenHJ4d2t0GekhF": "selCPfhYgpzyf0yNO",
+        "fld5Th6vA2qQBqDGA": 0.042,
+        "fldGqyNK3zJioyof2": 16,
+        "fldDSTkc2VVfpxdBC": {
+         "valuesByForeignRowId": {
+          "rec3Lp67XbRit7DCB": [
+           {
+            "id": "atthEC4JYpq0IUUxe",
+            "url": "https://dl.airtable.com/.directUploadAttachment/3ea4232261f3c0de1873b66ea2227300/47e1add8/2026-09-0909.45.11.jpg",
+            "filename": "2026-09-09 09.45.13.jpg",
+            "type": "image/jpeg",
+            "size": 5478872,
+            "smallThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/28dae1d90124079e382a888132daf167/ec6404a0",
+            "smallThumbWidth": 27,
+            "smallThumbHeight": 36,
+            "largeThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/1da085dfc46d6da580be4eeaa6c4cb23/6701e885",
+            "largeThumbWidth": 512,
+            "largeThumbHeight": 683,
+            "fullThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/65434010f3592140ec12597db9828aed/6ef2e30b",
+            "fullThumbWidth": 2250,
+            "fullThumbHeight": 3000,
+            "width": 3024,
+            "height": 4032
+           }
+          ]
+         },
+         "foreignRowIdOrder": [
+          "rec3Lp67XbRit7DCB"
+         ]
+        }
+       }
+      },
+      "recHTrEkFUm1sC6Ff": {
+       "id": "recHTrEkFUm1sC6Ff",
+       "cellValuesByColumnId": {
+        "fld8nJtmpBPvyaSnC": "Shearwater Pale Ale",
+        "fldbZGtEsBWpueUcG": "Pale Ale brewed with Riwaka, Mandarina Bavaria.  We also added some Rakau SubZero hop Kief to the brite tank for an added southern hemisphere punch. Inspired by the migratory journey of the short-tailed shearwater from its home waters of New Zealand to Washington.",
+        "fldenHJ4d2t0GekhF": "selCJm2w3ZgxuCLYl",
+        "fld5Th6vA2qQBqDGA": 0.062,
+        "fldGqyNK3zJioyof2": 35,
+        "fldDSTkc2VVfpxdBC": {
+         "valuesByForeignRowId": {
+          "recHsTL8UyooV3OdJ": [
+           {
+            "id": "attW2HpRXyNIsLdio",
+            "url": "https://dl.airtable.com/.directUploadAttachment/f81302d96cddecaafa7a73d4ed0b60ba/12cb23dd/2026-09-0909.45.34.jpg",
+            "filename": "2026-09-09 09.45.36.jpg",
+            "type": "image/jpeg",
+            "size": 5353057,
+            "smallThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/aceabdd1ba2270147762cdf80f8b760b/2e3f5de8",
+            "smallThumbWidth": 27,
+            "smallThumbHeight": 36,
+            "largeThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/d05c8aeb8358ffd1d5f97624ee9f065d/08473814",
+            "largeThumbWidth": 512,
+            "largeThumbHeight": 683,
+            "fullThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/705dbaa408dfc1acfb17705fea1df98e/48563ce7",
+            "fullThumbWidth": 2250,
+            "fullThumbHeight": 3000,
+            "width": 3024,
+            "height": 4032
+           }
+          ]
+         },
+         "foreignRowIdOrder": [
+          "recHsTL8UyooV3OdJ"
+         ]
+        }
+       }
+      },
+      "rec0r4otYAE3icm3V": {
+       "id": "rec0r4otYAE3icm3V",
+       "cellValuesByColumnId": {
+        "fld8nJtmpBPvyaSnC": "Fresh Hop - Cascade WC IPA",
+        "fldbZGtEsBWpueUcG": "Unfiltered WC IPA featuring Washington grown Cascade fresh hops from CLS Farms.  We finished this beer off with some NZ Cascade SubZero Hop Kief.",
+        "fldenHJ4d2t0GekhF": "seliNK3busMdI9vpX",
+        "fld5Th6vA2qQBqDGA": 0.066,
+        "fldGqyNK3zJioyof2": 56,
+        "fldDSTkc2VVfpxdBC": {
+         "valuesByForeignRowId": {
+          "recX7hthjUg3qcxrt": [
+           {
+            "id": "attbGsnFWxzKlZhBa",
+            "url": "https://dl.airtable.com/.directUploadAttachment/283a85f5b091bc52def9060daa091e33/4a9b4356/FRESHHOPCASCADE.HEIC",
+            "filename": "FRESHHOPCASCADE.HEIC",
+            "type": "image/heif",
+            "size": 1219639,
+            "smallThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/94ab18771af355f87d2b148719223357/9fd6ecef",
+            "smallThumbWidth": 27,
+            "smallThumbHeight": 36,
+            "largeThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/238d8881af57b33e154f646b3a50cea3/da8efb3a",
+            "largeThumbWidth": 512,
+            "largeThumbHeight": 683,
+            "fullThumbUrl": "https://dl.airtable.com/.attachmentThumbnails/894ec67b01a04046d1e1923fc9b1ecfd/f4663c73",
+            "fullThumbWidth": 2250,
+            "fullThumbHeight": 3000,
+            "width": 3024,
+            "height": 4032
+           }
+          ]
+         },
+         "foreignRowIdOrder": [
+          "recX7hthjUg3qcxrt"
+         ]
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}
