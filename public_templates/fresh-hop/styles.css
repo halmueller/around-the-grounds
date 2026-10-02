@@ -161,6 +161,11 @@ h2 { font-size: 1.1rem; margin: 28px 0 10px; }
 .tag-festbier { color: var(--accent); background: var(--chip); }
 .tag-pumpkin { color: var(--pumpkin); background: var(--chip); }
 
+/* Narrow screens: the "Taprooms/Bottle Shops" tab reads just "Taprooms". */
+@media (max-width: 600px) {
+    .tab-extra { display: none; }
+}
+
 /* Phones: fit all five tabs and keep the credit bar to about two lines. */
 @media (max-width: 480px) {
     .topbar h1 { font-size: 1.25rem; padding-top: 10px; }
