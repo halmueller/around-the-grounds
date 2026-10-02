@@ -443,7 +443,6 @@
       "url": "https://kochendorfers.com/kochendorfer-menu.pdf",
       "source_type": "pdf-taplist",
       "parser_config": {
-        "venue_type": "taproom",
         "note": "The whole menu (food, cocktails, drafts) is one PDF with a fixed name. Draft beers are an ALL-CAPS name line followed by 'Brewery - Style 5.3%' (house beers say 'House Draft'; one line is 'Style - 4.2%'). Other all-caps headings have no such line after them.",
         "line_pattern": "^(?P<name>[A-ZÄÖÜ0-9][A-ZÄÖÜ0-9 .&’'!/-]+)$",
         "detail_pattern": "^(?:(?:House Draft|(?P<brewery>.+?))\\s+-\\s+)?(?P<style>.+?)\\s*-?\\s*(?<![\\d.])(?P<abv>\\d+(?:\\.\\d+)?%)$"
