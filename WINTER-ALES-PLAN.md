@@ -82,6 +82,26 @@ First-guess patterns, to be checked against live lists:
   gift cards that some tap lists carry as rows, and non-beer rows (cocktails,
   as with Old Stove Pike Place's `pumpkin_exclude`).
 
+Findings from a scan of all 67 live tap lists on 2026-10-05, run with the
+first-guess patterns above (no winter, Christmas, or holiday ales were pouring
+yet; about 14 barleywines and barrel-aged stouts were):
+
+- `santa` matched "Santa Rosa, CA" in the brewery field of two Russian River
+  beers at Über Tavern. Use `\bsanta\b(?![\s-]*rosa\b)`, or match seasonal
+  names against the name and style only, not the brewery.
+- "Celebration" is too loose: it matched Dirty Couch's "Premature Celebration",
+  a festbier. Leave it out; add Sierra Nevada's Celebration by full name if it
+  turns up.
+- A bare `BA` or "barrel-aged" pulls in sours, wild ales, and porters (E9
+  Tayberry, de Garde Avenue No. 7, Dirty Couch Resolute, Old Stove's gin-barrel
+  sour). It has to be tied to "stout", as the two-part pattern above does.
+- `winter` in a description matched Old Stove's "Hot Spiced Cider" ("wintery
+  spices"), which confirms that plain "winter" is too loose there and that
+  cider rows need excluding.
+- Barleywine matching worked as written, including "Barley Wine" and
+  "Barleywine - English" styles. White Bluffs' "Scrooge McBluffs" (a
+  barleywine) suggests `scrooge` as a seasonal name.
+
 Also update the category comment on `Event.category` in
 `around_the_grounds/models/schedule.py`.
 
