@@ -140,9 +140,15 @@ def test_template_has_every_page() -> None:
             '<a href="https://github.com/steveandroulakis/around-the-grounds">'
             "Around the Grounds</a>"
         ) in html
-        # Author credit in the pinned bottom bar; every page links every tab.
-        assert html.count('<a href="https://halmueller.com">Hal Mueller</a>') == 1
-        assert html.count('href="https://www.linkedin.com/in/halmueller/"') == 2
+        # The pinned bottom bar credits the author by name; LinkedIn and
+        # Claude Code are linked from the byline only.
+        assert (
+            'Built by <a href="https://halmueller.com">Hal Mueller</a> on '
+            '<a href="https://github.com/steveandroulakis/around-the-grounds">'
+        ) in html
+        assert html.count('href="https://halmueller.com"') == 1
+        assert html.count('href="https://www.linkedin.com/in/halmueller/"') == 1
+        assert html.count('href="https://claude.ai"') == 1
         # Byline sits between the site title and the tabs.
         assert re.search(
             r'</h1>\s*<p class="byline">By Ballard resident <a href="https://www.'
