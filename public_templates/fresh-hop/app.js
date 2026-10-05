@@ -81,6 +81,9 @@ const PAGES = {
 };
 const PAGE = PAGES[document.body.dataset.page] || PAGES.freshhop;
 
+// Listings written before categories existed carry none; they are fresh hops.
+function categoryOf(beer) { return beer.category || 'fresh-hop'; }
+
 function renderVenue(venue) {
     const link = safeUrl(venue.url)
         ? `<a class="venue-link" href="${esc(venue.url)}" target="_blank" rel="noopener">Tap list ↗</a>`
@@ -94,9 +97,17 @@ function renderVenue(venue) {
             ${b.description ? `<div class="beer-meta">${esc(b.description)}</div>` : ''}
         </div>`;
     }).join('');
+    // Tagged pages mix categories, so the head counts each one separately, in
+    // the same chips the beers carry; categories with no beers are left out.
+    const counts = PAGE.tags
+        ? PAGE.categories.map(c => {
+            const n = venue.beers.filter(b => categoryOf(b) === c).length;
+            return n ? `<span class="tag tag-${esc(c)}">${n} ${esc(CATEGORY_LABELS[c])}</span>` : '';
+        }).join('')
+        : `<span class="venue-count">${venue.beers.length}</span>`;
     return `<section class="venue" data-search="${esc(venue.search)}">
         <div class="venue-head">
-            <div class="venue-name">${esc(venue.name)}<span class="venue-count">${venue.beers.length}</span></div>
+            <div class="venue-name">${esc(venue.name)}${counts}</div>
             ${link}
         </div>
         ${items}
@@ -205,10 +216,13 @@ function renderListingsPage(data, venueInfo, listingsEl, summaryEl) {
         }
         venues.get(e.venue_key).beers.push(e);
     });
-    // Within a venue, beers go alphabetically (case-insensitive, "2" before "10").
+    // Within a venue, beers go by category in the page's order (which only
+    // matters on a tagged page), then alphabetically (case-insensitive, "2"
+    // before "10").
     const byTitle = new Intl.Collator('en', { sensitivity: 'base', numeric: true });
+    const rank = b => PAGE.categories.indexOf(categoryOf(b));
     venues.forEach(v => {
-        v.beers.sort((a, b) => byTitle.compare(a.title, b.title));
+        v.beers.sort((a, b) => rank(a) - rank(b) || byTitle.compare(a.title, b.title));
         v.search =[v.name, ...v.beers.map(b => `${b.title} ${b.description || ''}`)]
             .join(' ').toLowerCase();
     });

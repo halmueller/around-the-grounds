@@ -157,6 +157,7 @@ h2 { font-size: 1.1rem; margin: 28px 0 10px; }
     margin-left: 4px;
     vertical-align: 2px;
 }
+.venue-name .tag { margin-left: 6px; }
 .tag-fresh-hop { color: var(--leaf); background: var(--chip); }
 .tag-festbier { color: var(--accent); background: var(--chip); }
 .tag-pumpkin { color: var(--pumpkin); background: var(--chip); }
