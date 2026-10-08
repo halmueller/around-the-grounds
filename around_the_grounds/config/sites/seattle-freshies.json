@@ -530,7 +530,7 @@
     },
     {
       "key": "old-stove-gardens-taps",
-      "name": "Old Stove Brewing Gardens (Ballard)",
+      "name": "Old Stove Gardens (Ballard)",
       "url": "https://www.oldstove.com/menu?menu=gardens-drink-menu-new",
       "source_type": "html-taplist",
       "parser_config": {
@@ -542,7 +542,7 @@
     },
     {
       "key": "old-stove-ship-canal-taps",
-      "name": "Old Stove Brewing Ship Canal (Queen Anne)",
+      "name": "Old Stove Ship Canal (Queen Anne)",
       "url": "https://www.oldstove.com/shipcanal",
       "source_type": "canva",
       "parser_config": {
