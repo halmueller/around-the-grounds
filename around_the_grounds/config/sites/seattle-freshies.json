@@ -518,18 +518,6 @@
       }
     },
     {
-      "key": "old-stove-gardens-taps",
-      "name": "Old Stove Brewing (Ballard Gardens)",
-      "url": "https://www.oldstove.com/menu?menu=gardens-drink-menu-new",
-      "source_type": "html-taplist",
-      "parser_config": {
-        "note": "Wix Menus page; ?menu=<slug> renders that menu server-side. The style follows IBU in each item's description line.",
-        "item": "[data-hook=\"item.root\"]",
-        "name": "[data-hook=\"item.name\"]",
-        "style_pattern": "IBU\\s*/?\\s*(.+?)(?:\\s+-\\s|\\s+\\d+\\s*oz\\b|\\s+\\$|$)"
-      }
-    },
-    {
       "key": "old-stove-pike-place-taps",
       "name": "Old Stove Brewing (Pike Place)",
       "url": "https://www.oldstove.com/pikeplace",
@@ -541,8 +529,20 @@
       }
     },
     {
+      "key": "old-stove-gardens-taps",
+      "name": "Old Stove Brewing Gardens (Ballard)",
+      "url": "https://www.oldstove.com/menu?menu=gardens-drink-menu-new",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "Wix Menus page; ?menu=<slug> renders that menu server-side. The style follows IBU in each item's description line.",
+        "item": "[data-hook=\"item.root\"]",
+        "name": "[data-hook=\"item.name\"]",
+        "style_pattern": "IBU\\s*/?\\s*(.+?)(?:\\s+-\\s|\\s+\\d+\\s*oz\\b|\\s+\\$|$)"
+      }
+    },
+    {
       "key": "old-stove-ship-canal-taps",
-      "name": "Old Stove Brewing (Ship Canal)",
+      "name": "Old Stove Brewing Ship Canal (Queen Anne)",
       "url": "https://www.oldstove.com/shipcanal",
       "source_type": "canva",
       "parser_config": {
