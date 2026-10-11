@@ -1,0 +1,414 @@
+{
+ "data": [
+  {
+   "name": "61. Schilling Ground Control (Can Pour)",
+   "short_description": "",
+   "badges": {
+    "low_stock": false,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "04. Bauman's All The Berries",
+   "short_description": "",
+   "badges": {
+    "low_stock": true,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "14. Cloudburst Wet Side Story💚",
+   "short_description": "",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": true,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "16. Talking Cedar Raspberry Blonde",
+   "short_description": "",
+   "badges": {
+    "low_stock": false,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "42. Great Notion Double Stack",
+   "short_description": "",
+   "badges": {
+    "low_stock": false,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "25. Ilk Hefe Lies the Head",
+   "short_description": "",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "20. Lucky Envelope Pumpkin Emoji🎃",
+   "short_description": "",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "29. Bizarre Fresh Hop Skitch💚",
+   "short_description": "",
+   "badges": {
+    "low_stock": false,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "32. Great Notion Fresh Hop Northleft💚",
+   "short_description": "",
+   "badges": {
+    "low_stock": false,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "10. From the Tank Rose",
+   "short_description": "",
+   "badges": {
+    "low_stock": false,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "38. Triceratops Leotucky",
+   "short_description": "",
+   "badges": {
+    "low_stock": false,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "49. Dru Bru Black Lager (Nitro)",
+   "short_description": "",
+   "badges": {
+    "low_stock": false,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "37. Grains Of Wrath Gerstenwolf🍺",
+   "short_description": "",
+   "badges": {
+    "low_stock": false,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "22. Matchless Lime Zinger",
+   "short_description": "",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "45. Fremont NA IPA",
+   "short_description": "",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "50. Postdoc Cram Session (Nitro)",
+   "short_description": "",
+   "badges": {
+    "low_stock": false,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "28. Great Notion Notion Lite",
+   "short_description": "",
+   "badges": {
+    "low_stock": false,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "15. Stoup Fresh Hop Fiend (Thora)💚",
+   "short_description": "",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "33. Four Generals Rauch Marzen",
+   "short_description": "",
+   "badges": {
+    "low_stock": false,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "24. Van Steenberge Piraat 7",
+   "short_description": "",
+   "badges": {
+    "low_stock": false,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "26. Cellador Chenille",
+   "short_description": "",
+   "badges": {
+    "low_stock": false,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "06. Whitewood Red Cap",
+   "short_description": "",
+   "badges": {
+    "low_stock": false,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "11. Valdinevola Prosecco",
+   "short_description": "",
+   "badges": {
+    "low_stock": false,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "08. Channel Marker Peach Blossom",
+   "short_description": "",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "30. Ilk Fresh Hop Strata Pale💚",
+   "short_description": "",
+   "badges": {
+    "low_stock": false,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "19. Fort George Topaz 🎃",
+   "short_description": "",
+   "badges": {
+    "low_stock": false,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "23. Ilk Gris Matter",
+   "short_description": "",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "41. Urban Family Strawbarb",
+   "short_description": "",
+   "badges": {
+    "low_stock": false,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "03. Sig Sonic Destroyer",
+   "short_description": "",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "05. Slightly Furry Purrrfectly Pear",
+   "short_description": "",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "43. Fremont 2017 BBADS",
+   "short_description": "",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "21. Matchless HOPS!",
+   "short_description": "",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "35. Otherlands Excessive Celebrations 🍺",
+   "short_description": "",
+   "badges": {
+    "low_stock": false,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "18. Great Notion Key Lime Pie",
+   "short_description": "",
+   "badges": {
+    "low_stock": false,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "27. Holy Mountain Sands of Life",
+   "short_description": "",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "36. Ilk Dripping Wet Hops💚",
+   "short_description": "",
+   "badges": {
+    "low_stock": false,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "60. Reuben's FH Party On (Can Pour)💚",
+   "short_description": "",
+   "badges": {
+    "low_stock": false,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "07. Finnriver Apple Abbey",
+   "short_description": "",
+   "badges": {
+    "low_stock": false,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "02. Blossom Dark Roast Cold Brew",
+   "short_description": "",
+   "badges": {
+    "low_stock": false,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "40. Chuckanut Alt",
+   "short_description": "",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  }
+ ],
+ "meta": {
+  "pagination": {
+   "total": 40,
+   "count": 40,
+   "per_page": 180,
+   "current_page": 1,
+   "total_pages": 1,
+   "links": []
+  }
+ }
+}

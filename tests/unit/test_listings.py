@@ -164,6 +164,7 @@ class TestListingVenues:
             "taphunter",
             "menu-tools",
             "firestore-taplist",
+            "square-online",
         }
         for source_type, parser in ParserRegistry._generic.items():
             assert parser.PRODUCES_LISTINGS == (

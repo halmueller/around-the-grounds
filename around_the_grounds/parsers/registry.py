@@ -16,6 +16,7 @@ from .generic import (
     JsonLdParser,
     FirestoreTaplistParser,
     MenuToolsParser,
+    SquareOnlineParser,
     PdfTaplistParser,
     SheetTaplistParser,
     SquarespaceEventsParser,
@@ -56,6 +57,7 @@ class ParserRegistry:
         "taphunter": TapHunterParser,
         "menu-tools": MenuToolsParser,
         "firestore-taplist": FirestoreTaplistParser,
+        "square-online": SquareOnlineParser,
         "squarespace-events": SquarespaceEventsParser,
     }
 

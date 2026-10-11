@@ -1,0 +1,184 @@
+{
+ "data": [
+  {
+   "name": "UNDERBERG",
+   "short_description": "<p>Underberg is a digestif bitter produced at Rheinberg in Germany. Selected aromatic herbs from 43 countries are essential to Underberg’s all-natural recipe.&lt;br /&gt;</p>",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "09. KETTLE & CAST FRESH HOP HAZY PALE - BURIAL/VARIETAL",
+   "short_description": "<p><strong>Sunnyside; 4.8%</strong></p><p>Fresh Hop Hazy Pale - centennial. Collab with <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://stoupbrewing.us21.list-manage.com/track/click?u=7b1b077cc4f6907366a1cbfe1&amp;id=4629bda028&amp;e=ccd1c04691\"><u>Burial Beer Co</u></a>.</p><p><br></p><p><br></p><p><br></p>",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "14. MOONSHAKE PUMPKIN OAT STOUT- BIZARRE",
+   "short_description": "<p>Seattle; 5.5%</p><p>Moonshake is our oat stout brewed with English Maris Otter malt, a rich blend of caramel and chocolate malts, and a massive amount of oats. Moonshake was hopped in the kettle with a light hand of East Kent Golding and fermented cool with our house pub ale yeast. This pumpkin edition of Moonshake features a warming blend of cinnamon, nutmeg, clove, allspice, vanilla and brown sugar as well as brûléed pumpkin.</p><p><br></p>",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "04. PNW HAWAIIAN SHIRT GUY PIÑA STRAWBERRY CIDER - WHITEWOOD",
+   "short_description": "<p>Olympia; 6.3%</p><p>Island vibes with a Northwest edge. Our Pineapple Strawberry Cider is a fruit-infused cider that combines the sweet and tangy flavors of pineapple with</p><p>the juicy, slightly acidic flavor of strawberries, balanced by the cider&#39;s crispness.</p>",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "10. GREEN RUSH FRESH HOP IPA- BALE BREAKER/ RUSSIAN RIVER",
+   "short_description": "<p>Yakima; 6.9%, IBU: 55</p><p>Partnered with the legendary Russian River Brewing Company to create a fresh hop IPA that tastes like striking gold – fresh hop gold, that is. This fresh hop West Coast IPA features freshly picked homegrown Simcoe® hops for vibrant aromas of grapefruit, peach, mango, and resin. INGREDIENTS: Malt: 2-Row, Flaked Rice Hops: Fresh Simcoe®, Citra® Cryo, Krush (HBC 586)</p>",
+   "badges": {
+    "low_stock": false,
+    "out_of_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "12. MR. GOLDEN SUN FRESH HOP HAZY Hazy IPA -HUMAN PEOPLE",
+   "short_description": "<p>Seattle; 6.7%</p><p>Ingredients: Fresh hop Citra from Westwood Farms in Gervais, OR. Description: Hazy, juicy, delightful, layered</p>",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "TASTER",
+   "short_description": "<p>5oz taster of any regularly priced beers, does not include $$ small .3L pours. We work hard on this tap list, we&#39;ve vested decades in this industry and take our offerings seriously and want to bring great beer to you and keep prices fair! Thanks for understanding.</p>",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "TRAIL PASS NA BEER- SIERRA NEVADA 12oz CAN",
+   "short_description": "<p>Chico, CA; .05%</p><p>Using traditional brewing methods and quality ingredients, <em>not</em> alcohol removal, to create full craft flavor.  Trail Pass beer series tastes like <em>beer</em>. By using a yeast purposefully designed to only metabolize the less complex sugars, delivering a flavorful non alcoholic beer with an alcohol content of less than 0.5%.  Enjoy in various flavors.</p>",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "JAMESON SHOT & BEER CAN SPECIAL",
+   "short_description": "<p>Tall boy of PNW Tavern Lager from our friends at Georgetown with a shot of Jameson whiskey.  Chef&#39;s favorite flavors. Tavern beer- An easy drinking lager brewed with malted barley from the Pacific Northwest and Simcoe hops from the Yakima Valley; 4.2%</p><p><br></p>",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "11. SIMCOE ARCHITECT FRESH HOP WC IPA- FORT GEORGE/ GHOST TOWN",
+   "short_description": "<p>Astoria; 6.66%</p><p>Lush, aromatic West Coast Style IPA. Hops: Coleman Farms Fresh Simcoe Hops, Simcoe Cryo, Simcoe CO2 Extract, Bract 106 Malts: Rahr to Thee, 2Row, Weyermann Acidulated</p>",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "05.   MOUNTAIN ROSE CIDER- WHITEWOOD",
+   "short_description": "<p>Olympia; 7.1</p><p>Beautiful blush-rose color, soft and smooth with aromas. Fresh fruit flavors of strawberry, peach, cranberry and a touch of pineapple. Made with 100% Mountain Rose apples grown by Kiyokawa Orchards in Hood River Oregon.</p>",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "TAVERN BEER - GEORGETOWN TALL BOY- 16oz can",
+   "short_description": "<p>Georgetown; 4.2%</p><p>An easy drinking lager brewed with malted barley from the Pacific Northwest and Simcoe hops from the Yakima Valley.</p><p>FOR BEER GEEKS: Malts - 2 Row Pale, Hops - Simcoe, Yeast - Bavarian Lager</p><p><br></p>",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "06. THE FRUITFUL DRINK WILD ALE - GARDEN PATH",
+   "short_description": "<p>Bellingham; 4.2%</p><p>All the fruits in one crushable can (or keg)! Barrel-aged beer co-fermented with boysenberries, blended with table beer, re-fermented with blue haskap berries, and naturally conditioned with juice from local blackberries.</p>",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "07. PILS de PILS PILSNER- HEATER ALLEN",
+   "short_description": "<p>McMinnville, OR;</p><p>German-style pilsner decocted to bone-dry crispness and classically bittered with elegant, spicy German hops — a Bitburger Challenge winner. Pleasantly hoppy and fresh.</p>",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "13. TIME LAPSE FH WC IPA- KINGS & DAUGHTERS",
+   "short_description": "<p>Hood River, OR; 7.1%</p><p>Fresh Hop – Coleman Farms Grown Indie Strata</p><p>Hop farming is an act of patience, resilience, and faith in the season. PNW brewers know this well — watching bines come and go and come again as the calendar ticks toward harvest, counting the days until that brief, electric window opens. Time Lapse, a Fresh Hop West Coast IPA, honors that wait. A tribute to the farmers who roll with the punches each season throws, and to the hops they coax from the earth — captured at peak freshness, once a year, and never quite the same twice. Fresh hop hot side additions of Coleman Strata. FInished with Nelson Hop Oil, Simcoe &amp; Strata t90, Citra Cryo</p>",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "08.  EXCESSIVE CELEBRATIONS FESTBIER- OTHERLANDS",
+   "short_description": "<p>Bellingham; 5.6%</p><p>Modern festbier brewed with Vienna and Pilsner malt and our special lager yeast. Malty, soft, and dry with a pleasant, fruity yeast character.</p>",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  },
+  {
+   "name": "PILSENER - JEVER 16.9oz can",
+   "short_description": "<p>GER; 4.9%, 40 IBU</p><p>We use only the best brewing water, in order to ensure the unique taste of Jever Pilsener. As long ago as 1898, Theodor Fetköter had a pipeline laid to the brewery, 4 km away from Jever, for that purpose. What makes our brewing water special is that it contains only a small amount of limestone, making it particularly soft.</p>",
+   "badges": {
+    "out_of_stock": false,
+    "low_stock": false,
+    "on_sale": false
+   },
+   "visibility": "visible"
+  }
+ ],
+ "meta": {
+  "pagination": {
+   "total": 17,
+   "count": 17,
+   "per_page": 180,
+   "current_page": 1,
+   "total_pages": 1,
+   "links": []
+  }
+ }
+}

@@ -22,7 +22,9 @@ Config (``source_type: "sheet-taplist"``)::
 A sheet shared with "Publish to the web" instead (The Beer Authority) is read
 from its published CSV address: give ``csv_url`` in place of ``sheet_id`` /
 ``sheet_name``, and ``"header_rows": 0`` when its first row is already a beer.
-A bare number in the ABV column ("6.8") is shown as a percentage.
+A bare number in the ABV column ("6.8") is shown as a percentage. Without an
+ABV column, a percentage inside the name cell is used (Ridgecrest:
+"Brewery | Beer 6.8% | 16"); ``name_remove`` then cuts it from the name.
 
 Decorative symbols (emoji markers such as 🌿) are stripped from the ends of
 names.
@@ -31,31 +33,22 @@ names.
 import csv
 import io
 import re
-import unicodedata
 from typing import Any, Dict, List, Optional
 
 import aiohttp
 
 from ...models import Event
 from ..base import BaseParser
-from .listing_common import TapEntry, build_listings, fetch_listing_text
+from .listing_common import (
+    TapEntry,
+    build_listings,
+    fetch_listing_text,
+    normalize_abv,
+    strip_symbols,
+)
 
 SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq"
 _BARE_NUMBER = re.compile(r"^\d+(?:\.\d+)?$")
-
-
-def _strip_symbols(text: str) -> str:
-    """Trim whitespace and symbol characters (emoji, ZWJ, variation selectors)."""
-
-    def is_decoration(ch: str) -> bool:
-        return ch.isspace() or unicodedata.category(ch) in ("So", "Sk", "Cf", "Mn")
-
-    start, end = 0, len(text)
-    while start < end and is_decoration(text[start]):
-        start += 1
-    while end > start and is_decoration(text[end - 1]):
-        end -= 1
-    return text[start:end]
 
 
 def _cell(row: List[str], index: Optional[int]) -> Optional[str]:
@@ -96,9 +89,11 @@ def parse_sheet_rows(csv_text: str, config: Dict[str, Any]) -> List[TapEntry]:
         raw = _cell(row, columns["name"])
         if not raw or (skip_prefix and raw.startswith(skip_prefix)):
             continue
+        # No ABV column: the name cell may carry it ("Beer 6.8% | 16").
+        abv = _cell(row, columns["abv"]) if "abv" in columns else normalize_abv(raw)
         if name_remove is not None:
             raw = name_remove.sub("", raw)
-        name = _strip_symbols(raw)
+        name = strip_symbols(raw)
         brewery = None
         if separator and separator in name:
             left, right = name.split(separator, 1)
@@ -106,7 +101,6 @@ def parse_sheet_rows(csv_text: str, config: Dict[str, Any]) -> List[TapEntry]:
                 brewery, name = left.strip(), right.strip()
         if not name:
             continue
-        abv = _cell(row, columns.get("abv"))
         if abv and _BARE_NUMBER.match(abv):
             abv = f"{float(abv):g}%"
         entries.append(

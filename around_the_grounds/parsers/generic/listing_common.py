@@ -7,6 +7,7 @@ turns them into ``kind="listing"`` events.
 
 import logging
 import re
+import unicodedata
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Dict, Iterable, List, Optional, Tuple
@@ -55,6 +56,20 @@ def normalize_abv(text: Optional[str]) -> Optional[str]:
         if match:
             return f"{float(match.group(1)):g}%"
     return None
+
+
+def strip_symbols(text: str) -> str:
+    """Trim whitespace and symbol characters (emoji, ZWJ, variation selectors)."""
+
+    def is_decoration(ch: str) -> bool:
+        return ch.isspace() or unicodedata.category(ch) in ("So", "Sk", "Cf", "Mn")
+
+    start, end = 0, len(text)
+    while start < end and is_decoration(text[start]):
+        start += 1
+    while end > start and is_decoration(text[end - 1]):
+        end -= 1
+    return text[start:end]
 
 
 def spell_marzen(name: str) -> str:

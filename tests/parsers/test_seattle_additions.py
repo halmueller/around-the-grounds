@@ -1,7 +1,8 @@
 """Tests for the venues added on 2026-10-01 (pages and API responses saved
-that day): the Menu Tools and TapHunter parsers, html-taplist's
-``source_url`` / ``json_html_key`` options, and the venue configs that use
-existing parsers."""
+that day; Ridgecrest's sheet and the Maize & Barley and TeKu Tavern Square
+Online categories on 2026-10-10): the Menu Tools, TapHunter, and Square Online parsers,
+html-taplist's ``source_url`` / ``json_html_key`` options, and the venue
+configs that use existing parsers."""
 
 import json
 import logging
@@ -30,6 +31,11 @@ from around_the_grounds.parsers.generic.sheet_taplist import (
     SheetTaplistParser,
     parse_sheet_rows,
 )
+from around_the_grounds.parsers.generic.square_online import API_URL as SQUARE_API_URL
+from around_the_grounds.parsers.generic.square_online import (
+    SquareOnlineParser,
+    parse_square_online,
+)
 from around_the_grounds.parsers.generic.text_taplist import parse_text_taplist
 from around_the_grounds.parsers.registry import ParserRegistry
 from around_the_grounds.utils.host_throttle import listing_throttle
@@ -53,7 +59,11 @@ def summary(events: List[Event]) -> List[Listing]:
 
 @pytest.mark.parametrize(
     "source_type,parser",
-    [("menu-tools", MenuToolsParser), ("taphunter", TapHunterParser)],
+    [
+        ("menu-tools", MenuToolsParser),
+        ("taphunter", TapHunterParser),
+        ("square-online", SquareOnlineParser),
+    ],
 )
 def test_source_types_are_registered(source_type: str, parser: type) -> None:
     venue = Venue("some-taproom", "Some Taproom", "https://example.com", source_type)
@@ -223,6 +233,172 @@ class TestHtmlTaplistSources:
         ]
 
 
+class TestSquareOnline:
+    VENUE = VENUES["maize-and-barley-taps"]
+    URL = re.compile(
+        re.escape(
+            SQUARE_API_URL.format(user_id="125835288", site_id="507456299749329449")
+        )
+        + r"\?.*"
+    )
+
+    @pytest.fixture
+    def payload(self, fixtures_dir: Path) -> Dict[str, Any]:
+        data: Dict[str, Any] = json.loads(
+            (fixtures_dir / "json" / "square_online_maize_barley.json").read_text()
+        )
+        return data
+
+    def test_every_item_without_a_name_pattern(self, payload: Dict[str, Any]) -> None:
+        entries = parse_square_online(payload)
+        assert len(entries) == 17
+        assert "TASTER" in [e.name for e in entries]
+
+    def test_out_of_stock_and_unnamed_items_are_skipped(self) -> None:
+        payload = {
+            "data": [
+                {"name": "Kicked Fresh Hop", "badges": {"out_of_stock": True}},
+                {"name": " "},
+                "junk",
+                {"name": "Fresh Hop IPA", "short_description": "<p>Yakima; 6%</p>"},
+            ]
+        }
+        entries = parse_square_online(payload)
+        assert [(e.name, e.abv) for e in entries] == [("Fresh Hop IPA", "6%")]
+
+    @pytest.mark.asyncio
+    async def test_parse_keeps_numbered_draft_lines(
+        self, payload: Dict[str, Any]
+    ) -> None:
+        with aioresponses() as m:
+            m.get(self.URL, status=200, payload=payload)
+            async with aiohttp.ClientSession() as session:
+                events = await SquareOnlineParser(self.VENUE).parse(session)
+            ((call,),) = m.requests.values()
+        params = call.kwargs["params"]
+        assert params["categories[]"] == "3IQ72W2FVUNOOR3CY6EV5AYG"
+        assert params["location"] == "4BVH25KR5VSFN"
+        assert sorted(summary(events)) == [
+            [
+                "EXCESSIVE CELEBRATIONS FESTBIER",
+                "festbier",
+                "OTHERLANDS · 5.6%",
+            ],
+            [
+                "GREEN RUSH FRESH HOP IPA",
+                "fresh-hop",
+                "BALE BREAKER/ RUSSIAN RIVER · 6.9%",
+            ],
+            [
+                "KETTLE & CAST FRESH HOP HAZY PALE",
+                "fresh-hop",
+                "BURIAL/VARIETAL · 4.8%",
+            ],
+            [
+                "MOONSHAKE PUMPKIN OAT STOUT",
+                "pumpkin",
+                "BIZARRE · 5.5%",
+            ],
+            [
+                "MR. GOLDEN SUN FRESH HOP HAZY Hazy IPA",
+                "fresh-hop",
+                "HUMAN PEOPLE · 6.7%",
+            ],
+            [
+                "SIMCOE ARCHITECT FRESH HOP WC IPA",
+                "fresh-hop",
+                "FORT GEORGE/ GHOST TOWN · 6.66%",
+            ],
+            ["TIME LAPSE FH WC IPA", "fresh-hop", "KINGS & DAUGHTERS · 7.1%"],
+        ]
+
+    def test_teku_emoji_tags_match_but_are_not_shown(self, fixtures_dir: Path) -> None:
+        venue = VENUES["teku-taps"]
+        config = venue.parser_config or {}
+        payload = json.loads(
+            (fixtures_dir / "json" / "square_online_teku.json").read_text()
+        )
+        entries = parse_square_online(payload, re.compile(config["name_pattern"]))
+        events = build_listings(venue, entries, "square-online", LOGGER)
+        assert sorted(summary(events)) == [
+            ["Bizarre Fresh Hop Skitch", "fresh-hop", None],
+            ["Cloudburst Wet Side Story", "fresh-hop", None],
+            ["Fort George Topaz", "pumpkin", None],
+            ["Four Generals Rauch Märzen", "festbier", None],
+            ["Grains Of Wrath Gerstenwolf", "festbier", None],
+            ["Great Notion Fresh Hop Northleft", "fresh-hop", None],
+            ["Ilk Dripping Wet Hops", "fresh-hop", None],
+            ["Ilk Fresh Hop Strata Pale", "fresh-hop", None],
+            ["Lucky Envelope Pumpkin Emoji", "pumpkin", None],
+            ["Otherlands Excessive Celebrations", "festbier", None],
+            ["Reuben's FH Party On (Can Pour)", "fresh-hop", None],
+            ["Stoup Fresh Hop Fiend (Thora)", "fresh-hop", None],
+        ]
+
+    @pytest.mark.asyncio
+    async def test_follows_pages(self) -> None:
+        def page(name: str) -> Dict[str, Any]:
+            return {
+                "data": [{"name": f"01. {name} - X"}],
+                "meta": {"pagination": {"total_pages": 2}},
+            }
+
+        with aioresponses() as m:
+            m.get(self.URL, status=200, payload=page("Fresh Hop One"))
+            m.get(self.URL, status=200, payload=page("Fresh Hop Two"))
+            async with aiohttp.ClientSession() as session:
+                events = await SquareOnlineParser(self.VENUE).parse(session)
+        assert [e.title for e in events] == ["Fresh Hop One", "Fresh Hop Two"]
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize(
+        "config,message",
+        [
+            ({"user_id": "1", "site_id": "2"}, "needs user_id, site_id"),
+            (
+                {
+                    "user_id": "1",
+                    "site_id": "2",
+                    "category_id": "C",
+                    "name_pattern": "(",
+                },
+                "Invalid name_pattern",
+            ),
+            (
+                {
+                    "user_id": "1",
+                    "site_id": "2",
+                    "category_id": "C",
+                    "name_pattern": "x",
+                },
+                "needs a",
+            ),
+        ],
+    )
+    async def test_bad_config_raises(
+        self, config: Dict[str, Any], message: str
+    ) -> None:
+        venue = Venue("x-taps", "X", "https://example.com", "square-online", config)
+        async with aiohttp.ClientSession() as session:
+            with pytest.raises(ValueError, match=message):
+                await SquareOnlineParser(venue).parse(session)
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize(
+        "body,message",
+        [
+            ("<html>Not found</html>", "Invalid JSON from Square Online"),
+            ('{"error": "nope"}', "Unexpected Square Online response"),
+        ],
+    )
+    async def test_bad_response_raises(self, body: str, message: str) -> None:
+        with aioresponses() as m:
+            m.get(self.URL, status=200, body=body)
+            async with aiohttp.ClientSession() as session:
+                with pytest.raises(ValueError, match=message):
+                    await SquareOnlineParser(self.VENUE).parse(session)
+
+
 class TestPublishedSheet:
     VENUE = VENUES["beer-authority-taps"]
 
@@ -292,6 +468,42 @@ class TestConfiguredVenues:
             "pFriem Fresh Hop Pale",
         ]
 
+    def test_ridgecrest_abv_inside_the_beer_cell(self, csv_fixtures_dir: Path) -> None:
+        venue = VENUES["ridgecrest-taps"]
+        entries = parse_sheet_rows(
+            (csv_fixtures_dir / "ridgecrest_taplist.csv").read_text(),
+            venue.parser_config or {},
+        )
+        # Section rows ("LIGHTER") have no beer cell; "GLUTEN FREE" has "in cans".
+        assert len(entries) == 28
+        by_name = {e.name: e for e in entries}
+        first = entries[0]
+        assert (first.name, first.brewery, first.style, first.abv) == (
+            "Trident's Up! American Lager",
+            "Triceratops Brewing",
+            None,
+            "4.8%",
+        )
+        # "Cranberry Spice | 6.1% | 10": a separator before the ABV too.
+        assert by_name["Cranberry Spice"].abv == "6.1%"
+        # Canned beers are listed without an ABV.
+        assert by_name["Kickstep IPA"].abv is None
+        events = build_listings(venue, entries, "sheet", LOGGER)
+        assert summary(events) == [
+            ["Charivari Festbier", "festbier", "E9 Brewing · 5.7%"],
+            ["Fake Train FH Pale", "fresh-hop", "Bizarre Brewing · 5.2%"],
+            ["Petrichor FH NW IPA", "fresh-hop", "Human People Brewing · 6.8%"],
+            ["Easy Being Green FH Hazy IPA", "fresh-hop", "Matchless Brewing · 6.4%"],
+            ["FH Hoprissian IPA", "fresh-hop", "Loowit Brewing · 6.4%"],
+            ["Moonshake Pumpkin Oat Stout", "pumpkin", "Bizarre Brewing · 5.5%"],
+        ]
+
+    def test_abv_column_wins_over_the_name_cell(self) -> None:
+        entries = parse_sheet_rows(
+            "h,h\nBig 10% Stout,7.2\n", {"columns": {"name": 0, "abv": 1}}
+        )
+        assert (entries[0].name, entries[0].abv) == ("Big 10% Stout", "7.2%")
+
     def test_outer_planet_tap_cards(self, html_fixtures_dir: Path) -> None:
         venue = VENUES["outer-planet-taps"]
         entries = parse_html_taplist(
@@ -310,7 +522,13 @@ class TestConfiguredVenues:
         ]
 
     @pytest.mark.parametrize(
-        "key", ["elysian-capitol-hill-taps", "elysian-fields-taps", "ghostfish-taps"]
+        "key",
+        [
+            "edway-taps",
+            "elysian-capitol-hill-taps",
+            "elysian-fields-taps",
+            "ghostfish-taps",
+        ],
     )
     def test_untappd_embed_venues_have_ids(self, key: str) -> None:
         config = VENUES[key].parser_config or {}

@@ -243,6 +243,17 @@
       }
     },
     {
+      "key": "edway-taps",
+      "name": "Edway Taphouse (Edmonds)",
+      "url": "https://edwaytaphouse.com/#tap-list",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 44730,
+        "theme_id": 170396,
+        "venue_type": "taproom"
+      }
+    },
+    {
       "key": "elysian-capitol-hill-taps",
       "name": "Elysian Brewing (Capitol Hill)",
       "url": "https://www.elysianbrewing.com/locations/capitol-hill",
@@ -507,6 +518,21 @@
       }
     },
     {
+      "key": "maize-and-barley-taps",
+      "name": "Maize & Barley (Edmonds)",
+      "url": "https://maizebarley.square.site/s/order?location=4BVH25KR5VSFN#3IQ72W2FVUNOOR3CY6EV5AYG",
+      "source_type": "square-online",
+      "parser_config": {
+        "note": "The 'BEER & CIDER' category of the Square ordering site that maizebarley.com links as MENUS. Draft lines are numbered ('09. KETTLE & CAST FRESH HOP HAZY PALE - BURIAL/VARIETAL'); cans, the taster pour, and specials are not, so name_pattern keeps only the numbered ones.",
+        "user_id": "125835288",
+        "site_id": "507456299749329449",
+        "category_id": "3IQ72W2FVUNOOR3CY6EV5AYG",
+        "location_id": "4BVH25KR5VSFN",
+        "name_pattern": "^\\d+\\.\\s*(?P<name>.+?)\\s*-\\s*(?P<brewery>[^-]+)$",
+        "venue_type": "taproom"
+      }
+    },
+    {
       "key": "obec-taps",
       "name": "Obec Brewing (Ballard)",
       "url": "https://obecbrewing.com/our-beer/",
@@ -663,6 +689,23 @@
       }
     },
     {
+      "key": "ridgecrest-taps",
+      "name": "Ridgecrest Public House (Shoreline)",
+      "url": "https://www.ridgecrest.pub/",
+      "source_type": "sheet-taplist",
+      "parser_config": {
+        "note": "The home page links this sheet as its draft list. Column 0 is the tap's standing slot ('IPA imp and FH'), not the beer's style, so it is not read. Column 1 is 'Brewery | Beer 6.8% | 16 simcoe hops': the ABV is taken from the cell, and name_remove cuts it and the glass size and hop notes after it.",
+        "csv_url": "https://docs.google.com/spreadsheets/d/14gNAt1lfthoBJ558BnmTXIOqPEfV2lxbLz0Vw7GMiAw/gviz/tq?tqx=out:csv&gid=0",
+        "header_contains": "Glass Size",
+        "columns": {
+          "name": 1
+        },
+        "brewery_separator": "|",
+        "name_remove": "\\s*\\|?\\s*\\d+(?:\\.\\d+)?\\s*%.*$",
+        "venue_type": "taproom"
+      }
+    },
+    {
       "key": "rooftop-taps",
       "name": "Rooftop Brew Co at the Jolly Roger (Ballard)",
       "url": "https://www.rooftopbrew.co/beer",
@@ -740,6 +783,23 @@
         "note": "The page's BEER & DRINKS button links a PDF menu (Wix renames it on every upload). Beers are 'Name | Style' lines; prices and the ABV lines under each beer hold $ or %.",
         "link_pattern": "beer",
         "line_pattern": "^(?P<name>[^|$%]+?)\\s*\\|\\s*(?P<style>[^|$%]+)$"
+      }
+    },
+    {
+      "key": "teku-taps",
+      "name": "TeKu Tavern (South Lake Union)",
+      "url": "https://www.tekutavern.beer/on-tap",
+      "source_type": "square-online",
+      "parser_config": {
+        "note": "The 'Draft Menu' page of their Square site shows this category; the rest of the catalog is bottles and cans. Lines are numbered by tap ('29. Bizarre Fresh Hop Skitch💚'), brewery first. They mark fresh hops 💚, pumpkin beers 🎃, and festbiers 🍺, often with no other hint in the name ('14. Cloudburst Wet Side Story💚').",
+        "user_id": "143562000",
+        "site_id": "379758783558537520",
+        "category_id": "XH4X737EVUPAXRCDHTZTKEZJ",
+        "name_pattern": "^\\d+\\.\\s*(?P<name>.+)$",
+        "listing_include": ["💚"],
+        "pumpkin_include": ["🎃"],
+        "festbier_include": ["🍺"],
+        "venue_type": "taproom"
       }
     },
     {
