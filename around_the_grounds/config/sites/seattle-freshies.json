@@ -233,6 +233,20 @@
       "source_type": "craftpeak-wot"
     },
     {
+      "key": "crown-taps",
+      "name": "The Crown (Crown Hill)",
+      "url": "https://www.crownbarballard.com/tvmenu",
+      "source_type": "text-taplist",
+      "parser_config": {
+        "note": "The Taplist page (a Wix site) has one h3 per tap: 'Name: Brewery, State, ABV.' The Wi-Fi lines above the list have no comma and are skipped. Cider and wine share the list.",
+        "line_tags": [
+          "h3"
+        ],
+        "line_pattern": "^(?P<name>[^:]+?)\\s*:\\s*(?P<brewery>[^,]+),(?:.*?(?P<abv>\\d+(?:\\.\\d+)?%))?",
+        "venue_type": "taproom"
+      }
+    },
+    {
       "key": "dirty-couch-taps",
       "name": "Dirty Couch Brewing (Ballard)",
       "url": "https://dirtycouchbrewing.com/tap-list",

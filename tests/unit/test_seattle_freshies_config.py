@@ -97,6 +97,7 @@ def test_bottle_shops_and_taprooms_are_typed(site: SiteConfig) -> None:
         "chucks-central-district-taps",
         "chucks-greenwood-taps",
         "chucks-seward-park-taps",
+        "crown-taps",
         "die-bierstube-taps",
         "edway-taps",
         "growler-guys-taps",

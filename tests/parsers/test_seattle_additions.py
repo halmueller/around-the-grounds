@@ -1,6 +1,7 @@
 """Tests for the venues added on 2026-10-01 (pages and API responses saved
 that day; Ridgecrest's sheet and the Maize & Barley and TeKu Tavern Square
-Online categories on 2026-10-10): the Menu Tools, TapHunter, and Square Online parsers,
+Online categories on 2026-10-10; The Crown's page on 2026-10-11): the Menu
+Tools, TapHunter, and Square Online parsers,
 html-taplist's ``source_url`` / ``json_html_key`` options, and the venue
 configs that use existing parsers."""
 
@@ -453,6 +454,29 @@ class TestConfiguredVenues:
         assert summary(events) == [
             ["Medusa Oktoberfest", "festbier", None],
             ["Fresh Nooky Fresh Hop IPA", "fresh-hop", None],
+        ]
+
+    def test_crown_heading_per_tap(self, html_fixtures_dir: Path) -> None:
+        venue = VENUES["crown-taps"]
+        entries = parse_text_taplist(
+            (html_fixtures_dir / "taplist_crown.html").read_text(),
+            venue.parser_config or {},
+        )
+        # The Wi-Fi lines and the price column are not taps.
+        assert len(entries) == 12
+        assert (entries[0].name, entries[0].brewery, entries[0].abv) == (
+            "Manny's Pale Ale",
+            "Georgetown Brewing",
+            "5.4%",
+        )
+        # "Non-Alcoholic" stands where the ABV would be.
+        assert (entries[5].name, entries[5].abv) == ("Run Wild NA IPA", None)
+        events = build_listings(venue, entries, "html", LOGGER)
+        assert summary(events) == [
+            ["Topcutter Fresh Hop IPA", "fresh-hop", "Bale Breaker Brewing · 6.8%"],
+            ["FH Nectar of the Gods IPA", "fresh-hop", "White Bluffs Brewing · 7%"],
+            ["Strata FH West Coast Pilsner", "fresh-hop", "Bizarre Brewing · 4.8%"],
+            ["Rooftop Amarillo Fresh Hop IPA", "fresh-hop", "Rooftop Brewing · 6%"],
         ]
 
     def test_trailbend_drafts_sheet(self, csv_fixtures_dir: Path) -> None:
