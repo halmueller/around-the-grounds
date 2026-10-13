@@ -179,6 +179,18 @@
       }
     },
     {
+      "key": "grand-fir-taps",
+      "name": "Grand Fir Brewing (Buckman)",
+      "url": "https://www.grandfirbrewing.com/food-drinks",
+      "source_type": "pdf-taplist",
+      "parser_config": {
+        "note": "The page's DRINKS button links a PDF menu whose file name changes with each upload. A beer is a name line followed by 'Style | 5.6% ABV'; cocktails have no such line.",
+        "link_pattern": "^drinks",
+        "line_pattern": "^(?P<name>[^|$%\\d][^|$%]{1,40})$",
+        "detail_pattern": "^(?P<style>[^|]+?)\\s*\\|\\s*(?P<abv>\\d+(?:\\.\\d+)?%)\\s*ABV$"
+      }
+    },
+    {
       "key": "heathen-taps",
       "name": "Heathen Brewing (Vancouver)",
       "url": "https://www.heathenbrewing.com/brewery-menu",
@@ -197,6 +209,17 @@
         "location_id": 3057,
         "theme_id": 8704,
         "venue_type": "taproom"
+      }
+    },
+    {
+      "key": "living-haus-taps",
+      "name": "Living Häus Beer (Buckman)",
+      "url": "https://www.livinghausbeer.com/beer",
+      "source_type": "text-taplist",
+      "parser_config": {
+        "note": "Each beer is 'NAME | DRAFT & TO-GO' (or '| DRAFT'), then 'STYLE•4.8% ABV', then a paragraph about it. Names are people's names, so the style line is what says a beer is a fresh hop or a festbier.",
+        "line_pattern": "^(?P<name>[A-Z0-9][A-Z0-9 .'’&-]+?)\\s*\\|\\s*DRAFT\\b",
+        "detail_lines": 2
       }
     },
     {
@@ -233,6 +256,18 @@
       }
     },
     {
+      "key": "pfriem-milwaukie-taps",
+      "name": "pFriem Family Brewers (Milwaukie)",
+      "url": "https://www.pfriembeer.com/tasting-room/milwaukie-tasting-room/",
+      "source_type": "pdf-taplist",
+      "parser_config": {
+        "note": "The page's 'Beer Menu' link is the Milwaukie draft menu, a PDF renamed with each update. A beer is a name in capitals followed by its pour sizes ('8oz - 5.50 / 12oz - 6.50'); cocktails have a price on the name line.",
+        "link_pattern": "^beer menu",
+        "line_pattern": "^(?P<name>[A-ZÀ-Ý0-9][A-ZÀ-Ý0-9 +’'().&-]+)$",
+        "detail_pattern": "^\\d+oz\\s*-\\s*\\d"
+      }
+    },
+    {
       "key": "prost-taps",
       "name": "Prost! (Mississippi)",
       "url": "https://www.prostportland.com/drinks",
@@ -253,6 +288,30 @@
         "company_id": "51c24092fb890c13d86749af",
         "location_id": 1,
         "venue_type": "taproom"
+      }
+    },
+    {
+      "key": "steeplejack-broadway-taps",
+      "name": "Steeplejack Brewing (Broadway)",
+      "url": "https://www.steeplejackbeer.com/broadway",
+      "source_type": "pdf-taplist",
+      "parser_config": {
+        "note": "The page's 'Beer + Drinks' link is a PDF. A beer is a name in capitals followed by a line of tasting notes separated by slashes; cocktails list ingredients with commas.",
+        "link_pattern": "^beer",
+        "line_pattern": "^(?P<name>[A-ZÀ-Ý0-9][A-ZÀ-Ý0-9 ’'().&-]+)$",
+        "detail_pattern": "^(?:\\|.*\\||[a-z&’' -]+(?: / [a-z&’' -]+)+)$"
+      }
+    },
+    {
+      "key": "steeplejack-sw-taps",
+      "name": "Steeplejack Pizza & Beer (Southwest Portland)",
+      "url": "https://www.steeplejackbeer.com/sw-pizza-beer",
+      "source_type": "pdf-taplist",
+      "parser_config": {
+        "note": "As at Broadway: the 'Beer + Drinks' PDF.",
+        "link_pattern": "^beer",
+        "line_pattern": "^(?P<name>[A-ZÀ-Ý0-9][A-ZÀ-Ý0-9 ’'().&-]+)$",
+        "detail_pattern": "^(?:\\|.*\\||[a-z&’' -]+(?: / [a-z&’' -]+)+)$"
       }
     },
     {
@@ -305,6 +364,20 @@
         "item": ".bt_bb_menu_item",
         "name": ".bt_bb_menu_item_title",
         "name_pattern": "^\\d+\\.\\s*(?P<name>.+?)(?:,?\\s+\\d+(?:\\.\\d+)?%)?$"
+      }
+    },
+    {
+      "key": "threshold-taps",
+      "name": "Threshold Brewing (Montavilla)",
+      "url": "https://www.threshold.beer/",
+      "source_type": "text-taplist",
+      "parser_config": {
+        "note": "The home page's 'taplist.' section: one line per beer, 'Name, a few words about it, 5.5%', some starting 'Just Tapped'. The CASK lines repeat beers already listed, and the cider and wine lines have no comma before a percentage.",
+        "section_tag": "h2",
+        "include_sections": [
+          "^taplist"
+        ],
+        "line_pattern": "^(?!CASK:)(?:Just Tapped\\s+)?(?P<name>.+?)(?:,|\\s+with\\s).*?(?P<abv>\\d+(?:\\.\\d+)?%)$"
       }
     },
     {

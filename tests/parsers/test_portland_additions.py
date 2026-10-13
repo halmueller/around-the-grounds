@@ -12,6 +12,10 @@ from around_the_grounds.config.loader import load_site_config
 from around_the_grounds.models import Event
 from around_the_grounds.parsers.generic.html_taplist import parse_html_taplist
 from around_the_grounds.parsers.generic.listing_common import build_listings
+from around_the_grounds.parsers.generic.pdf_taplist import (
+    find_pdf_link,
+    parse_pdf_taplist,
+)
 from around_the_grounds.parsers.generic.text_taplist import parse_text_taplist
 
 LOGGER = logging.getLogger(__name__)
@@ -226,4 +230,154 @@ class TestConfiguredVenues:
 
         assert summary(events) == [
             ["Flyboy Brewing Fresh Hop Island Jumper IPA", "fresh-hop", "7%"]
+        ]
+
+
+class TestPdfMenus:
+    def test_pfriem_names_are_followed_by_pour_sizes(self) -> None:
+        lines = [
+            "Belgian-Inspired",
+            "PUMPKIN BIER",
+            "8oz - 6.50 / 12oz - 7.50",
+            "7.3%, 15 IBU | Fresh Ground Spice, Fluffy , Pumpkin Pie",
+            "Lagers",
+            "OKTOBERFEST (SIDE PULL)",
+            "12oz - 6.50 / 16oz - 7.50",
+            "PFRIEM + FORT GEORGE",
+            "VACATION DESTINATION WEST COAST IPA",
+            "8oz - 5.50 / 12oz - 6.50 / 16oz - 7.50",
+            "FRESH HOP KRUSH HAZY IPA",
+            "8oz - 5.50 / 12oz - 6.50 / 16oz - 7.50",
+            "CADILLAC MARGARITA - 15",
+            "Reposado, Lime, Orange Cognac",
+        ]
+        venue = VENUES["pfriem-milwaukie-taps"]
+        entries = parse_pdf_taplist(lines, venue.parser_config or {})
+
+        # The collaboration credit and the cocktail are not beers.
+        assert [e.name for e in entries] == [
+            "PUMPKIN BIER",
+            "OKTOBERFEST (SIDE PULL)",
+            "VACATION DESTINATION WEST COAST IPA",
+            "FRESH HOP KRUSH HAZY IPA",
+        ]
+        events = build_listings(venue, entries, "html", LOGGER)
+        assert [[e.title, e.category] for e in events] == [
+            ["PUMPKIN BIER", "pumpkin"],
+            ["OKTOBERFEST (SIDE PULL)", "festbier"],
+            ["FRESH HOP KRUSH HAZY IPA", "fresh-hop"],
+        ]
+
+    def test_pfriem_menu_is_found_by_its_link_text(self) -> None:
+        page = (
+            '<a href="/docs/2026-TR-Milwaukie-FoodMenu-10.7.pdf">Food Menu</a>'
+            '<a href="/docs/2026-TR-Milwaukie-DraftMenu-10.9.pdf">Beer Menu</a>'
+            '<a href="/docs/pFriem-2026-BeerGuide.pdf">2026 Package Beer Guide</a>'
+        )
+        venue = VENUES["pfriem-milwaukie-taps"]
+        url = find_pdf_link(
+            page, venue.url, (venue.parser_config or {})["link_pattern"]
+        )
+        assert (
+            url
+            == "https://www.pfriembeer.com/docs/2026-TR-Milwaukie-DraftMenu-10.9.pdf"
+        )
+
+    @pytest.mark.parametrize(
+        "key", ["steeplejack-broadway-taps", "steeplejack-sw-taps"]
+    )
+    def test_steeplejack_beers_have_tasting_notes_cocktails_do_not(
+        self, key: str
+    ) -> None:
+        lines = [
+            "SIGNATURE COCKTAILS",
+            "SPICY BLOODY MARY 13",
+            "garlic and dill infused vodlka. house spicy bloody mix",
+            "PUMPKIN SPICE MARTINI",
+            "vodka, pumpkin, cream",
+            "LIGHT",
+            "OKTOBERFEST",
+            "sweet / malty / bready",
+            "abv 5%",
+            "JEHOVAH'S WIT",
+            "| brewed with apricot & peach purée |",
+            "FIZZY BISCUITS FRESH HOP HAZY IPA",
+            "juicy / soft / citrus",
+            "STEEPLEJACK BREWING 12OZ",
+            "IPA / oktoberfest / pilsner 5",
+        ]
+        venue = VENUES[key]
+        entries = parse_pdf_taplist(lines, venue.parser_config or {})
+
+        assert [e.name for e in entries] == [
+            "OKTOBERFEST",
+            "JEHOVAH'S WIT",
+            "FIZZY BISCUITS FRESH HOP HAZY IPA",
+        ]
+
+    def test_grand_fir_beers_have_a_style_and_abv_line(self) -> None:
+        lines = [
+            "Cocktails",
+            "texas sun",
+            "altos reposado tequila, fresh lime, berry-",
+            "16",
+            "Rhody",
+            "Fresh hop XPA feat. audacia hops | 5.6% ABV",
+            "juicy peach, pink guava, black currant",
+            "9",
+            "PINK SKY",
+            "WEST COAST IPA | 6.5% ABV",
+        ]
+        venue = VENUES["grand-fir-taps"]
+        entries = parse_pdf_taplist(lines, venue.parser_config or {})
+
+        assert [(e.name, e.style, e.abv) for e in entries] == [
+            ("Rhody", "Fresh hop XPA feat. audacia hops", "5.6%"),
+            ("PINK SKY", "WEST COAST IPA", "6.5%"),
+        ]
+
+
+class TestMoreTextLists:
+    def test_living_haus_style_line_decides(self) -> None:
+        html = """
+        <h2>CORE BEERS</h2>
+        <p>DOLORES | DRAFT &amp; TO-GO</p><p>PILSNER•4.8% ABV</p>
+        <p>Dolores is our beloved Pilsner beer.</p>
+        <h2>ONE-OFFS</h2>
+        <p>GAYLE | DRAFT &amp; TO-GO</p><p>FRESH HOP KELLER PILSNER•5.0% ABV</p>
+        <p>Gayle is a fourth generation hop farmer.</p>
+        <p>BENJAMIN JUNE | DRAFT</p><p>FESTBIER•5.2% ABV</p><p>Our festbier.</p>
+        <p>OLD CANS | TO-GO</p><p>FRESH HOP IPA•6% ABV</p>
+        """
+        venue = VENUES["living-haus-taps"]
+        entries = parse_text_taplist(html, venue.parser_config or {})
+        events = build_listings(venue, entries, "html", LOGGER)
+
+        assert [e.name for e in entries] == ["DOLORES", "GAYLE", "BENJAMIN JUNE"]
+        assert summary(events) == [
+            ["GAYLE", "fresh-hop", "5%"],
+            ["BENJAMIN JUNE", "festbier", "5.2%"],
+        ]
+
+    def test_threshold_taplist_section(self) -> None:
+        html = """
+        <h2>Fresh Hop Finish Line Party - this Friday!</h2>
+        <p>403 SE 79th Ave</p>
+        <h2>taplist.</h2>
+        <p>Updated October 6</p>
+        <p>Just Tapped FRESH HOP Find Your Friends ESB, with fresh Crystal hops, 5%</p>
+        <p>FRESH HOP Dozynki White Ale with fresh Lorien hops from Indie Hops, 5.5%</p>
+        <p>Piwo Polish Pilsner, brewed with Polish Lubelski hops, 5.4%</p>
+        <p>CASK: Just Tapped FRESH HOP Find Your Friends ESB with Crystal hops, 5%</p>
+        <p>Rotating local draft cider: Bull Run Cider - Blueberry Lemon - 6.5%</p>
+        <h2>food.</h2>
+        <p>Pumpkin pierogi, with fresh hop butter, 100% delicious</p>
+        """
+        venue = VENUES["threshold-taps"]
+        entries = parse_text_taplist(html, venue.parser_config or {})
+
+        assert [(e.name, e.abv) for e in entries] == [
+            ("FRESH HOP Find Your Friends ESB", "5%"),
+            ("FRESH HOP Dozynki White Ale", "5.5%"),
+            ("Piwo Polish Pilsner", "5.4%"),
         ]

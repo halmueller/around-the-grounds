@@ -1,7 +1,7 @@
 # Plan: Freshies sites for Portland, the Yakima Valley, and Bend
 
 Status: phase 0 done (2026-10-12). Phase 1 (Portland) started: first survey
-pass done and 28 venues configured (2026-10-13); not live.
+pass done and 34 venues configured (2026-10-13); not live.
 Written 2026-10-12.
 
 Goal: reuse the Seattle Freshies site (the `fresh-hop` template, the tap-list
@@ -251,25 +251,41 @@ line and what the beer is on the next, so `text-taplist` gained a
 `detail_lines` option. With both batches a live run finds 191 matching beers
 at 28 venues, with no errors.
 
+**Third batch, configured 2026-10-13 (6):** Grand Fir, pFriem (Milwaukie),
+and Steeplejack (Broadway and Southwest Portland) publish a PDF draft menu
+(`pdf-taplist`, found by its link text because the file name changes); Living
+Häus and Threshold are text on the page. With all three batches a live run
+finds 222 matching beers at 34 venues (175 fresh hop, 34 festbier, and 13
+pumpkin), with no errors.
+
 **Still to check: is the page a current draft list or a catalogue?** Barrel
 Mountain (Battle Ground), Breakside (per-location pages), Chuckanut P-Nut
 Beer Hall, Coin Toss (Oregon City), Living Häus, Mad Cow, Rosenstadt, and
-Zoiglhaus. Ridgefield Craft Brewing's page says it lists "a few of the beers
-you'll find on tap throughout the year", so it is a catalogue: not added.
-Threshold's published Google Doc turned out to be its music schedule; its tap
-list is on its home page and needs a closer look.
+Zoiglhaus (its page reads as a core line-up). Chuckanut's "On Tap Now" list
+does not say which taproom it is for. Ridgefield Craft Brewing's page says it
+lists "a few of the beers you'll find on tap throughout the year", so it is a
+catalogue: not added.
 
-**Needs a closer look** (list loads by script, sits in a PDF or an ordering
-site, or was not found): Alameda, Baerlic, Binary (Beaverton), Cascade, Double
-Mountain (Overlook and Woodstock), Gigantic, Golden Valley (Beaverton), Grand
-Fir (PDF), Imperial Bottle Shop (Google Docs), John's Marketplace, Laurelwood,
-Level, Loowit (Vancouver), Oakshire's Portland beer hall (its embed is the
-Eugene pub's), Old Market Pub, Old Town, Oregon City Brewing, pFriem
-(Milwaukie), Roscoe's, Ruse (site "undergoing updates"), Sasquatch, Shoug
-(Washougal, PDF), Steeplejack (PDFs), Stickmen, Tiny Bubble Room, Trap Door
-(Vancouver), Vanguard (Wilsonville), Von Ebert, Waltz (Forest Grove), and
-Wolf Tree. McMenamins has one "On Tap" page for all its pubs; decide whether
-to treat it as Elliott Bay was in Seattle.
+**Looked at closely, no readable list (2026-10-13):**
+
+- Breakside: its location pages say to call or visit to learn what is on tap.
+- Double Mountain (Overlook): the linked PDF is the food menu; no draft list.
+- Baerlic and Rosenstadt: the tap list is an image.
+- Steeplejack (Hillsboro): its PDF is laid out differently from the other
+  two and needs its own patterns. Union on Hawthorne links no drinks menu.
+- Von Ebert, Laurelwood, Roscoe's, Imperial Bottle Shop, Old Town, Binary,
+  John's Marketplace, Loowit, and Alameda: the page arrives without the list
+  (loaded by script). Worth one more look for the address the script calls.
+- Ruse: site "undergoing updates".
+- Level: a Square site, so the `square-online` parser may fit. Gigantic: its
+  menu links a "current tap room list" page not yet fetched.
+
+**Not yet looked at closely:** Cascade, Golden Valley (Beaverton), Oakshire's
+Portland beer hall (its embed is the Eugene pub's), Old Market Pub, Oregon
+City Brewing, Sasquatch, Shoug (Washougal, PDF), Stickmen, Tiny Bubble Room,
+Trap Door (Vancouver), Vanguard (Wilsonville), Waltz (Forest Grove), and Wolf
+Tree. McMenamins has one "On Tap" page for all its pubs; decide whether to
+treat it as Elliott Bay was in Seattle.
 
 **Would need a new parser or a decision:**
 
