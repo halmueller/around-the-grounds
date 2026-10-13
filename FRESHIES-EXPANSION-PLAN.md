@@ -37,7 +37,7 @@ Everything else is already per-site: the matcher, the parsers, `venue_type`,
 Settled 2026-10-12: the Portland domain is `portlandfreshies.com` (not yet
 registered), and the first pass covers the metro area, including Vancouver,
 WA. Items 3 and 4 were built as recommended. Still open: the Yakima site's
-name, and item 5.
+name (built as "Yakima Freshies" for now), and item 5.
 
 1. **Names and domains.** As of 2026-10-12, `whois` shows no registration for
    `portlandfreshies.com`, `pdxfreshies.com`, `yakimafreshies.com`, or
@@ -397,7 +397,8 @@ opened recently enough to be in neither starting list. Cross-check against
 The New School's openings and closings before calling the survey complete.
 
 Tuning notes from the first run: Uptown Beer Co. numbers its taps in the beer
-name ("2. 🌿Fresh Hop Cumulus (Citra)"); strip the number in 1.4. A pumpkin
+name ("2. 🌿Fresh Hop Cumulus (Citra)"); leading tap numbers are now stripped
+for every site (2026-10-13). A pumpkin
 cider at Loyal Legion matches `pumpkin`, as it would in Seattle.
 
 ### 1.2 Site config: `config/sites/portland-freshies.json`
@@ -455,28 +456,77 @@ Seattle venues.
 
 ## Phase 2: Yakima Valley, Ellensburg, Prosser, and the Tri-Cities
 
-Same steps as Portland with a smaller survey, roughly 25 to 35 venues.
+First pass built 2026-10-13: `config/sites/yakima-freshies.json`, 13 venues,
+77 matching beers in the first live preview, and no errors. The working name
+is "Yakima Freshies" at `yakimafreshies.com` (not registered), and the pages
+say "Central Washington" where Seattle's say "Seattle"; both are placeholders
+until Hal settles the name. No event sources, so no Events tab.
 
-- Start from the Washington Beer brewery list for Kittitas, Yakima, Benton,
-  and Franklin counties.
-- Candidates, unverified:
-  - Yakima area: Bale Breaker (Moxee), Single Hill, Cowiche Creek, Wandering
-    Hop, Valley Brewing, Hop Capital, Bron Yr Aur (Naches), and Varietal
-    (Sunnyside).
-  - Ellensburg: Iron Horse and Whipsaw.
-  - Upper Kittitas County (asked for by Hal, 2026-10-13): Dru Bru in Cle
-    Elum for certain, plus any other suitable breweries and taprooms in
-    Ellensburg, Roslyn, and Cle Elum (Roslyn Brewing is one to check).
-  - Prosser: Horse Heaven Hills.
-  - Tri-Cities: Ice Harbor, White Bluffs, Bombing Range, Moonshot, Atomic Ale,
-    and Paper Street, plus taprooms such as Dovetail Joint.
+### 2.1 Venue survey (2026-10-13)
+
+Candidates came from Open Brewery DB for Kittitas, Yakima, Benton, and
+Franklin county towns, plus tourism-board and Washington Beer Blog lists.
+
+**Configured (13):**
+
+- Yakima area: Bale Breaker (Moxee; Untappd embed), The Kiln Taproom (Untappd
+  embed), Public House of Yakima East and West (DigitalPour list in the page),
+  Shorthead (Tieton; Untappd embed), Single Hill (its own menu table), Valley
+  Brewing (Taplist.io), and Varietal (Sunnyside; Untappd embed).
+- Tri-Cities: Ice Harbor Downtown Kennewick and Clover Island (their own tap
+  list pages), Moonshot (Kennewick; one list for the brewery), Sage (Pasco;
+  Untappd embed), and White Bluffs (Richland; TapHunter).
+
+**No list of what is pouring now:**
+
+- Dru Bru (Cle Elum), which Hal asked for: the site has a beer catalogue
+  ("check each product for availability") and an Instagram feed, and no tap
+  list for either taproom. Needs Hal's call; an Untappd venue page would be
+  blocked from the droplet.
+- Iron Horse (Ellensburg): catalogue and beer finder only.
+- Whipsaw (Ellensburg), Mule & Elk (Cle Elum), Roslyn Brewing, Paper Street
+  (Pasco), Hop Capital (Yakima), and Wheat Head (Kennewick; menu is an
+  image): no beer list in the page.
+- Outskirts (Selah): the drink menu is the flagships, not the taps. Its own
+  fresh hop was pouring at the Public House and absent from that menu, and a
+  flagship's description names a fresh-hop festival award, which matched.
+- Bombing Range (Richland): catalogue. Atomic Ale (Richland): a fixed list of
+  its regular beers with no seasonals.
+- Dovetail Joint (Richland), Brewminatti (Prosser), Basecamp (Roslyn), and
+  Tri City Taps (Pasco; the Beer List page is empty): no beer list.
+
+**No parser yet:** 5th Line (Yakima; Pourwall), Cowiche Creek and Bron Yr Aur
+(Toast ordering pages), and Wandering Hop (script-rendered site).
+
+**Blocked or unreachable:** Snipes Mountain (Sunnyside) and HopTown Pizza
+(Wapato) answer with a Cloudflare challenge. No working site found for Horse
+Heaven Hills (Prosser), Rattlesnake Mountain (Richland), Copper Top Tap
+House, Lazy River Taphouse, Underground Taphouse, Tap & Barrel, Ellensburg
+Brewing, Enchantment (Ellensburg), or Wild Earth (Roslyn; reported closed).
+
+**Closed or gone:** Yakima Craft Brewing (domain now a gambling site), Hop
+Nation, Redifer, Berchman's, Taneum Creek (404), and Whitstran/Green Oak.
+
+The site has nothing between Yakima and Snoqualmie Pass yet: every
+Ellensburg, Cle Elum, and Roslyn candidate lacks a readable list.
+
+### 2.2 Parser changes made for this site
+
+- `html-taplist` gained `detail_sibling` for menus that put a beer's
+  description in the element after it (Single Hill).
+- Listing names lose a leading tap number ("11. Volcano Envy"), for every
+  site; this also fixes Uptown Beer Co. in Portland.
 - **Venue key clash:** the registry looks up `venue.key` before `source_type`,
   and `bale-breaker` belongs to Ballard's food-truck parser. The Moxee taproom
-  needs a different key, as `bale-breaker-seattle-taps` does in Seattle. Check
-  every new key against `parsers/registry.py`.
-- Small-town breweries are more likely to post the tap list as a photo or on
-  Facebook only. Expect a higher skip rate than Seattle's.
-- Target: surveyed and configured by July 2027, live before harvest.
+  is `bale-breaker-yakima-taps`.
+
+### 2.3 Still to do
+
+- Hal: the name and domain; whether "Central Washington" is the right phrase;
+  what to do about Dru Bru and the upper-county gap.
+- Look for the unreachable venues' real addresses; try the Toast and Pourwall
+  venues if parsers for them get written.
+- Droplet dry run and launch, as for Portland (1.5 and 1.6).
 
 ## Phase 3: Bend and Central Oregon
 

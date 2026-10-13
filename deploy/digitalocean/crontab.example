@@ -7,4 +7,5 @@
 # line, as in the commented example.
 7 * * * * $HOME/around-the-grounds/deploy/digitalocean/run.sh seattle-freshies >> $HOME/logs/seattle-freshies.log 2>&1
 # 22 * * * * $HOME/around-the-grounds/deploy/digitalocean/run.sh portland-freshies >> $HOME/logs/portland-freshies.log 2>&1
+# 37 * * * * $HOME/around-the-grounds/deploy/digitalocean/run.sh yakima-freshies >> $HOME/logs/yakima-freshies.log 2>&1
 # 7 * * * * HEALTHCHECK_URL=https://hc-ping.com/your-check-uuid $HOME/around-the-grounds/deploy/digitalocean/run.sh seattle-freshies >> $HOME/logs/seattle-freshies.log 2>&1

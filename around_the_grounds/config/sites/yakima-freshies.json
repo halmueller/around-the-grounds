@@ -1,0 +1,172 @@
+{
+  "key": "yakima-freshies",
+  "name": "Yakima Freshies",
+  "template": "fresh-hop",
+  "timezone": "America/Los_Angeles",
+  "public_url": "https://yakimafreshies.com",
+  "template_vars": {
+    "place": "Central Washington",
+    "author_home": "Seattle"
+  },
+  "generate_description": false,
+  "venues": [
+    {
+      "key": "bale-breaker-yakima-taps",
+      "name": "Bale Breaker Brewing (Moxee)",
+      "url": "https://balebreaker.com/taproom/yakima/",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 36383,
+        "theme_id": 141061
+      }
+    },
+    {
+      "key": "ice-harbor-marina-taps",
+      "name": "Ice Harbor Brewing (Clover Island)",
+      "url": "https://iceharbor.com/locations/marina-clover-island/tap-list/",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "item": ".ihb-tap-item",
+        "name": "h3",
+        "style": "p",
+        "name_pattern": "^(?:NEW!+\\s*)?(?P<name>.+)$",
+        "match_whole_item": true
+      }
+    },
+    {
+      "key": "ice-harbor-downtown-taps",
+      "name": "Ice Harbor Brewing (Downtown Kennewick)",
+      "url": "https://iceharbor.com/locations/brewery-pub-downtown-kennewick/tap-list/",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "item": ".ihb-tap-item",
+        "name": "h3",
+        "style": "p",
+        "name_pattern": "^(?:NEW!+\\s*)?(?P<name>.+)$",
+        "match_whole_item": true
+      }
+    },
+    {
+      "key": "kiln-taproom-taps",
+      "name": "The Kiln Taproom (Yakima)",
+      "url": "https://www.thekilntaproom.com/menu",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 33049,
+        "theme_id": 127725,
+        "venue_type": "taproom"
+      }
+    },
+    {
+      "key": "moonshot-taps",
+      "name": "Moonshot Brewing (Kennewick)",
+      "url": "https://moonshotbrewing.com/on-tap/",
+      "source_type": "text-taplist",
+      "parser_config": {
+        "note": "'Name 6.9% ABV' in bold, then a paragraph saying what the beer is.",
+        "line_pattern": "^(?P<name>.{2,60}?)\\s+(?P<abv>\\d+(?:\\.\\d+)?%)(?:\\s*ABV)?\\s*$",
+        "detail_lines": 1
+      }
+    },
+    {
+      "key": "public-house-yakima-east-taps",
+      "name": "Public House of Yakima (East)",
+      "url": "https://publichouseofyakima.com/locations/east/",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "item": ".digitalpour-list .lineItem",
+        "name": ".beverageName",
+        "brewery": ".producerName",
+        "style": ".beverageStyle",
+        "abv": ".abv",
+        "venue_type": "taproom",
+        "note": "The page carries its DigitalPour list as plain HTML; each tap repeats empty hidden copies of its details, so the first of each is read."
+      }
+    },
+    {
+      "key": "public-house-yakima-west-taps",
+      "name": "Public House of Yakima (West)",
+      "url": "https://publichouseofyakima.com/locations/west/",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "item": ".digitalpour-list .lineItem",
+        "name": ".beverageName",
+        "brewery": ".producerName",
+        "style": ".beverageStyle",
+        "abv": ".abv",
+        "venue_type": "taproom",
+        "note": "The page carries its DigitalPour list as plain HTML; each tap repeats empty hidden copies of its details, so the first of each is read."
+      }
+    },
+    {
+      "key": "sage-brewing-taps",
+      "name": "Sage Brewing (Pasco)",
+      "url": "https://sagebrewing.beer/ontap/",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 28296,
+        "theme_id": 108754
+      }
+    },
+    {
+      "key": "shorthead-taps",
+      "name": "Shorthead Brewing (Tieton)",
+      "url": "https://www.shortheadbrewing.com/",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 50040,
+        "theme_id": 175774
+      }
+    },
+    {
+      "key": "single-hill-yakima-taps",
+      "name": "Single Hill Brewing (Yakima)",
+      "url": "https://singlehillbrewing.com/menu/",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "The taproom menu is a table: a row with the name and ABV, then a row describing the beer, style first in bold.",
+        "item": "table.ontap tr.beer-name",
+        "name": "td:first-child",
+        "abv": "td:nth-child(2)",
+        "detail_sibling": "tr.beer-description",
+        "style": "strong"
+      }
+    },
+    {
+      "key": "valley-brewing-taps",
+      "name": "Valley Brewing (Yakima)",
+      "url": "https://www.valleybrewingco.com/",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "The home page frames a Taplist.io menu, which is fetched directly.",
+        "source_url": "https://taplist.io/taplist-897383",
+        "item": ".list-group-item",
+        "name": "h5 .fw-bold",
+        "brewery": "h5 small",
+        "style": "#metadata-style",
+        "abv": "#metadata-abv",
+        "match_whole_item": true
+      }
+    },
+    {
+      "key": "varietal-taps",
+      "name": "Varietal Beer (Sunnyside)",
+      "url": "https://varietalbeer.com/taproom/",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 38378,
+        "theme_id": 149033
+      }
+    },
+    {
+      "key": "white-bluffs-taps",
+      "name": "White Bluffs Brewing (Richland)",
+      "url": "https://whitebluffsbrewing.com/taplist",
+      "source_type": "taphunter",
+      "parser_config": {
+        "location_id": "5025724534226944",
+        "menu_id": "6676782004174848"
+      }
+    }
+  ]
+}

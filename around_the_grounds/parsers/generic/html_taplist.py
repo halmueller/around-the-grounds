@@ -11,11 +11,19 @@ Config (``source_type: "html-taplist"``; the venue ``url`` is fetched)::
       "style_pattern": "-\\s*([^,]+),",    # optional: style from item text
       "name_pattern": "^(?P<name>.+?)\\s*\\(",  # optional: trim the name text
       "match_whole_item": false,          # also match on the item's full text
+      "detail_sibling": "tr.beer-description",  # optional: the next element
+                                          #   holds this item's description
       "name_fallback_to_style": false,    # unnamed item: use its style as name
       "exclude_sections": ["\\\\bto go\\\\b"],  # skip items under these headings
       "source_url": "https://…",          # fetch this instead of the venue url
       "json_html_key": "html"             # the response is JSON; HTML is here
     }
+
+``detail_sibling`` is for lists that put the description in the element after
+the item rather than inside it (Single Hill's Yakima menu is a table: a name
+row, then a description row). When the item's next sibling matches the
+selector, its text is matched along with the item's, and ``style`` is looked
+for there when the item has none.
 
 ``source_url`` is for menus a page loads from elsewhere (Über Tavern's table,
 Sippo embeds at ``app.sippo.io/api/embed/<menu>``, which answer with JSON
@@ -77,6 +85,16 @@ def _section_heading(item: Tag, item_ids: Set[int]) -> Optional[str]:
     return None
 
 
+def _detail_sibling(item: Tag, selector: Optional[str]) -> Optional[Tag]:
+    """The element after *item*, when it matches *selector*."""
+    if not selector:
+        return None
+    sibling = item.find_next_sibling()
+    if isinstance(sibling, Tag) and sibling.css.match(selector):
+        return sibling
+    return None
+
+
 def parse_html_taplist(html: str, config: Dict[str, Any]) -> List[TapEntry]:
     if not config.get("item") or not config.get("name"):
         raise ValueError("html-taplist needs item and name selectors")
@@ -113,6 +131,7 @@ def parse_html_taplist(html: str, config: Dict[str, Any]) -> List[TapEntry]:
             heading = _section_heading(item, item_ids) or ""
             if any(p.search(heading) for p in excludes):
                 continue
+        detail = _detail_sibling(item, config.get("detail_sibling"))
         name = _select_text(item, config["name"])
         if name and name_pattern is not None:
             # "Prime Time 45 IBU (5.4%)" → "Prime Time"; a name the pattern
@@ -121,8 +140,11 @@ def parse_html_taplist(html: str, config: Dict[str, Any]) -> List[TapEntry]:
             if trimmed and trimmed.group("name").strip():
                 name = trimmed.group("name").strip()
         style = _select_text(item, config.get("style"))
+        if style is None and detail is not None:
+            style = _select_text(detail, config.get("style"))
+        item_text = " ".join(filter(None, [_text(item), _text(detail)])) or None
         if style is None and style_pattern is not None:
-            found = style_pattern.search(_text(item) or "")
+            found = style_pattern.search(item_text or "")
             style = found.group(1).strip() if found else None
         if not name and config.get("name_fallback_to_style") and style:
             name, style = style, None
@@ -135,7 +157,11 @@ def parse_html_taplist(html: str, config: Dict[str, Any]) -> List[TapEntry]:
                 brewery=_select_text(item, config.get("brewery")),
                 style=style,
                 abv=normalize_abv(abv_text or _text(item)),
-                match_text=_text(item) if config.get("match_whole_item") else None,
+                match_text=(
+                    item_text
+                    if config.get("match_whole_item") or detail is not None
+                    else None
+                ),
             )
         )
     return entries

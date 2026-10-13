@@ -31,6 +31,8 @@ _ABV_PATTERNS = [
 
 # "Marzen" / "Maerzen" in any case; the vowel is respelled "ä".
 _MARZEN = re.compile(r"(m)(ae?)(rzen)", re.I)
+# "11. Volcano Envy", "2. 🌿Fresh Hop Cumulus": a tap number set before the name.
+_TAP_NUMBER = re.compile(r"^\d{1,3}\.\s+(?=\S)")
 
 
 @dataclass
@@ -70,6 +72,12 @@ def strip_symbols(text: str) -> str:
     while end > start and is_decoration(text[end - 1]):
         end -= 1
     return text[start:end]
+
+
+def strip_tap_number(name: str) -> str:
+    """Drop a leading tap number ("11. ") and any symbols left in front."""
+    stripped = _TAP_NUMBER.sub("", name, count=1)
+    return strip_symbols(stripped) if stripped != name else name
 
 
 def spell_marzen(name: str) -> str:
@@ -175,7 +183,7 @@ def build_listings(
     total = 0
     for entry in entries:
         total += 1
-        name = spell_marzen(entry.name)
+        name = spell_marzen(strip_tap_number(entry.name))
         style = spell_marzen(entry.style) if entry.style else entry.style
         details = [d for d in (entry.brewery, style, entry.abv) if d]
         for matcher in matchers:
