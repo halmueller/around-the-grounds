@@ -23,8 +23,8 @@ page, but some sites (Bizarre) put each beer in a heading.
 
 ``detail_lines`` is for lists that put the name on one line and say what the
 beer is on the next ("Faustian Luminary — 5.6%", then "Fresh Hopped, Hoppy
-Pilsner …"): up to that many lines after an entry, stopping at the next entry
-or section, become its description. The description is used for matching (a
+Pilsner …"): up to that many lines after an entry, stopping at the next entry,
+section, or other heading, become its description. The description is used for matching (a
 beer can be a fresh hop by its description alone) and supplies the ABV when
 the name line has none.
 """
@@ -113,6 +113,10 @@ def parse_text_taplist(html: str, config: Dict[str, Any]) -> List[TapEntry]:
             continue
         match = pattern.search(line) if tag in line_tags else None
         if not match:
+            if tag not in _DEFAULT_LINE_TAGS:
+                # A heading that is not a beer ("Cider") ends the last
+                # beer's details rather than joining them.
+                details_left = 0
             if details_left:
                 details_left -= 1
                 entry = entries[-1]

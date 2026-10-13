@@ -245,6 +245,20 @@
       }
     },
     {
+      "key": "mad-cow-taps",
+      "name": "MadCow Brewing (Gresham)",
+      "url": "https://madcowbrewing.com/the-beers",
+      "source_type": "text-taplist",
+      "parser_config": {
+        "note": "The taproom's Beer Menu: an h4 per tap ('12 - Hay Bale Pale Ale - Fresh Hop'), then a paragraph about the beer. The cider heading has no tap number.",
+        "line_tags": [
+          "h4"
+        ],
+        "line_pattern": "^\\d+\\s*-\\s*(?P<name>.+)$",
+        "detail_lines": 1
+      }
+    },
+    {
       "key": "montavilla-taps",
       "name": "Montavilla Brew Works (Montavilla)",
       "url": "https://montavillabrew.com/",
@@ -326,6 +340,19 @@
         "link_pattern": "^beer",
         "line_pattern": "^(?P<name>[A-ZÀ-Ý0-9][A-ZÀ-Ý0-9 ’'().&-]+)$",
         "detail_pattern": "^(?:\\|.*\\||[a-z&’' -]+(?: / [a-z&’' -]+)+)$"
+      }
+    },
+    {
+      "key": "stickmen-tualatin-taps",
+      "name": "Stickmen Brewing (Tualatin)",
+      "url": "https://stickmenbeer.com/beers/",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "The beers page holds every beer Stickmen has made and marks the ones on tap at each pub; this is the 'On tap Tualatin' set. There is no such mark for Happy Valley.",
+        "item": "#isotope-list .item:has(.on_tap_tualatin)",
+        "name": "h2",
+        "style": ".post_content-text > p",
+        "match_whole_item": true
       }
     },
     {

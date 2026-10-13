@@ -135,9 +135,12 @@ class TestDetailLines:
         ]
 
     def test_detail_lines_follow_heading_entries(self) -> None:
-        html = "<h3>Big Beer</h3><p>Fresh hop pale ale, 5.5%</p><h3>Other</h3>"
+        html = (
+            "<h3>Big Beer</h3><p>Fresh hop pale ale, 5.5%</p><h3>Other</h3>"
+            "<h3>not a beer</h3><p>nor about one</p>"
+        )
         config = {
-            "line_pattern": r"^(?P<name>.+)$",
+            "line_pattern": r"^(?P<name>[A-Z].+)$",
             "line_tags": ["h3"],
             "detail_lines": 1,
         }
@@ -404,4 +407,52 @@ class TestMoreTextLists:
         assert summary(events) == [
             ["Oak Union Mabon", "festbier", "6.1%"],
             ["Machine House Simcoe Bitter", "fresh-hop", "4%"],
+        ]
+
+    def test_mad_cow_numbered_taps(self) -> None:
+        html = """
+        <h1>Beer Menu brewpub brewery tap room Gresham</h1>
+        <h4>1 - Kelly Creek Pilsner</h4><p>A crisp, clean pilsner.</p>
+        <h4>2 -Huckleberry Cream Ale</h4><p>Our award-winning Huckleberry.</p>
+        <h4>12 - Hay Bale Pale Ale - Fresh Hop</h4><p>Our English Pale Ale.</p>
+        <h4>13 - Watermelon Sour</h4>
+        <h4>Cider</h4><p>Pumpkin cider from a friend.</p>
+        """
+        venue = VENUES["mad-cow-taps"]
+        entries = parse_text_taplist(html, venue.parser_config or {})
+        events = build_listings(venue, entries, "html", LOGGER)
+
+        assert [e.name for e in entries] == [
+            "Kelly Creek Pilsner",
+            "Huckleberry Cream Ale",
+            "Hay Bale Pale Ale - Fresh Hop",
+            "Watermelon Sour",
+        ]
+        # The cider heading is not a tap, so its paragraph belongs to no beer.
+        assert entries[3].description is None
+        assert summary(events) == [["Hay Bale Pale Ale - Fresh Hop", "fresh-hop", None]]
+
+    def test_stickmen_only_beers_marked_on_tap_in_tualatin(self) -> None:
+        html = """
+        <div id="isotope-list">
+          <div class="item archive"><div class="post_content">
+            <div class="post_options"></div>
+            <div class="post_content-text"><p>FRESH HOP IPA</p>
+              <a><h2>Last Year's Fresh Hop</h2></a></div></div></div>
+          <div class="item hop-forward"><div class="post_content">
+            <div class="post_options"><div class="image on_tap_tualatin"></div>
+              <div class="image on_tap_lake_oswego"></div></div>
+            <div class="post_content-text"><p>FRESH HOP JUICY PALE ALE</p>
+              <a><h2>Luminosa Livin’</h2></a></div></div></div>
+          <div class="item dark"><div class="post_content">
+            <div class="post_options"><div class="image on_tap_lake_oswego"></div></div>
+            <div class="post_content-text"><p>PUMPKIN BARLEYWINE</p>
+              <a><h2>Elsewhere Only</h2></a></div></div></div>
+        </div>
+        """
+        venue = VENUES["stickmen-tualatin-taps"]
+        entries = parse_html_taplist(html, venue.parser_config or {})
+
+        assert [(e.name, e.style) for e in entries] == [
+            ("Luminosa Livin’", "FRESH HOP JUICY PALE ALE")
         ]
