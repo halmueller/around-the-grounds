@@ -1,6 +1,6 @@
 # Plan: Freshies sites for Portland, the Yakima Valley, and Bend
 
-Status: phases 0.1 and 0.2 done (2026-10-12); the rest not started.
+Status: phases 0.1 through 0.3 done (2026-10-12); the rest not started.
 Written 2026-10-12.
 
 Goal: reuse the Seattle Freshies site (the `fresh-hop` template, the tap-list
@@ -120,7 +120,30 @@ Original notes:
   directory, copied on top of the template in `_write_site_output`, holding
   `og-image.png` for now. Favicons stay shared.
 
-### 0.3 Deploy scripts: `deploy/digitalocean/`
+### 0.3 Deploy scripts: `deploy/digitalocean/` (done 2026-10-12)
+
+Shipped:
+
+- `run.sh [site key]` (default `seattle-freshies`, so the live cron line keeps
+  working). The web root defaults to `/var/www/<host of public_url>`, read from
+  the site config, and the per-site lock to `/tmp/<site key>.lock`.
+- Sites take turns: `run.sh` holds one lock shared by every site while it
+  scrapes, waiting up to 25 minutes, so staggered cron minutes are a
+  convenience rather than the only protection for shared upstream hosts.
+- `seattlefreshies.com.conf` became `freshies-site.conf`, one virtual host
+  with `SITEDOMAIN` standing for the domain. New sites' Apache logs are named
+  `<domain>-error.log`; Seattle's live ones keep their older names.
+- `crontab.example` has a line per site (Portland's commented out, at :22) and
+  shows the per-line `HEALTHCHECK_URL=` form. `logrotate.conf` covers every
+  site's log and installs once as `/etc/logrotate.d/freshies`.
+- `README.md` there is written for any site, using `$SITE` and `$DOMAIN`.
+
+To do on the droplet after pulling (Seattle keeps running either way):
+replace `/etc/logrotate.d/seattle-freshies` with the new `freshies` file
+before a second site's log exists.
+
+Original notes:
+
 
 - `run.sh`: take `SITE_KEY` (default `seattle-freshies`, so the live cron line
   keeps working) and derive `WEB_ROOT` and `LOCK_FILE` from it.

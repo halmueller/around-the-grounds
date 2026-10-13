@@ -1,4 +1,5 @@
-// Analytics settings for seattlefreshies.com. Copy to the web root and fill in:
+// Analytics settings for one Freshies site. Copy to that site's web root and
+// fill in (each site has its own TelemetryDeck app):
 //   cp ~/around-the-grounds/deploy/digitalocean/analytics-config.example.js \
 //       /var/www/seattlefreshies.com/analytics-config.js
 // The build never writes this file, so hourly publishes leave your copy

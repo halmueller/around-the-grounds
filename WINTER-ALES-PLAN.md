@@ -206,7 +206,7 @@ Fix with built-in patterns when a term is general, and with per-venue
 1. Commit, push, and let the cron job publish the new page and tab.
 2. Later, when winter ales are the main thing pouring, follow the steps in the
    comment above `RedirectMatch` in
-   `deploy/digitalocean/seattlefreshies.com.conf`: change the page name in both
+   `deploy/digitalocean/freshies-site.conf`: change the page name in both
    live Apache files, reload, then make the same change in the repo conf and in
    `public_templates/fresh-hop/index.html` (refresh and canonical lines).
    `test_home_redirects_to_the_in_season_page` fails if the repo copies disagree.

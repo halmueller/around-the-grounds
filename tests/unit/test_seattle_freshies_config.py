@@ -206,7 +206,7 @@ def test_sitemap_lists_every_page(site: SiteConfig, rendered: Path) -> None:
 def test_home_redirects_to_the_in_season_page(site: SiteConfig, rendered: Path) -> None:
     # Apache answers / with a temporary redirect so each seasonal list keeps
     # its own URL; index.html is the same redirect for hosts without that rule.
-    conf = (DEPLOY / "seattlefreshies.com.conf").read_text()
+    conf = (DEPLOY / "freshies-site.conf").read_text()
     rule = re.search(
         r'^\s*RedirectMatch 302 "\^/\(index\\\.html\)\?\$" "/(.+)"$', conf, re.M
     )
