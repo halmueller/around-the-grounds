@@ -456,8 +456,9 @@ Seattle venues.
 
 ## Phase 2: Yakima Valley, Ellensburg, Prosser, and the Tri-Cities
 
-First pass built 2026-10-13: `config/sites/yakima-freshies.json`, 13 venues,
-77 matching beers in the first live preview, and no errors. The site is
+First pass built 2026-10-13: `config/sites/yakima-freshies.json`, 19 venues
+(13 at first; Leavenworth, Wenatchee, and 5th Line added the same day at
+Hal's request), 98 matching beers in the latest live preview, and no errors. The site is
 "Yakima Freshies" at `yakimafreshies.com` (not registered), and the pages say
 "Central Washington" where Seattle's say "Seattle"; Hal confirmed both on
 2026-10-13. No event sources, so no Events tab.
@@ -467,15 +468,19 @@ First pass built 2026-10-13: `config/sites/yakima-freshies.json`, 13 venues,
 Candidates came from Open Brewery DB for Kittitas, Yakima, Benton, and
 Franklin county towns, plus tourism-board and Washington Beer Blog lists.
 
-**Configured (13):**
+**Configured (19):**
 
-- Yakima area: Bale Breaker (Moxee; Untappd embed), The Kiln Taproom (Untappd
+- Yakima area: 5th Line (Pourwall), Bale Breaker (Moxee; Untappd embed), The Kiln Taproom (Untappd
   embed), Public House of Yakima East and West (DigitalPour list in the page),
   Shorthead (Tieton; Untappd embed), Single Hill (its own menu table), Valley
   Brewing (Taplist.io), and Varietal (Sunnyside; Untappd embed).
 - Tri-Cities: Ice Harbor Downtown Kennewick and Clover Island (their own tap
   list pages), Moonshot (Kennewick; one list for the brewery), Sage (Pasco;
   Untappd embed), and White Bluffs (Richland; TapHunter).
+- Leavenworth and Wenatchee: Bushel & Bee Taproom (one line per tap on its
+  own page), Icicle (Untappd embed), München Haus (Untappd embed), Stein
+  (Untappd embed), and Saddle Rock Pub & Brewery (Wenatchee; names only, on
+  its home page).
 
 **No list of what is pouring now:**
 
@@ -494,8 +499,25 @@ Franklin county towns, plus tourism-board and Washington Beer Blog lists.
 - Dovetail Joint (Richland), Brewminatti (Prosser), Basecamp (Roslyn), and
   Tri City Taps (Pasco; the Beer List page is empty): no beer list.
 
-**No parser yet:** 5th Line (Yakima; Pourwall), Cowiche Creek and Bron Yr Aur
-(Toast ordering pages), and Wandering Hop (script-rendered site).
+**Asked for by Hal, not possible:** Cowiche Creek and Bron Yr Aur keep their
+beer lists only in Toast ordering pages, and Toast answers every request
+(the pages and its data service) with a Cloudflare challenge; that is a
+deliberate block, so it is left alone. Cowiche Creek's own site has a
+catalogue only. Wandering Hop's site is an unfinished site-builder page
+("Add a description here") that links to Facebook and Instagram and has no
+beer list anywhere. A Toast parser would also not help Brewminatti or
+Colchuck's, for the same reason.
+
+**Leavenworth, Wenatchee, and Cashmere, not added:** Blewett (Leavenworth; no
+beer list, and no page yet for its planned Wenatchee pub), Doghaus
+(Leavenworth; no list), Wenatchee Valley Brewing (its Tap List page is
+empty), Ground Control (Wenatchee; no list), McGlinn's and Colchuck's (a
+printed-menu draft list, not what is pouring), The Taproom by Hellbent at
+Pybus Market (Hellbent's site shows only its Seattle list), and Yodelin (no
+list). No working site found for Columbia Valley Brewing, Milepost 111
+(Cashmere), Brew Haven, Burch Mountain, or Rhein Haus Leavenworth. Dog and
+Pony (Cashmere) is on Facebook only, so Cashmere has no venue. Badger
+Mountain and Triune are closed.
 
 **Blocked or unreachable:** Snipes Mountain (Sunnyside) and HopTown Pizza
 (Wapato) answer with a Cloudflare challenge. No working site found for Horse
@@ -515,6 +537,8 @@ Ellensburg, Cle Elum, and Roslyn candidate lacks a readable list.
   description in the element after it (Single Hill).
 - Listing names lose a leading tap number ("11. Volcano Envy"), for every
   site; this also fixes Uptown Beer Co. in Portland.
+- New `pourwall` parser (`parsers/generic/pourwall.py`): the embed's own
+  GraphQL request, active taps only.
 - **Venue key clash:** the registry looks up `venue.key` before `source_type`,
   and `bale-breaker` belongs to Ballard's food-truck parser. The Moxee taproom
   is `bale-breaker-yakima-taps`.
@@ -522,8 +546,7 @@ Ellensburg, Cle Elum, and Roslyn candidate lacks a readable list.
 ### 2.3 Still to do
 
 - Register `yakimafreshies.com`.
-- Look for the unreachable venues' real addresses; try the Toast and Pourwall
-  venues if parsers for them get written.
+- Look for the unreachable venues' real addresses.
 - Droplet dry run and launch, as for Portland (1.5 and 1.6).
 
 ## Phase 3: Bend and Central Oregon

@@ -166,6 +166,7 @@ class TestListingVenues:
             "firestore-taplist",
             "square-online",
             "tap-rows",
+            "pourwall",
         }
         for source_type, parser in ParserRegistry._generic.items():
             assert parser.PRODUCES_LISTINGS == (

@@ -18,6 +18,7 @@ from .generic import (
     MenuToolsParser,
     SquareOnlineParser,
     PdfTaplistParser,
+    PourwallParser,
     SheetTaplistParser,
     SquarespaceEventsParser,
     TapHunterParser,
@@ -60,6 +61,7 @@ class ParserRegistry:
         "firestore-taplist": FirestoreTaplistParser,
         "square-online": SquareOnlineParser,
         "tap-rows": TapRowsParser,
+        "pourwall": PourwallParser,
         "squarespace-events": SquarespaceEventsParser,
     }
 

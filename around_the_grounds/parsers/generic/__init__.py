@@ -13,6 +13,7 @@ from .html_taplist import (
 from .json_ld import JsonLdParser
 from .menu_tools import MenuToolsParser
 from .pdf_taplist import PdfTaplistParser
+from .pourwall import PourwallParser
 from .sheet_taplist import SheetTaplistParser
 from .square_online import SquareOnlineParser
 from .squarespace_events import SquarespaceEventsParser
@@ -44,4 +45,5 @@ __all__ = [
     "SquareOnlineParser",
     "SquarespaceEventsParser",
     "TapRowsParser",
+    "PourwallParser",
 ]

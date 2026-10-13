@@ -20,18 +20,40 @@ def test_site_basics(site: SiteConfig) -> None:
     assert site.name == "Yakima Freshies"
     assert site.public_url == "https://yakimafreshies.com"
     assert site.template == "fresh-hop"
-    # The site reaches from the Yakima Valley to the Tri-Cities, so its copy
-    # says "Central Washington". The author lives in Seattle.
+    # The site reaches from Leavenworth and Wenatchee through the Yakima
+    # Valley to the Tri-Cities, so its copy says "Central Washington" (Hal
+    # confirmed the name and wording, 2026-10-13). The author lives in Seattle.
     assert site.template_vars == {
         "place": "Central Washington",
         "author_home": "Seattle",
     }
 
 
-def test_covers_the_valley_and_the_tri_cities(site: SiteConfig) -> None:
+def test_covers_the_valley_the_tri_cities_and_wenatchee(site: SiteConfig) -> None:
     names = " ".join(v.name for v in site.venues)
-    for area in ("Yakima", "Moxee", "Sunnyside", "Kennewick", "Richland", "Pasco"):
+    for area in (
+        "Yakima",
+        "Moxee",
+        "Sunnyside",
+        "Kennewick",
+        "Richland",
+        "Pasco",
+        "Leavenworth",
+        "Wenatchee",
+    ):
         assert f"({area})" in names, area
+
+
+def test_dru_bru_is_left_out(site: SiteConfig) -> None:
+    # Hal, 2026-10-13: skip it; its site has a catalogue and no tap list.
+    assert not [v.key for v in site.venues if "dru-bru" in v.key]
+
+
+def test_hellbent_at_pybus_market_is_not_the_seattle_list(site: SiteConfig) -> None:
+    # Hellbent's site shows one tap list, for its Lake City taproom (Untappd
+    # location 126); it must not stand in for the Wenatchee taproom.
+    ids = {(v.parser_config or {}).get("location_id") for v in site.venues}
+    assert 126 not in ids
 
 
 def test_bale_breaker_is_read_as_a_tap_list(site: SiteConfig) -> None:
