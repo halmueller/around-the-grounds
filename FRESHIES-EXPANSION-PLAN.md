@@ -1,6 +1,6 @@
 # Plan: Freshies sites for Portland, the Yakima Valley, and Bend
 
-Status: phase 0.1 done (2026-10-12); the rest not started.
+Status: phases 0.1 and 0.2 done (2026-10-12); the rest not started.
 Written 2026-10-12.
 
 Goal: reuse the Seattle Freshies site (the `fresh-hop` template, the tap-list
@@ -102,7 +102,17 @@ Original notes:
 - Replace the Seattle strings in all six HTML files, `app.js`, `sitemap.xml`,
   and `robots.txt`, and add `template_vars` to `seattle-freshies.json`.
 
-### 0.2 Per-site Open Graph card
+### 0.2 Per-site Open Graph card (done 2026-10-12)
+
+Shipped: `deploy/images/og-card.html` is the one card source, and
+`render.py` writes `public_templates/_overlays/<site key>/og-image.png` for
+every site on the `fresh-hop` template (or the keys given), shrinking the name
+when it would wrap. `_write_site_output` copies a site's overlay directory over
+the template. Seattle's card moved there unchanged. A test fails for any
+`fresh-hop` site without a card.
+
+Original notes:
+
 
 - `deploy/images/render.py`: take the site name and domain as arguments and
   render one card per site from one HTML source.

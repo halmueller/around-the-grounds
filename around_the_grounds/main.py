@@ -496,6 +496,20 @@ def _render_placeholders(template_dir: Path, values: Dict[str, str]) -> Dict[Pat
     return rendered
 
 
+def _site_overlay_dir(template_dir: Path, web_data: dict) -> Optional[Path]:
+    """Directory of files that belong to one site of a shared template, if any.
+
+    ``public_templates/_overlays/<site key>/`` holds what cannot live in a
+    template several sites share (e.g. an Open Graph card with the site's
+    name on it). Keys that are not a plain slug never reach the filesystem.
+    """
+    site_key = web_data.get("site_key") or ""
+    if not re.fullmatch(r"[A-Za-z0-9_-]+", site_key):
+        return None
+    overlay = template_dir.parent / "_overlays" / site_key
+    return overlay if overlay.is_dir() else None
+
+
 def _write_site_output(target_dir: Path, template_dir: Path, web_data: dict) -> None:
     """Write a complete site (template + data.json + events.ics) into target_dir.
 
@@ -513,6 +527,9 @@ def _write_site_output(target_dir: Path, template_dir: Path, web_data: dict) -> 
     shutil.copytree(template_dir, target_dir, dirs_exist_ok=True)
     for relative, text in rendered.items():
         (target_dir / relative).write_bytes(text.encode("utf-8"))
+    overlay = _site_overlay_dir(template_dir, web_data)
+    if overlay:
+        shutil.copytree(overlay, target_dir, dirs_exist_ok=True)
 
     with open(target_dir / "data.json", "w") as f:
         json.dump(web_data, f, indent=2)

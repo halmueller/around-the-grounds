@@ -74,6 +74,8 @@ def test_publishes_site_files(web_root: Path) -> None:
     assert "<title>Fresh hops · Seattle Freshies</title>" in page
     assert "{{" not in page
     assert (web_root / "favicon.ico").exists()
+    # From the site's overlay directory, not the shared template.
+    assert (web_root / "og-image.png").read_bytes()[:8] == b"\x89PNG\r\n\x1a\n"
 
 
 def test_leaves_unrelated_files_and_no_staging(web_root: Path) -> None:

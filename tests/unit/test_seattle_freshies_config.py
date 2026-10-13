@@ -30,6 +30,7 @@ def rendered(site: SiteConfig, tmp_path_factory: pytest.TempPathFactory) -> Path
     out = tmp_path_factory.mktemp("rendered")
     web_data = {
         "events": [],
+        "site_key": site.key,
         "site_name": site.name,
         "public_url": site.public_url,
         "template_vars": site.template_vars,
@@ -251,8 +252,11 @@ def test_open_graph_tags(
     assert '<meta name="twitter:card" content="summary_large_image">' in head
 
 
-def test_open_graph_image_is_1200_by_630_png() -> None:
-    data = (TEMPLATES / "fresh-hop" / "og-image.png").read_bytes()
+def test_open_graph_image_is_1200_by_630_png(rendered: Path) -> None:
+    # The card names the site, so it comes from the site's overlay directory
+    # (public_templates/_overlays/<site key>/), not the shared template.
+    assert not (TEMPLATES / "fresh-hop" / "og-image.png").exists()
+    data = (rendered / "og-image.png").read_bytes()
     assert data[:8] == b"\x89PNG\r\n\x1a\n"
     width, height = struct.unpack(">II", data[16:24])
     assert (width, height) == (1200, 630)
