@@ -1,6 +1,6 @@
 # Plan: Freshies sites for Portland, the Yakima Valley, and Bend
 
-Status: phases 0.1 through 0.3 done (2026-10-12); the rest not started.
+Status: phase 0 done (2026-10-12); phase 1 (Portland) not started.
 Written 2026-10-12.
 
 Goal: reuse the Seattle Freshies site (the `fresh-hop` template, the tap-list
@@ -158,7 +158,19 @@ Original notes:
   own TelemetryDeck app ID, log file, and healthchecks.io check.
 - Update `deploy/digitalocean/README.md` (21 Seattle references).
 
-### 0.4 Tests
+### 0.4 Tests (done 2026-10-12)
+
+Shipped: `tests/unit/test_freshies_sites.py` runs once per site on the
+`fresh-hop` template and reads the site as published (placeholders filled,
+overlay copied). A new site is covered as soon as its config file exists, and
+fails until it has `template_vars`, a card, alphabetical venues, and so on.
+`test_seattle_freshies_config.py` keeps only what is true of Seattle (its
+name and URL, the Bale Breaker location, and its event-source and taproom
+keys); give each new site a file like it. Placeholder, overlay, and `run.sh`
+tests came with 0.1 through 0.3.
+
+Original notes:
+
 
 - Turn `test_seattle_freshies_config.py` into a test parametrized over every
   site whose template is `fresh-hop`: basics, unique keys, alphabetical order

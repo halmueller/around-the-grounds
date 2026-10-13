@@ -175,10 +175,9 @@ Left for the winter work:
   barleywine spellings; barrel-aged and spiced stouts with the two words in
   one field and split across name and style; and plain, imperial, and coffee
   stouts staying off.
-- `tests/unit/test_seattle_freshies_config.py`: add the page to
-  `test_template_has_every_page` (file list, `data-page` pairs, and the
-  expected tab `href` list), `test_open_graph_tags`, and
-  `test_pages_link_the_favicon_files`. The sitemap test picks it up by itself.
+- `tests/unit/test_freshies_sites.py` (runs for every Freshies site): add the
+  page to `PAGES`, which feeds the layout, tab order, Open Graph, and favicon
+  tests. The sitemap test picks it up by itself.
 - `tests/parsers/test_taplist_parsers.py` and `test_pdf_taplist.py`: check for
   assertions that count categories or matched entries per fixture.
 
