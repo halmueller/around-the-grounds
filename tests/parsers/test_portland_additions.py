@@ -381,3 +381,27 @@ class TestMoreTextLists:
             ("FRESH HOP Dozynki White Ale", "5.5%"),
             ("Piwo Polish Pilsner", "5.4%"),
         ]
+
+    def test_upright_beer_station_heading_per_beer(self) -> None:
+        html = """
+        <h4>Location</h4><p>7151 NE Prescott, Portland OR 97218</p>
+        <h3>Draft List</h3>
+        <h4>Oak Union Mabon</h4><p>Märzen lager.</p><p>6.1%</p>
+        <h4>Ghost Town Dank Dive</h4><p>WC IPA.</p><p>7%</p>
+        <h4>Machine House Simcoe Bitter</h4><p>Fresh hop bitter on cask.</p><p>4%</p>
+        <h3>Bottles</h3>
+        <h4>Some Fresh Hop Bottle</h4><p>To go.</p>
+        """
+        venue = VENUES["upright-beer-station-taps"]
+        entries = parse_text_taplist(html, venue.parser_config or {})
+        events = build_listings(venue, entries, "html", LOGGER)
+
+        assert [(e.name, e.abv) for e in entries] == [
+            ("Oak Union Mabon", "6.1%"),
+            ("Ghost Town Dank Dive", "7%"),
+            ("Machine House Simcoe Bitter", "4%"),
+        ]
+        assert summary(events) == [
+            ["Oak Union Mabon", "festbier", "6.1%"],
+            ["Machine House Simcoe Bitter", "fresh-hop", "4%"],
+        ]

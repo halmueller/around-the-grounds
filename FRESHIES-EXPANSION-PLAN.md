@@ -1,7 +1,7 @@
 # Plan: Freshies sites for Portland, the Yakima Valley, and Bend
 
 Status: phase 0 done (2026-10-12). Phase 1 (Portland) started: first survey
-pass done and 34 venues configured (2026-10-13); not live.
+pass done and 37 venues configured (2026-10-13); not live.
 Written 2026-10-12.
 
 Goal: reuse the Seattle Freshies site (the `fresh-hop` template, the tap-list
@@ -258,6 +258,38 @@ Häus and Threshold are text on the page. With all three batches a live run
 finds 222 matching beers at 34 venues (175 fresh hop, 34 festbier, and 13
 pumpkin), with no errors.
 
+**Fourth batch, configured 2026-10-13 (3):** Von Ebert (Glendoveer and
+Mississippi; Untappd embeds) and Upright Beer Station (the bottle shop and
+taproom at the old brewery's name; a draft list in text). 37 venues in all.
+
+**Settled by Hal, 2026-10-13:**
+
+- Migration may use the `canva` parser. It turned out not to matter: the
+  Canva designs on its pub pages are food and catering menus with no beer
+  list (the Williams one is an image), so Migration is not added.
+- McMenamins only if its beers can be broken out by pub. Its "On Tap" page is
+  one company-wide list, so it is skipped.
+
+**Found on the second pass at addresses (2026-10-13):**
+
+- Closed: Apex (its site says permanently closed).
+- Domain parked or expired, so likely closed: Hammer & Stitch, Two Kilts
+  (Sherwood), Base Camp, Culmination, Moonshrimp, and Back Pedal.
+- Dead Untappd embed (404), as with Civic and Raindrop: Von Ebert (Beaverton).
+- Great Notion (greatnotion.com): its tap list pages arrive without the list,
+  and the only other source is untappd.com venue pages, which the droplet
+  cannot reach. Skipped, as in Seattle.
+- Occidental (occidentalbeers.com) and Gigantic: no tap list in text.
+- Hopworks: reachable only some of the time (Cloudflare), and its menu is a
+  Canva design. Needs Hal's approval for the browser User-Agent, as Migration
+  did, and may still be blocked from the droplet.
+- The Thirsty Sasquatch (Vancouver) is now on hungrysasquatchpizza.com, with
+  its beers in a Toast ordering menu. No parser for that yet.
+- Still not reached at any address tried: Brewery 26, Dirty Pretty, Drinking
+  Horse, Feckin, Hetty Alice, Labrewatory, Shattered Oak, Smockville, Orenco
+  Taphouse, Growlers Hawthorne, Bridgetown Beerhouse (Facebook only), and
+  Brewed (Vancouver).
+
 **Still to check: is the page a current draft list or a catalogue?** Barrel
 Mountain (Battle Ground), Breakside (per-location pages), Chuckanut P-Nut
 Beer Hall, Coin Toss (Oregon City), Living Häus, Mad Cow, Rosenstadt, and
@@ -289,9 +321,7 @@ treat it as Elliott Bay was in Seattle.
 
 **Would need a new parser or a decision:**
 
-- Canva draft lists: Migration (Glisan, Williams, and Gresham). The `canva`
-  parser sends a browser User-Agent, approved so far only for Old Stove and
-  Ship Canal; ask before using it here.
+- Canva: see Migration and Hopworks under the 2026-10-13 notes below.
 - Pourwall embeds: Three Mugs pub and Vertigo (both Hillsboro). No parser yet.
 - Arryved online ordering: Wayfinder and Little Beast. No parser yet;
   Wayfinder's menu page may do without one.
@@ -392,6 +422,9 @@ Same steps as Portland with a smaller survey, roughly 25 to 35 venues.
     Hop, Valley Brewing, Hop Capital, Bron Yr Aur (Naches), and Varietal
     (Sunnyside).
   - Ellensburg: Iron Horse and Whipsaw.
+  - Upper Kittitas County (asked for by Hal, 2026-10-13): Dru Bru in Cle
+    Elum for certain, plus any other suitable breweries and taprooms in
+    Ellensburg, Roslyn, and Cle Elum (Roslyn Brewing is one to check).
   - Prosser: Horse Heaven Hills.
   - Tri-Cities: Ice Harbor, White Bluffs, Bombing Range, Moonshot, Atomic Ale,
     and Paper Street, plus taprooms such as Dovetail Joint.

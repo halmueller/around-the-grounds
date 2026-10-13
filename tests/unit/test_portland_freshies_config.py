@@ -35,7 +35,15 @@ def test_deschutes_is_the_portland_pub_not_bend(site: SiteConfig) -> None:
 
 
 def test_dead_untappd_embeds_stay_out(site: SiteConfig) -> None:
-    # The Civic Taproom's and Raindrop Taphouse's pages still carry an Untappd
-    # embed, but Untappd answers 404 for both (checked 2026-10-12).
+    # The Civic Taproom's, Raindrop Taphouse's, and Von Ebert Beaverton's
+    # pages still carry an Untappd embed, but Untappd answers 404 for all
+    # three (checked 2026-10-12 and 2026-10-13).
     ids = {(v.parser_config or {}).get("location_id") for v in site.venues}
-    assert not ids & {33211, 28431}
+    assert not ids & {33211, 28431, 34690}
+
+
+def test_no_venue_uses_the_canva_parser(site: SiteConfig) -> None:
+    # The canva parser sends a browser User-Agent, which Hal approves venue by
+    # venue. Migration was approved, but its Canva designs are food and
+    # catering menus with no beer list, so it is not here.
+    assert [v.key for v in site.venues if v.source_type == "canva"] == []

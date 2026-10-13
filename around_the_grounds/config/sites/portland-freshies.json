@@ -390,6 +390,25 @@
       }
     },
     {
+      "key": "upright-beer-station-taps",
+      "name": "Upright Beer Station (Cully)",
+      "url": "https://www.uprightbeerstation.com/",
+      "source_type": "text-taplist",
+      "parser_config": {
+        "note": "The home page's Draft List: an h4 per beer ('Brewery Beer'), then a line saying what it is and a line with the ABV.",
+        "section_tag": "h3",
+        "include_sections": [
+          "^Draft List"
+        ],
+        "line_tags": [
+          "h4"
+        ],
+        "line_pattern": "^(?P<name>.+)$",
+        "detail_lines": 2,
+        "venue_type": "taproom"
+      }
+    },
+    {
       "key": "uptown-beer-taps",
       "name": "Uptown Beer Co. (Raleigh Hills)",
       "url": "https://www.uptownbeer.co/taplist",
@@ -408,6 +427,27 @@
       "parser_config": {
         "location_id": 3044,
         "theme_id": 8652
+      }
+    },
+    {
+      "key": "von-ebert-glendoveer-taps",
+      "name": "Von Ebert Brewing (Glendoveer)",
+      "url": "https://www.vonebertbrewing.com/glendoveer-menu",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 28358,
+        "theme_id": 108998
+      }
+    },
+    {
+      "key": "von-ebert-mississippi-taps",
+      "name": "Von Ebert Brewing (Mississippi)",
+      "url": "https://www.vonebertbrewing.com/mississippi-menu",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "note": "This page embeds the menu as an iframe (untappd.com/embeds/iframes/<location>/<theme>) rather than the usual script; the IDs are the same kind.",
+        "location_id": 52389,
+        "theme_id": 178159
       }
     },
     {
