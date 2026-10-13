@@ -23,6 +23,8 @@ def _site() -> SiteConfig:
         template="fresh-hop",
         timezone="America/Los_Angeles",
         venues=VENUES,
+        public_url="https://seattlefreshies.com",
+        template_vars={"place": "Seattle", "author_home": "Ballard"},
     )
 
 
@@ -66,7 +68,11 @@ def test_publishes_site_files(web_root: Path) -> None:
     assert (web_root / "index.html").read_text().startswith("<!DOCTYPE html>")
     assert (web_root / "events.ics").exists()
     assert (web_root / "sitemap.xml").exists()
-    assert "Sitemap:" in (web_root / "robots.txt").read_text()
+    robots = (web_root / "robots.txt").read_text()
+    assert "Sitemap: https://seattlefreshies.com/sitemap.xml" in robots
+    page = (web_root / "fresh-hops.html").read_text()
+    assert "<title>Fresh hops · Seattle Freshies</title>" in page
+    assert "{{" not in page
     assert (web_root / "favicon.ico").exists()
 
 

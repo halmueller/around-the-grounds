@@ -40,6 +40,7 @@ def site_from_dict(data: Dict[str, Any]) -> SiteConfig:
         deploy_subdir=data.get("deploy_subdir", ""),
         public_url=data.get("public_url", ""),
         calendar_max_timed_hours=data.get("calendar_max_timed_hours"),
+        template_vars=dict(data.get("template_vars") or {}),
     )
 
 

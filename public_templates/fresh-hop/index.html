@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seattle Freshies</title>
+    <title>{{site_name}}</title>
     <!-- The home page is whichever seasonal list is in season. In production
-         Apache answers / with a 302 to it (deploy/digitalocean/seattlefreshies.com.conf),
+         Apache answers / with a 302 to it (deploy/digitalocean/*.conf),
          so this file is only seen in local previews and on hosts without that
          rule. When the season changes, change the page name here and there. -->
     <meta http-equiv="refresh" content="0; url=fresh-hops.html">
-    <link rel="canonical" href="https://seattlefreshies.com/fresh-hops.html">
+    <link rel="canonical" href="{{public_url}}/fresh-hops.html">
     <meta name="color-scheme" content="light dark">
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
 </head>
 <body>
-<p><a href="fresh-hops.html">Seattle Freshies: what's on tap right now</a></p>
+<p><a href="fresh-hops.html">{{site_name}}: what's on tap right now</a></p>
 </body>
 </html>

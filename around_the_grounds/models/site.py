@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from .brewery import Venue
 
@@ -24,3 +24,7 @@ class SiteConfig:
     public_url: str = ""
     # Longer calendar entries become all-day with uncertain hours, never truncated.
     calendar_max_timed_hours: Optional[float] = None
+    # Values for {{name}} placeholders in a template shared between sites
+    # (e.g. {"place": "Seattle"}). Setting it turns substitution on for the
+    # site; {{site_name}} and {{public_url}} are filled from the fields above.
+    template_vars: Dict[str, str] = field(default_factory=dict)

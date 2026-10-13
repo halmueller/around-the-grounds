@@ -21,7 +21,7 @@ Key features:
 - **Self-hosted Temporal worker** alternative scheduling path (Ballard production setup)
 - **Comprehensive error handling** with retry logic, isolation, and graceful degradation
 - **Temporal workflow integration** with cloud deployment support (local, Temporal Cloud, custom servers)
-- **Extensive test suite** with 1075 tests covering unit, integration, vision analysis, haiku generation, weather, and error scenarios
+- **Extensive test suite** with 1099 tests covering unit, integration, vision analysis, haiku generation, weather, and error scenarios
 - **Modern Python tooling** with uv for dependency management and packaging
 
 ## Development Commands
@@ -141,7 +141,7 @@ See [SCHEDULES.md](./SCHEDULES.md)
 
 ### Testing
 ```bash
-# Full test suite (1075 tests)
+# Full test suite (1099 tests)
 uv run python -m pytest                    # Run all tests
 uv run python -m pytest tests/unit/        # Unit tests only
 uv run python -m pytest tests/parsers/     # Parser-specific tests
@@ -256,6 +256,9 @@ public_templates/                  # Per-site web interface templates
 ├── kids/                          # Brooklyn children's events template
 │   └── index.html
 └── fresh-hop/                     # Seattle Freshies: 5 pages sharing app.js + styles.css
+    │                              #   ({{site_name}}, {{public_url}}, {{place}}, and
+    │                              #   {{author_home}} are filled per site at write time, and
+    │                              #   {{#name}}…{{/name}} blocks are per-site; see template_vars)
     ├── index.html                 #   fallback redirect to the in-season list (Apache
     │                              #   302s / there; see deploy/digitalocean/*.conf)
     ├── fresh-hops.html            #   fresh hops at breweries
@@ -280,7 +283,7 @@ public/                            # Generated files (git-ignored)
 ├── events.ics                     # Subscribable calendar feed (all sites)
 └── index.html                     # Copied from the active template
 
-tests/                             # Comprehensive test suite (1075 tests)
+tests/                             # Comprehensive test suite (1099 tests)
 ├── conftest.py                    # Shared test fixtures
 ├── fixtures/
 │   ├── csv/                       # CSV samples (channel_marker)
@@ -299,7 +302,7 @@ tests/                             # Comprehensive test suite (1075 tests)
 - **Models**: Data classes for venues and events with validation
   - `Venue`: Represents a data source (renamed from `Brewery`), includes `source_type` for parser selection
   - `Event`: Represents a single event (renamed from `FoodTruckEvent`), includes `extraction_method`
-  - `SiteConfig`: Represents a deployable site with venues, template, timezone, target repo, and `deploy_subdir` (see Deployment Strategies below)
+  - `SiteConfig`: Represents a deployable site with venues, template, timezone, target repo, and `deploy_subdir` (see Deployment Strategies below). Optional `template_vars` turns on `{{name}}` placeholder substitution in the site's template (`main.py:_write_site_output`), so one template can serve several sites; sites without it are copied byte for byte
 - **Parsers**: Two-tier parser system — venue-specific parsers take precedence, then generic platform parsers
   - `BaseParser`: Abstract base with HTTP error handling, validation, and logging
   - **Generic parsers** (config-driven, no code needed for new sites):
@@ -318,7 +321,7 @@ tests/                             # Comprehensive test suite (1075 tests)
 - **Web Interface**: Per-site templates in `public_templates/<template>/` deployed to the site's configured host (GitHub Pages or Vercel-via-GitHub)
 - **Web Deployment**: Two git strategies selected by `SiteConfig.deploy_subdir` — see Deployment Strategies below. `deploy_subdir` is validated before authentication (relative, no parent traversal, never `.git`), re-checked against the resolved clone path so a committed symlink cannot redirect writes, and staged with a literal pathspec. Preview and deploy share `_write_site_output` so both emit identical files
 - **Scheduling**: Google Cloud Run Jobs with Cloud Scheduler (jredding's sites) OR a self-hosted Temporal worker (Ballard site) OR cron + `--output-dir` on a web host (Seattle Freshies; see `deploy/digitalocean/`). Both paths read the same `SiteConfig` and call the same `main.py:_deploy_with_github_auth` for git operations
-- **Tests**: 1075 tests covering all scenarios including generic parsers, error handling, vision analysis, haiku generation, weather fetching, multi-site deploy configuration, the Temporal `load_site` / `generate_web_data` / `deploy_to_git` activity contracts, end-to-end `FoodTruckWorkflow` runs against a real local Temporal server (venue isolation, cancellation, replay of recorded histories in `tests/fixtures/temporal/`), real-Git deployment into temporary bare repositories, and a Playwright browser check of all three templates (`tests/browser/check_templates.mjs`, skipped when Node + Playwright are unavailable)
+- **Tests**: 1099 tests covering all scenarios including generic parsers, error handling, vision analysis, haiku generation, weather fetching, multi-site deploy configuration, the Temporal `load_site` / `generate_web_data` / `deploy_to_git` activity contracts, end-to-end `FoodTruckWorkflow` runs against a real local Temporal server (venue isolation, cancellation, replay of recorded histories in `tests/fixtures/temporal/`), real-Git deployment into temporary bare repositories, and a Playwright browser check of all three templates (`tests/browser/check_templates.mjs`, skipped when Node + Playwright are unavailable)
 
 ## Deployment Strategies
 
@@ -393,7 +396,7 @@ See [ERROR-HANDLING.md](./ERROR-HANDLING.md) for the complete error handling str
 
 ## Testing Strategy
 
-The project includes a comprehensive test suite with 1075 tests covering unit, integration, generic parsers, vision analysis, haiku generation, weather fetching, and error scenarios.
+The project includes a comprehensive test suite with 1099 tests covering unit, integration, generic parsers, vision analysis, haiku generation, weather fetching, and error scenarios.
 
 See [TESTING.md](./TESTING.md) for the complete testing strategy and guide.
 

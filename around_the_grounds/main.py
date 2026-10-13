@@ -10,7 +10,7 @@ import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path, PureWindowsPath
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 # Load environment variables from .env file
 try:
@@ -288,6 +288,11 @@ async def generate_web_data(
             for venue in site.venues
             if venue.key in failed
         ]
+    # Placeholder values for a template shared between sites. Omitted when the
+    # site sets none, so other sites' data.json is unchanged; carried here
+    # because the Temporal deploy activity only ever sees this dict.
+    if site and site.template_vars:
+        web_data["template_vars"] = dict(site.template_vars)
     return web_data
 
 
@@ -407,6 +412,90 @@ def _resolve_template_dir(template_dir_name: str) -> Path:
     return multi if multi.exists() else cwd / "public_template"
 
 
+# Template files that may carry {{name}} placeholders.
+_PLACEHOLDER_SUFFIXES = {".html", ".js", ".xml", ".txt"}
+_PLACEHOLDER = re.compile(r"\{\{(\w+)\}\}")
+# A block kept only for sites that set the named value: a {{#name}} line, the
+# block, and a {{/name}} line. The marker lines themselves never reach output.
+_SECTION = re.compile(
+    r"^[ \t]*\{\{#(\w+)\}\}[ \t]*\n(.*?)^[ \t]*\{\{/\1\}\}[ \t]*\n",
+    re.M | re.S,
+)
+_SECTION_MARKER = re.compile(r"\{\{[#/]\w*\}\}")
+# Values land in HTML text and attributes, XML, JSON, and JavaScript strings
+# without escaping, so anything that is markup or a delimiter in one of those
+# is refused rather than escaped four different ways.
+_PLACEHOLDER_UNSAFE = re.compile(r"[<>&\"'`\\{}\r\n]")
+
+
+def _placeholder_values(web_data: dict) -> Dict[str, str]:
+    """Values for a template's {{name}} placeholders, or {} when the site has none.
+
+    Only a site that sets ``template_vars`` gets substitution, so templates of
+    other sites are copied byte for byte. ``site_name`` and ``public_url`` come
+    from the site itself and cannot be overridden.
+    """
+    custom = web_data.get("template_vars") or {}
+    if not custom:
+        return {}
+    values = {
+        "site_name": web_data.get("site_name") or "",
+        "public_url": (web_data.get("public_url") or "").rstrip("/"),
+    }
+    for name, value in custom.items():
+        if name in values:
+            raise ValueError(f"template_vars cannot override {name!r}")
+        if not isinstance(value, str):
+            raise ValueError(f"template_vars[{name!r}] must be a string")
+        values[name] = value
+    for name, value in values.items():
+        if _PLACEHOLDER_UNSAFE.search(value):
+            raise ValueError(
+                f"Template value {name!r} has a character that is not plain "
+                f"text: {value!r}"
+            )
+    return values
+
+
+def _render_placeholders(template_dir: Path, values: Dict[str, str]) -> Dict[Path, str]:
+    """Fill {{name}} placeholders in *template_dir*'s text files.
+
+    Returns the filled text by path relative to the template, for the files
+    that have placeholders. Raises ValueError for a placeholder with no value,
+    so a site is never published with a raw ``{{name}}`` showing. A block
+    between ``{{#name}}`` and ``{{/name}}`` lines is kept when the site sets
+    that value and dropped when it does not.
+    """
+    rendered: Dict[Path, str] = {}
+    for path in sorted(template_dir.rglob("*")):
+        if not path.is_file() or path.suffix not in _PLACEHOLDER_SUFFIXES:
+            continue
+        text = path.read_bytes().decode("utf-8")
+        relative = path.relative_to(template_dir)
+
+        def fill(match: "re.Match[str]") -> str:
+            value = values.get(match.group(1))
+            if not value:
+                raise ValueError(
+                    f"No value for {match.group(0)} in template file {relative}"
+                )
+            return value
+
+        filled = _SECTION.sub(
+            lambda m: m.group(2) if values.get(m.group(1)) else "", text
+        )
+        stray = _SECTION_MARKER.search(filled)
+        if stray:
+            raise ValueError(
+                f"Unmatched {stray.group(0)} in template file {relative}; section "
+                "markers go on their own lines, in pairs"
+            )
+        filled = _PLACEHOLDER.sub(fill, filled)
+        if filled != text:
+            rendered[relative] = filled
+    return rendered
+
+
 def _write_site_output(target_dir: Path, template_dir: Path, web_data: dict) -> None:
     """Write a complete site (template + data.json + events.ics) into target_dir.
 
@@ -416,8 +505,14 @@ def _write_site_output(target_dir: Path, template_dir: Path, web_data: dict) -> 
     """
     import shutil
 
+    # Before anything is written, so a bad placeholder leaves target_dir alone.
+    values = _placeholder_values(web_data)
+    rendered = _render_placeholders(template_dir, values) if values else {}
+
     print(f"📋 Copying template files from {template_dir}...")
     shutil.copytree(template_dir, target_dir, dirs_exist_ok=True)
+    for relative, text in rendered.items():
+        (target_dir / relative).write_bytes(text.encode("utf-8"))
 
     with open(target_dir / "data.json", "w") as f:
         json.dump(web_data, f, indent=2)

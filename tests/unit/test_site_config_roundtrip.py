@@ -54,6 +54,7 @@ def test_site_to_dict_contains_every_field() -> None:
         deploy_subdir="public",
         public_url="https://example.com",
         calendar_max_timed_hours=6.5,
+        template_vars={"place": "Somewhere"},
     )
     assert site_to_dict(site) == {
         "key": "k",
@@ -74,6 +75,7 @@ def test_site_to_dict_contains_every_field() -> None:
         "deploy_subdir": "public",
         "public_url": "https://example.com",
         "calendar_max_timed_hours": 6.5,
+        "template_vars": {"place": "Somewhere"},
     }
 
 

@@ -10,6 +10,7 @@ from xml.etree import ElementTree
 import pytest
 
 from around_the_grounds.config.loader import load_site_config
+from around_the_grounds.main import _write_site_output
 from around_the_grounds.models import SiteConfig
 from around_the_grounds.parsers.registry import ParserRegistry
 
@@ -21,6 +22,20 @@ HOME = "index.html"
 @pytest.fixture(scope="module")
 def site() -> SiteConfig:
     return load_site_config("seattle-freshies")
+
+
+@pytest.fixture(scope="module")
+def rendered(site: SiteConfig, tmp_path_factory: pytest.TempPathFactory) -> Path:
+    """The template as published for this site, placeholders filled."""
+    out = tmp_path_factory.mktemp("rendered")
+    web_data = {
+        "events": [],
+        "site_name": site.name,
+        "public_url": site.public_url,
+        "template_vars": site.template_vars,
+    }
+    _write_site_output(out, TEMPLATES / site.template, web_data)
+    return out
 
 
 def test_site_basics(site: SiteConfig) -> None:
@@ -118,7 +133,7 @@ def test_bottle_shops_and_taprooms_are_typed(site: SiteConfig) -> None:
     }
 
 
-def test_template_has_every_page() -> None:
+def test_template_has_every_page(site: SiteConfig, rendered: Path) -> None:
     for page in (
         "index.html",
         "fresh-hops.html",
@@ -129,7 +144,7 @@ def test_template_has_every_page() -> None:
         "app.js",
         "styles.css",
     ):
-        assert (TEMPLATES / "fresh-hop" / page).is_file(), page
+        assert (rendered / page).is_file(), page
     for page, data_page in (
         ("fresh-hops.html", "freshhop"),
         ("festbier.html", "festbier"),
@@ -137,7 +152,8 @@ def test_template_has_every_page() -> None:
         ("taprooms.html", "taprooms"),
         ("events.html", "events"),
     ):
-        html = (TEMPLATES / "fresh-hop" / page).read_text()
+        html = (rendered / page).read_text()
+        assert "{{" not in html
         assert f'data-page="{data_page}"' in html
         # Source link goes to Hal's fork; the original project is credited by name.
         assert '<a href="https://github.com/halmueller/around-the-grounds">' in html
@@ -164,7 +180,7 @@ def test_template_has_every_page() -> None:
             r'</p>\s*<nav class="tabs"',
             html,
         ), page
-        assert "Seattle Freshies" in html
+        assert f"</span> {site.name}</h1>" in html
         hrefs = re.findall(r'<nav class="tabs".*?</nav>', html, re.S)[0]
         assert re.findall(r'href="([^"]+)"', hrefs) == [
             "fresh-hops.html",
@@ -175,8 +191,8 @@ def test_template_has_every_page() -> None:
         ], page
 
 
-def test_sitemap_lists_every_page(site: SiteConfig) -> None:
-    root = ElementTree.parse(TEMPLATES / "fresh-hop" / "sitemap.xml").getroot()
+def test_sitemap_lists_every_page(site: SiteConfig, rendered: Path) -> None:
+    root = ElementTree.parse(rendered / "sitemap.xml").getroot()
     ns = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
     locs = [el.text or "" for el in root.findall("sm:url/sm:loc", ns)]
     # index.html is not a page of its own: / redirects to the in-season list.
@@ -186,7 +202,7 @@ def test_sitemap_lists_every_page(site: SiteConfig) -> None:
     assert sorted(locs) == [f"{site.public_url}/{page}" for page in pages]
 
 
-def test_home_redirects_to_the_in_season_page(site: SiteConfig) -> None:
+def test_home_redirects_to_the_in_season_page(site: SiteConfig, rendered: Path) -> None:
     # Apache answers / with a temporary redirect so each seasonal list keeps
     # its own URL; index.html is the same redirect for hosts without that rule.
     conf = (DEPLOY / "seattlefreshies.com.conf").read_text()
@@ -196,13 +212,13 @@ def test_home_redirects_to_the_in_season_page(site: SiteConfig) -> None:
     assert rule, "home page redirect missing or not a 302"
     target = rule.group(1)
     assert target != HOME and (TEMPLATES / "fresh-hop" / target).is_file()
-    head = (TEMPLATES / "fresh-hop" / HOME).read_text().split("</head>")[0]
+    head = (rendered / HOME).read_text().split("</head>")[0]
     assert f'<meta http-equiv="refresh" content="0; url={target}">' in head
     assert f'<link rel="canonical" href="{site.public_url}/{target}">' in head
 
 
-def test_robots_points_at_sitemap(site: SiteConfig) -> None:
-    robots = (TEMPLATES / "fresh-hop" / "robots.txt").read_text()
+def test_robots_points_at_sitemap(site: SiteConfig, rendered: Path) -> None:
+    robots = (rendered / "robots.txt").read_text()
     assert f"Sitemap: {site.public_url}/sitemap.xml" in robots.splitlines()
     assert "Disallow: /" not in robots.splitlines()
 
@@ -217,8 +233,10 @@ def test_robots_points_at_sitemap(site: SiteConfig) -> None:
         ("events.html", "events.html"),
     ],
 )
-def test_open_graph_tags(site: SiteConfig, page: str, path: str) -> None:
-    head = (TEMPLATES / "fresh-hop" / page).read_text().split("</head>")[0]
+def test_open_graph_tags(
+    site: SiteConfig, rendered: Path, page: str, path: str
+) -> None:
+    head = (rendered / page).read_text().split("</head>")[0]
     meta = dict(re.findall(r'<meta property="(og:[\w:]+)" content="([^"]*)">', head))
     url = f"{site.public_url}/{path}"
     assert meta["og:url"] == url

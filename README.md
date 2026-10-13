@@ -234,6 +234,7 @@ uv run around-the-grounds --site seattle-freshies --output-dir /var/www/seattlef
 | `target_repo` | recommended | `""` | HTTPS URL of the target GitHub repo. A site without one is preview-only: `--deploy` skips it |
 | `deploy_subdir` | optional | `""` | Empty → root mode (force-push). Non-empty → subdir mode (clone + scoped add) |
 | `generate_description` | optional | `true` | Set to `false` to opt out of AI haiku generation |
+| `template_vars` | optional | `{}` | Plain-text values for `{{name}}` placeholders in a template shared between sites, e.g. `{"place": "Seattle"}`. Setting it turns substitution on; `{{site_name}}` and `{{public_url}}` are filled from `name` and `public_url`. A placeholder with no value fails the build. A block between `{{#name}}` and `{{/name}}` lines is kept only for sites that set `name` |
 | `venues` | ✓ | — | List of venue objects (see below) |
 
 ### Venue config fields
@@ -282,7 +283,7 @@ GIT_REPOSITORY_URL=https://github.com/username/target-repo.git
 - **Web data + deploy**: `main.py:generate_web_data` and `main.py:_deploy_with_github_auth` — the single source of truth for both CLI and Temporal paths
 - **Temporal**: `temporal/workflows.py` (workflow), `temporal/activities.py` (activities), `temporal/worker.py` (worker process). The workflow resolves a `site_key`, calls a `load_site` activity to fetch `SiteConfig`, scrapes per-venue in parallel batches, and delegates `generate_web_data` and `deploy_to_git` to the same `main.py` functions the CLI uses
 - **Templates**: `public_templates/<template>/` — one directory per template, copied verbatim into the target repo at deploy time
-- **Tests**: 1075 tests (`uv run python -m pytest`) covering parsers, generic platforms, tap-list matching, scraper coordinator, AI utilities, weather, multi-site deploy strategies, and Temporal activity contracts
+- **Tests**: 1099 tests (`uv run python -m pytest`) covering parsers, generic platforms, tap-list matching, scraper coordinator, AI utilities, weather, multi-site deploy strategies, and Temporal activity contracts
 
 For the full architecture rundown including the deploy strategy decision tree, the AI subsystems, and the testing strategy, see [CLAUDE.md](./CLAUDE.md).
 
@@ -306,7 +307,7 @@ For the full architecture rundown including the deploy strategy decision tree, t
 
 ```bash
 uv sync --dev                          # Install dev dependencies
-uv run python -m pytest                # Full test suite (1075 tests)
+uv run python -m pytest                # Full test suite (1099 tests)
 uv run black .                         # Format
 uv run flake8                          # Lint
 uv run mypy around_the_grounds/        # Type check

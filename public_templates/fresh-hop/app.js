@@ -1,4 +1,4 @@
-// Seattle Freshies: renders one page, chosen by <body data-page>, from the
+// Freshies sites: renders one page, chosen by <body data-page>, from the
 // shared data.json:
 //   freshhop  fresh-hop beers at breweries
 //   festbier  festbiers, Oktoberfests, and Märzens at breweries
@@ -170,7 +170,7 @@ function renderEventsPage(data, listingsEl, summaryEl) {
         listingsEl.innerHTML = '<div class="empty">No upcoming beer events found.</div>';
         return;
     }
-    summaryEl.innerHTML = `<strong>${esc(count(events.length, 'upcoming beer event', 'upcoming beer events'))}</strong> in and around Seattle.`;
+    summaryEl.innerHTML = `<strong>${esc(count(events.length, 'upcoming beer event', 'upcoming beer events'))}</strong> in and around {{place}}.`;
     listingsEl.innerHTML = `<section class="venue">${events.map(renderEvent).join('')}</section>
         <p class="notice"><a class="calendar-link" href="events.ics">Subscribe to these events in your calendar</a></p>`;
 }
