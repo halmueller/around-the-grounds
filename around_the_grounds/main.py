@@ -292,8 +292,21 @@ async def generate_web_data(
     # site sets none, so other sites' data.json is unchanged; carried here
     # because the Temporal deploy activity only ever sees this dict.
     if site and site.template_vars:
-        web_data["template_vars"] = dict(site.template_vars)
+        web_data["template_vars"] = _site_template_vars(site)
     return web_data
+
+
+def _site_template_vars(site: SiteConfig) -> Dict[str, str]:
+    """A site's template values, plus the ones worked out from its venues.
+
+    ``events`` is set for a site with at least one event source, so a shared
+    template can leave its events tab and page out of a site that only lists
+    what is on tap. A site can set ``events`` itself to override this.
+    """
+    values = dict(site.template_vars)
+    if len(site.venues) > len(_listing_venues(site)):
+        values.setdefault("events", "yes")
+    return values
 
 
 def _listing_venues(site: SiteConfig) -> List[dict]:
@@ -464,7 +477,8 @@ def _render_placeholders(template_dir: Path, values: Dict[str, str]) -> Dict[Pat
     that have placeholders. Raises ValueError for a placeholder with no value,
     so a site is never published with a raw ``{{name}}`` showing. A block
     between ``{{#name}}`` and ``{{/name}}`` lines is kept when the site sets
-    that value and dropped when it does not.
+    that value and dropped when it does not; a file left empty that way is a
+    page the site does not have, and the caller leaves it out.
     """
     rendered: Dict[Path, str] = {}
     for path in sorted(template_dir.rglob("*")):
@@ -481,9 +495,13 @@ def _render_placeholders(template_dir: Path, values: Dict[str, str]) -> Dict[Pat
                 )
             return value
 
-        filled = _SECTION.sub(
-            lambda m: m.group(2) if values.get(m.group(1)) else "", text
-        )
+        # Repeated, so a block inside a kept block is handled in its turn.
+        filled, previous = text, None
+        while filled != previous:
+            previous = filled
+            filled = _SECTION.sub(
+                lambda m: m.group(2) if values.get(m.group(1)) else "", filled
+            )
         stray = _SECTION_MARKER.search(filled)
         if stray:
             raise ValueError(
@@ -526,7 +544,12 @@ def _write_site_output(target_dir: Path, template_dir: Path, web_data: dict) -> 
     print(f"📋 Copying template files from {template_dir}...")
     shutil.copytree(template_dir, target_dir, dirs_exist_ok=True)
     for relative, text in rendered.items():
-        (target_dir / relative).write_bytes(text.encode("utf-8"))
+        if text.strip():
+            (target_dir / relative).write_bytes(text.encode("utf-8"))
+        else:
+            # A file that is one dropped {{#name}} block (a page this site
+            # does not have) is not published at all.
+            (target_dir / relative).unlink()
     overlay = _site_overlay_dir(template_dir, web_data)
     if overlay:
         shutil.copytree(overlay, target_dir, dirs_exist_ok=True)

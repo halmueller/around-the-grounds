@@ -7,5 +7,7 @@
   <url><loc>{{public_url}}/festbier.html</loc><changefreq>hourly</changefreq></url>
   <url><loc>{{public_url}}/pumpkin.html</loc><changefreq>hourly</changefreq></url>
   <url><loc>{{public_url}}/taprooms.html</loc><changefreq>hourly</changefreq></url>
+  {{#events}}
   <url><loc>{{public_url}}/events.html</loc><changefreq>hourly</changefreq></url>
+  {{/events}}
 </urlset>

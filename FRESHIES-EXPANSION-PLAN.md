@@ -412,8 +412,9 @@ cider at Loyal Legion matches `pumpkin`, as it would in Seattle.
 ### 1.3 Event sources (dropped)
 
 Hal, 2026-10-13: no event sources for Portland, Yakima, or Bend. These sites
-list beers on tap only. Open question: whether their Events tab and page
-should be hidden, since they will always be empty.
+list beers on tap only. Their Events tab, page, and sitemap entry are left
+out (done 2026-10-13): the template's `{{#events}}` blocks are kept only for
+a site with at least one event source, which today is Seattle alone.
 
 Original notes:
 

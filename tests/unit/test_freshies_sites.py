@@ -18,7 +18,7 @@ from xml.etree import ElementTree
 import pytest
 
 from around_the_grounds.config.loader import load_all_sites
-from around_the_grounds.main import _write_site_output
+from around_the_grounds.main import _site_template_vars, _write_site_output
 from around_the_grounds.models import SiteConfig, Venue
 from around_the_grounds.parsers.registry import ParserRegistry
 
@@ -52,10 +52,19 @@ def rendered(site: SiteConfig, tmp_path_factory: pytest.TempPathFactory) -> Path
         "site_key": site.key,
         "site_name": site.name,
         "public_url": site.public_url,
-        "template_vars": site.template_vars,
+        "template_vars": _site_template_vars(site),
     }
     _write_site_output(out, TEMPLATES / site.template, web_data)
     return out
+
+
+def _has_events(site: SiteConfig) -> bool:
+    """Whether the site has an event source, and so an Events tab and page."""
+    return any(not _is_tap_list(venue) for venue in site.venues)
+
+
+def _pages(site: SiteConfig) -> list:
+    return [name for name, _ in PAGES if name != "events.html" or _has_events(site)]
 
 
 def _is_tap_list(venue: Venue) -> bool:
@@ -131,6 +140,10 @@ def test_venue_types_are_taproom_or_unset(site: SiteConfig) -> None:
 def test_page_layout(
     site: SiteConfig, rendered: Path, page: str, data_page: str
 ) -> None:
+    if page not in _pages(site):
+        # A site with no event sources has no Events page.
+        assert not (rendered / page).exists()
+        return
     html = (rendered / page).read_text()
     assert "{{" not in html
     assert f'data-page="{data_page}"' in html
@@ -167,7 +180,7 @@ def test_page_layout(
         html,
     ), page
     tabs = re.findall(r'<nav class="tabs".*?</nav>', html, re.S)[0]
-    assert re.findall(r'href="([^"]+)"', tabs) == [name for name, _ in PAGES], page
+    assert re.findall(r'href="([^"]+)"', tabs) == _pages(site), page
 
 
 def test_template_ships_the_shared_files(rendered: Path) -> None:
@@ -207,6 +220,10 @@ def test_robots_points_at_sitemap(site: SiteConfig, rendered: Path) -> None:
 
 @pytest.mark.parametrize("page", [name for name, _ in PAGES])
 def test_open_graph_tags(site: SiteConfig, rendered: Path, page: str) -> None:
+    if page not in _pages(site):
+        # A site with no event sources has no Events page.
+        assert not (rendered / page).exists()
+        return
     head = (rendered / page).read_text().split("</head>")[0]
     meta = dict(re.findall(r'<meta property="(og:[\w:]+)" content="([^"]*)">', head))
     url = f"{site.public_url}/{page}"
@@ -240,7 +257,13 @@ ICON_LINKS = (
 
 
 @pytest.mark.parametrize("page", [name for name, _ in PAGES])
-def test_pages_link_the_favicon_files(rendered: Path, page: str) -> None:
+def test_pages_link_the_favicon_files(
+    site: SiteConfig, rendered: Path, page: str
+) -> None:
+    if page not in _pages(site):
+        # A site with no event sources has no Events page.
+        assert not (rendered / page).exists()
+        return
     head = (rendered / page).read_text().split("</head>")[0]
     for link in ICON_LINKS:
         assert link in head
@@ -294,3 +317,27 @@ def test_events_summary_names_the_place(site: SiteConfig, rendered: Path) -> Non
         "<strong>1 upcoming beer event</strong> in and around "
         f"{site.template_vars['place']}."
     )
+
+
+def test_events_tab_and_page_follow_the_event_sources(
+    site: SiteConfig, rendered: Path
+) -> None:
+    """No event sources: no Events tab, page, sitemap entry, or calendar link."""
+    sitemap = (rendered / "sitemap.xml").read_text()
+    assert "{{" not in sitemap
+    if _has_events(site):
+        assert (rendered / "events.html").is_file()
+        assert f"{site.public_url}/events.html" in sitemap
+        return
+    assert not (rendered / "events.html").exists()
+    assert "events.html" not in sitemap
+    for page in _pages(site):
+        # (The pages' shared-layout comment still names the file.)
+        assert 'href="events.html"' not in (rendered / page).read_text(), page
+
+
+def test_which_sites_have_events() -> None:
+    # Hal, 2026-10-13: Seattle lists beer events; Portland, Yakima, and Bend
+    # list what is on tap only.
+    with_events = {site.key for site in SITES if _has_events(site)}
+    assert with_events == {"seattle-freshies"}

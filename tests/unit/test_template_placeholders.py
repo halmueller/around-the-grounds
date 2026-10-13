@@ -6,7 +6,8 @@ from typing import Any, Dict
 import pytest
 
 from around_the_grounds.config.loader import load_all_sites
-from around_the_grounds.main import _write_site_output
+from around_the_grounds.main import _site_template_vars, _write_site_output
+from around_the_grounds.models import SiteConfig, Venue
 
 TEMPLATES = Path(__file__).resolve().parents[2] / "public_templates"
 
@@ -91,6 +92,68 @@ def test_section_is_dropped_for_a_site_that_does_not(tmp_path: Path) -> None:
     assert (out / "index.html").read_text() == (
         "<header>\n    <h1>Hop Town Freshies</h1>\n    <nav></nav>\n</header>\n"
     )
+
+
+def test_block_inside_a_kept_block(tmp_path: Path) -> None:
+    folder = tmp_path / "template"
+    folder.mkdir()
+    (folder / "index.html").write_text(
+        "{{#outer}}\n<p>outer</p>\n{{#inner}}\n<p>inner</p>\n{{/inner}}\n"
+        "{{#neighbors}}\n<p>next door</p>\n{{/neighbors}}\n<p>end</p>\n{{/outer}}\n"
+    )
+    out = tmp_path / "out"
+    data = _web_data(template_vars={"outer": "yes", "neighbors": "yes"})
+    _write_site_output(out, folder, data)
+
+    assert (out / "index.html").read_text() == (
+        "<p>outer</p>\n<p>next door</p>\n<p>end</p>\n"
+    )
+
+
+def test_file_that_is_one_dropped_block_is_not_published(tmp_path: Path) -> None:
+    """A page some sites do not have, such as an events page."""
+    folder = tmp_path / "template"
+    folder.mkdir()
+    (folder / "index.html").write_text("<p>{{site_name}}</p>\n")
+    (folder / "events.html").write_text(
+        "{{#events}}\n<!DOCTYPE html>\n<p>Events in {{place}}</p>\n{{/events}}\n"
+    )
+    without, with_events = tmp_path / "without", tmp_path / "with"
+    # A copy from an earlier build must not be left behind.
+    without.mkdir()
+    (without / "events.html").write_text("stale")
+
+    _write_site_output(without, folder, _web_data(template_vars={"place": "Hop Town"}))
+    _write_site_output(
+        with_events,
+        folder,
+        _web_data(template_vars={"place": "Hop Town", "events": "yes"}),
+    )
+
+    assert not (without / "events.html").exists()
+    assert (without / "index.html").is_file()
+    assert (with_events / "events.html").read_text() == (
+        "<!DOCTYPE html>\n<p>Events in Hop Town</p>\n"
+    )
+
+
+def test_events_value_follows_the_event_sources() -> None:
+    listing = Venue("a-taps", "A", "https://a.example", "untappd-embed")
+    calendar = Venue("a-events", "A events", "https://a.example/events", "html")
+
+    def site(venues: list, **template_vars: str) -> SiteConfig:
+        return SiteConfig(
+            "k", "K", "fresh-hop", "UTC", venues, template_vars=template_vars
+        )
+
+    assert _site_template_vars(site([listing], place="X")) == {"place": "X"}
+    assert _site_template_vars(site([listing, calendar], place="X")) == {
+        "place": "X",
+        "events": "yes",
+    }
+    # A site can say so itself, either way.
+    assert _site_template_vars(site([listing, calendar], events="")) == {"events": ""}
+    assert _site_template_vars(site([listing], events="yes")) == {"events": "yes"}
 
 
 @pytest.mark.parametrize(
