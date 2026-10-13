@@ -280,6 +280,20 @@
       }
     },
     {
+      "key": "roscoes-taps",
+      "name": "Roscoe's (Montavilla)",
+      "url": "https://www.roscoespdx.com/",
+      "source_type": "tap-rows",
+      "parser_config": {
+        "note": "The home page is a live tap list that fills itself in from /api/taplist. Fresh hops are written 'F.H.' in the name and spelled out in the description.",
+        "rows_url": "https://www.roscoespdx.com/api/taplist",
+        "listing_include": [
+          "\\bF\\.H[.,]"
+        ],
+        "venue_type": "taproom"
+      }
+    },
+    {
       "key": "saraveza-taps",
       "name": "Saraveza (North Portland)",
       "url": "https://www.saraveza.com/site/beer",
@@ -378,6 +392,17 @@
           "^taplist"
         ],
         "line_pattern": "^(?!CASK:)(?:Just Tapped\\s+)?(?P<name>.+?)(?:,|\\s+with\\s).*?(?P<abv>\\d+(?:\\.\\d+)?%)$"
+      }
+    },
+    {
+      "key": "tiny-bubble-room-taps",
+      "name": "Tiny Bubble Room (Arbor Lodge)",
+      "url": "https://beer.tinybubbleroom.com/?beer-only",
+      "source_type": "tap-rows",
+      "parser_config": {
+        "note": "The same live tap-list page as Roscoe's, its sister bar.",
+        "rows_url": "https://beer.tinybubbleroom.com/api/taplist",
+        "venue_type": "taproom"
       }
     },
     {

@@ -1,7 +1,7 @@
 # Plan: Freshies sites for Portland, the Yakima Valley, and Bend
 
 Status: phase 0 done (2026-10-12). Phase 1 (Portland) started: first survey
-pass done and 37 venues configured (2026-10-13); not live.
+pass done and 39 venues configured (2026-10-13); not live.
 Written 2026-10-12.
 
 Goal: reuse the Seattle Freshies site (the `fresh-hop` template, the tap-list
@@ -261,6 +261,26 @@ pumpkin), with no errors.
 **Fourth batch, configured 2026-10-13 (3):** Von Ebert (Glendoveer and
 Mississippi; Untappd embeds) and Upright Beer Station (the bottle shop and
 taproom at the old brewery's name; a draft list in text). 37 venues in all.
+
+**Fifth batch, configured 2026-10-13 (2):** Roscoe's and Tiny Bubble Room,
+sister bars whose pages are a small live-tap-list app fed by `/api/taplist`.
+A new `tap-rows` parser reads it. Between them they had 29 fresh hops. A live
+run with all 39 venues finds 256 matching beers.
+
+**Also found on 2026-10-13:**
+
+- Not Portland venues at all (same name, other city): the Alameda Brewing site
+  is Alameda, California; Heavy Metal Brewing is in Arizona. Wolf Tree's
+  taproom closed in 2023. Cascade's domain shows unrelated content.
+- Hal chose to skip Hopworks.
+- Stickmen's beer page has "On tap Tualatin" and "On tap Happy Valley"
+  filters, so per-pub lists look possible. Next to try.
+- Level, Oregon City Brewing, Vanguard (Wilsonville), and Beer Store
+  Milwaukie are Square sites; the `square-online` parser may fit.
+- Mad Cow (Gresham) numbers the beers on its page like taps; Binary
+  (Beaverton) marks each beer DRAFT or CANS. Both worth configuring.
+- Imperial Bottle Shop's site is a Canva website; would need the browser
+  User-Agent approval.
 
 **Settled by Hal, 2026-10-13:**
 

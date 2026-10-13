@@ -21,6 +21,7 @@ from .generic import (
     SheetTaplistParser,
     SquarespaceEventsParser,
     TapHunterParser,
+    TapRowsParser,
     TextTaplistParser,
     UntappdEmbedParser,
     UntappdVenueParser,
@@ -58,6 +59,7 @@ class ParserRegistry:
         "menu-tools": MenuToolsParser,
         "firestore-taplist": FirestoreTaplistParser,
         "square-online": SquareOnlineParser,
+        "tap-rows": TapRowsParser,
         "squarespace-events": SquarespaceEventsParser,
     }
 

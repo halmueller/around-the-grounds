@@ -16,6 +16,7 @@ from .pdf_taplist import PdfTaplistParser
 from .sheet_taplist import SheetTaplistParser
 from .square_online import SquareOnlineParser
 from .squarespace_events import SquarespaceEventsParser
+from .tap_rows import TapRowsParser
 from .text_taplist import TextTaplistParser
 from .untappd_embed import UntappdEmbedParser
 from .untappd_venue import UntappdVenueParser
@@ -42,4 +43,5 @@ __all__ = [
     "MenuToolsParser",
     "SquareOnlineParser",
     "SquarespaceEventsParser",
+    "TapRowsParser",
 ]
