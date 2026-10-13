@@ -1,7 +1,7 @@
 # Plan: Freshies sites for Portland, the Yakima Valley, and Bend
 
 Status: phase 0 done (2026-10-12). Phase 1 (Portland) started: first survey
-pass done and 13 venues configured (2026-10-12); not live.
+pass done and 28 venues configured (2026-10-13); not live.
 Written 2026-10-12.
 
 Goal: reuse the Seattle Freshies site (the `fresh-hop` template, the tap-list
@@ -242,16 +242,22 @@ Southeast Portland), Saraveza, Uptown Beer Co., and Victor 23 (Vancouver).
 Ten are Untappd embeds, two DigitalPour, and one TapHunter. The first live run
 found 154 matching beers (the two Loyal Legions alone had 59 fresh-hop beers).
 
-**Next batch: the list is text on the venue's own page** (existing
-`html-taplist` / `text-taplist` parsers, one selector or pattern each):
-Ancestry (Tualatin), Away Days, Bent Shovel (Oregon City), Brujos, Coin Toss
-(Oregon City), Duality, FlyBoy (Tigard), Function PDX, Grains of Wrath
-(Camas), Montavilla Brew Works, Prost, Ridgefield Craft Brewing, StormBreaker
-(St. Johns and Mississippi), Three Mugs brewery (Hillsboro), Threshold (a
-published Google Doc), TPK, and Wayfinder. Check first that each is a current
-draft list and not a beer catalogue: Barrel Mountain (Battle Ground),
-Breakside (per-location pages), Chuckanut P-Nut Beer Hall, Living Häus, Mad
-Cow, Rosenstadt, and Zoiglhaus.
+**Second batch, configured 2026-10-13 (15):** Ancestry (Tualatin), Away Days,
+Bent Shovel (Oregon City), Brujos, Duality, FlyBoy (Tigard), Function PDX,
+Grains of Wrath (Camas), Montavilla Brew Works, Prost, StormBreaker (St. Johns
+and Mississippi), Three Mugs brewery (Hillsboro), TPK, and Wayfinder. All use
+`html-taplist` or `text-taplist`. Brujos and Wayfinder put the name on one
+line and what the beer is on the next, so `text-taplist` gained a
+`detail_lines` option. With both batches a live run finds 191 matching beers
+at 28 venues, with no errors.
+
+**Still to check: is the page a current draft list or a catalogue?** Barrel
+Mountain (Battle Ground), Breakside (per-location pages), Chuckanut P-Nut
+Beer Hall, Coin Toss (Oregon City), Living Häus, Mad Cow, Rosenstadt, and
+Zoiglhaus. Ridgefield Craft Brewing's page says it lists "a few of the beers
+you'll find on tap throughout the year", so it is a catalogue: not added.
+Threshold's published Google Doc turned out to be its music schedule; its tap
+list is on its home page and needs a closer look.
 
 **Needs a closer look** (list loads by script, sits in a PDF or an ordering
 site, or was not found): Alameda, Baerlic, Binary (Beaverton), Cascade, Double

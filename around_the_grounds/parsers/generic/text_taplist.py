@@ -13,12 +13,20 @@ Config (``source_type: "text-taplist"``; the venue ``url`` is fetched)::
       "section_tag": "h2",                  # optional
       "include_sections": ["^MAIN BAR$"],    # optional, regexes
       "exclude_sections": ["closed"],        # optional, regexes
-      "line_tags": ["h2"]                    # optional; default ["p", "li"]
+      "line_tags": ["h2"],                   # optional; default ["p", "li"]
+      "detail_lines": 2                      # optional; default 0
     }
 
 Optional named groups: ``style``, ``abv``, ``brewery``. ``line_tags`` names
 the elements whose lines can be entries; by default headings only divide the
 page, but some sites (Bizarre) put each beer in a heading.
+
+``detail_lines`` is for lists that put the name on one line and say what the
+beer is on the next ("Faustian Luminary — 5.6%", then "Fresh Hopped, Hoppy
+Pilsner …"): up to that many lines after an entry, stopping at the next entry
+or section, become its description. The description is used for matching (a
+beer can be a fresh hop by its description alone) and supplies the ABV when
+the name line has none.
 """
 
 import re
@@ -84,21 +92,32 @@ def parse_text_taplist(html: str, config: Dict[str, Any]) -> List[TapEntry]:
     includes = _compile(config.get("include_sections"), "include_sections")
     excludes = _compile(config.get("exclude_sections"), "exclude_sections")
     line_tags = set(config.get("line_tags") or _DEFAULT_LINE_TAGS)
+    detail_lines = config.get("detail_lines") or 0
+    if not isinstance(detail_lines, int) or detail_lines < 0:
+        raise ValueError("text-taplist detail_lines must be a whole number")
 
     section = ""
-    entries = []
+    entries: List[TapEntry] = []
+    # How many more lines may still be added to the last entry's description.
+    details_left = 0
     for tag, line in iter_lines(html):
         if tag == section_tag:
             section = line
+            details_left = 0
             continue
-        if tag not in line_tags:
+        if tag not in line_tags and not (details_left and tag in _DEFAULT_LINE_TAGS):
             continue
         if includes and not any(p.search(section) for p in includes):
             continue
         if any(p.search(section) for p in excludes):
             continue
-        match = pattern.search(line)
+        match = pattern.search(line) if tag in line_tags else None
         if not match:
+            if details_left:
+                details_left -= 1
+                entry = entries[-1]
+                entry.description = f"{entry.description} {line}".strip()
+                entry.abv = entry.abv or normalize_abv(line)
             continue
         # Footnote markers ("*Fresh Hop Lager") are not part of the name.
         name = (_group(match, "name") or "").strip("* ")
@@ -110,8 +129,12 @@ def parse_text_taplist(html: str, config: Dict[str, Any]) -> List[TapEntry]:
                 brewery=_group(match, "brewery"),
                 style=_group(match, "style"),
                 abv=normalize_abv(_group(match, "abv")),
+                description="" if detail_lines else None,
             )
         )
+        details_left = detail_lines
+    for entry in entries:
+        entry.description = entry.description or None
     return entries
 
 

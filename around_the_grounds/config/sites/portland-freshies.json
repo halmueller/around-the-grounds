@@ -22,6 +22,32 @@
       }
     },
     {
+      "key": "ancestry-taps",
+      "name": "Ancestry Brewing (Tualatin)",
+      "url": "https://www.ancestrybrewing.com/beer.html",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "item": ".taps .beer",
+        "name": ".name",
+        "match_whole_item": true,
+        "note": "The taproom menu page: one block per beer, with the style and ABV on its last line.",
+        "style_pattern": "([A-Z][A-Za-z &/-]{2,40}?)\\s*\\S{1,2}\\s*\\d+(?:\\.\\d+)?% Alc/Vol"
+      }
+    },
+    {
+      "key": "away-days-taps",
+      "name": "Away Days Brewing (Southeast Portland)",
+      "url": "https://www.awaydaysbrewing.com/beer",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "A Squarespace menu block; each title is 'Name - 4.5%'. The first item is the 'DRAFT BEER' heading.",
+        "item": ".menu-item",
+        "name": ".menu-item-title",
+        "name_pattern": "^(?P<name>.+?)\\s+-\\s+\\d",
+        "match_whole_item": true
+      }
+    },
+    {
       "key": "beermongers-taps",
       "name": "The BeerMongers (Southeast Portland)",
       "url": "https://www.thebeermongers.com/",
@@ -44,6 +70,17 @@
       }
     },
     {
+      "key": "bent-shovel-taps",
+      "name": "Bent Shovel Brewing (Oregon City)",
+      "url": "https://www.bentshovelbrewing.com/taplist",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "item": ".menu-item",
+        "name": ".menu-item-title",
+        "match_whole_item": true
+      }
+    },
+    {
       "key": "brothers-cascadia-evergreen-taps",
       "name": "Brothers Cascadia Evergreen Pub (Vancouver)",
       "url": "https://brotherscascadiabrewing.com/vancouver-brothers-cascadia-brewing-food-menu",
@@ -51,6 +88,17 @@
       "parser_config": {
         "location_id": 44055,
         "theme_id": 169619
+      }
+    },
+    {
+      "key": "brujos-taps",
+      "name": "Brujos Brewing (Northwest Portland)",
+      "url": "https://www.brujosbrewing.com/on-tap",
+      "source_type": "text-taplist",
+      "parser_config": {
+        "note": "'Name — 5.6%' in bold, then a line or two saying what the beer is; a fresh hop is often named only there.",
+        "line_pattern": "^(?P<name>[^—–]{2,60}?)[\\s\\u200d]*[—–]\\s*(?P<abv>\\d+(?:\\.\\d+)?%)",
+        "detail_lines": 2
       }
     },
     {
@@ -64,6 +112,17 @@
       }
     },
     {
+      "key": "duality-taps",
+      "name": "Duality Brewing (Southeast Portland)",
+      "url": "https://www.dualitybrewing.com/live-beer-menu-1",
+      "source_type": "text-taplist",
+      "parser_config": {
+        "note": "The Live Beer Menu: a name in capitals, then a line of 'Style . notes . 6% . Pint'.",
+        "line_pattern": "^(?P<name>[A-Z0-9][A-Z0-9 '&.!-]{2,40})$",
+        "detail_lines": 1
+      }
+    },
+    {
       "key": "final-draft-taps",
       "name": "Final Draft Taphouse (Vancouver)",
       "url": "https://www.finaldrafttaphouse.com/beer-food",
@@ -72,6 +131,51 @@
         "location_id": 4228,
         "theme_id": 13190,
         "venue_type": "taproom"
+      }
+    },
+    {
+      "key": "flyboy-taps",
+      "name": "FlyBoy Brewing (Tigard)",
+      "url": "https://flyboybrewing.com/tigard-flyboy-brewery-and-pub-drink-menu",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "The drinks menu numbers its taps ('1: Flyboy Brewing Island Jumper IPA'); cocktails and spirits share the page.",
+        "item": ".food-item-holder",
+        "name": "h3",
+        "name_pattern": "^(?:\\d+:\\s*)?(?P<name>.+)$",
+        "match_whole_item": true,
+        "exclude_sections": [
+          "whiskey",
+          "tequila",
+          "wines",
+          "non-alcoholic"
+        ],
+        "listing_exclude": [
+          "available in cans"
+        ]
+      }
+    },
+    {
+      "key": "function-pdx-taps",
+      "name": "Function PDX (Alberta)",
+      "url": "https://functionpdx.com/now-tapped/",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "item": ".elementor-price-list-item",
+        "name": ".elementor-price-list-title",
+        "venue_type": "taproom"
+      }
+    },
+    {
+      "key": "grains-of-wrath-camas-taps",
+      "name": "Grains of Wrath (Camas)",
+      "url": "https://gowbeer.com/camas-gastropub/brews/",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "The 'all brews' list; the same beers repeat under each category tab.",
+        "item": ".all-brews-category-list .beer-box",
+        "name": "h3.beer-title",
+        "style": "h4.beer-subtitle"
       }
     },
     {
@@ -118,6 +222,29 @@
       }
     },
     {
+      "key": "montavilla-taps",
+      "name": "Montavilla Brew Works (Montavilla)",
+      "url": "https://montavillabrew.com/",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "The site's 'On Tap Now' menu is the tap list: one link per beer.",
+        "item": "li.menu-item-has-children:has(> a:-soup-contains(\"On Tap Now\")) > ul.sub-menu > li",
+        "name": "a"
+      }
+    },
+    {
+      "key": "prost-taps",
+      "name": "Prost! (Mississippi)",
+      "url": "https://www.prostportland.com/drinks",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "item": ".menu-item",
+        "name": ".menu-item-title",
+        "match_whole_item": true,
+        "venue_type": "taproom"
+      }
+    },
+    {
       "key": "saraveza-taps",
       "name": "Saraveza (North Portland)",
       "url": "https://www.saraveza.com/site/beer",
@@ -126,6 +253,67 @@
         "company_id": "51c24092fb890c13d86749af",
         "location_id": 1,
         "venue_type": "taproom"
+      }
+    },
+    {
+      "key": "stormbreaker-mississippi-taps",
+      "name": "StormBreaker Brewing (Mississippi)",
+      "url": "https://stormbreakerbrewing.com/portland-mississippi-district-stormbreaker-brewing-mississippi-drinks",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "item": ".food-item-holder",
+        "name": "h3",
+        "style_pattern": "(?:Pint|Glass|Pour|oz)\\s+([A-Z][^|$]{2,40}?)\\s*\\|",
+        "match_whole_item": true,
+        "note": "The drinks menu, one section per kind of drink. Flights, to-go cans, bottles, and cocktails are left out.",
+        "exclude_sections": [
+          "flights",
+          "to\\s*-\\s*go",
+          "bottles",
+          "cocktails",
+          "pairings"
+        ]
+      }
+    },
+    {
+      "key": "stormbreaker-st-johns-taps",
+      "name": "StormBreaker Brewing (St. Johns)",
+      "url": "https://stormbreakerbrewing.com/st-john-drinks",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "item": ".food-item-holder",
+        "name": "h3",
+        "style_pattern": "(?:Pint|Glass|Pour|oz)\\s+([A-Z][^|$]{2,40}?)\\s*\\|",
+        "match_whole_item": true,
+        "note": "The drinks menu, one section per kind of drink. Flights, to-go cans, bottles, and cocktails are left out.",
+        "exclude_sections": [
+          "flights",
+          "to\\s*-\\s*go",
+          "bottles",
+          "cocktails",
+          "pairings"
+        ]
+      }
+    },
+    {
+      "key": "three-mugs-taps",
+      "name": "Three Mugs Brewing (Hillsboro)",
+      "url": "https://threemugsbrewing.com/our-story/brewery-taplist/",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "The brewery taproom's numbered list ('12. Name Style 4.8%'); the public house's list is a Pourwall embed.",
+        "item": ".bt_bb_menu_item",
+        "name": ".bt_bb_menu_item_title",
+        "name_pattern": "^\\d+\\.\\s*(?P<name>.+?)(?:,?\\s+\\d+(?:\\.\\d+)?%)?$"
+      }
+    },
+    {
+      "key": "tpk-taps",
+      "name": "TPK Brewing (Southeast Portland)",
+      "url": "https://www.tpkbrewing.com/beers",
+      "source_type": "text-taplist",
+      "parser_config": {
+        "line_pattern": "^(?P<name>[^|]{2,60}?)\\s*\\|\\s*(?P<style>.+?)\\s+-\\s+(?P<abv>\\d+(?:\\.\\d+)?%)"
       }
     },
     {
@@ -147,6 +335,24 @@
       "parser_config": {
         "location_id": 3044,
         "theme_id": 8652
+      }
+    },
+    {
+      "key": "wayfinder-taps",
+      "name": "Wayfinder Beer (Central Eastside)",
+      "url": "https://www.wayfinder.beer/menu",
+      "source_type": "text-taplist",
+      "parser_config": {
+        "note": "The PDX pub menu: 'NAME - STYLE' in capitals, a description, then '(ABV 5.3%)'. Beer comes before the first h2; cocktails and food follow. Harvest Moon's description says it is not a fresh hop.",
+        "section_tag": "h2",
+        "include_sections": [
+          "^$"
+        ],
+        "line_pattern": "^(?P<name>[A-Z0-9][A-Z0-9 '&.!]{2,40}?)(?:\\s+-\\s+(?P<style>[A-Z][A-Z -]+))?$",
+        "detail_lines": 2,
+        "listing_exclude": [
+          "not to be mistaken with a fresh hop"
+        ]
       }
     }
   ]
