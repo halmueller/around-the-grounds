@@ -409,7 +409,14 @@ cider at Loyal Legion matches `pumpkin`, as it would in Seattle.
   taprooms.
 - Add in batches of 10 to 15, previewing each batch, rather than all at once.
 
-### 1.3 Event sources
+### 1.3 Event sources (dropped)
+
+Hal, 2026-10-13: no event sources for Portland, Yakima, or Bend. These sites
+list beers on tap only. Open question: whether their Events tab and page
+should be hidden, since they will always be empty.
+
+Original notes:
+
 
 Pick four to six venue or guild calendars with `event_filter` and
 `event_window_days: 365`, as Seattle has. Candidates come out of the survey;
@@ -466,8 +473,6 @@ Same steps as Portland with a smaller survey, roughly 25 to 35 venues.
   and `bale-breaker` belongs to Ballard's food-truck parser. The Moxee taproom
   needs a different key, as `bale-breaker-seattle-taps` does in Seattle. Check
   every new key against `parsers/registry.py`.
-- Events matter more here than anywhere: the Fresh Hop Ale Festival in Yakima
-  and the harvest-season brewery events are the draw.
 - Small-town breweries are more likely to post the tap list as a photo or on
   Facebook only. Expect a higher skip rate than Seattle's.
 - Target: surveyed and configured by July 2027, live before harvest.
@@ -483,7 +488,6 @@ Roughly 30 to 40 venues; includes Sisters, Redmond, and Sunriver.
   Hut, and River's Place.
 - Several are Oregon chains already surveyed for Portland (Deschutes, 10
   Barrel, Breakside if it has a Bend pub), so their parser configs carry over.
-- Event sources: the Sisters Fresh Hop Festival and the Bend Ale Trail.
 - Can run in parallel with phase 2; neither depends on the other.
 
 ## Open questions
