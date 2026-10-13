@@ -1,6 +1,7 @@
 # Plan: Freshies sites for Portland, the Yakima Valley, and Bend
 
-Status: phase 0 done (2026-10-12); phase 1 (Portland) not started.
+Status: phase 0 done (2026-10-12). Phase 1 (Portland) started: first survey
+pass done and 13 venues configured (2026-10-12); not live.
 Written 2026-10-12.
 
 Goal: reuse the Seattle Freshies site (the `fresh-hop` template, the tap-list
@@ -32,6 +33,11 @@ Everything else is already per-site: the matcher, the parsers, `venue_type`,
 `event_filter`, the season logic in `app.js`, and `public_url`.
 
 ## Decisions to settle before starting
+
+Settled 2026-10-12: the Portland domain is `portlandfreshies.com` (not yet
+registered), and the first pass covers the metro area, including Vancouver,
+WA. Items 3 and 4 were built as recommended. Still open: the Yakima site's
+name, and item 5.
 
 1. **Names and domains.** As of 2026-10-12, `whois` shows no registration for
    `portlandfreshies.com`, `pdxfreshies.com`, `yakimafreshies.com`, or
@@ -217,6 +223,96 @@ platform, and is that host reachable from the droplet.
   pages are blocked from the droplet. Image-only tap lists are skipped until
   the OCR question is settled.
 - Record skips and closures with the reason, as for Seattle.
+
+#### Survey, first pass (2026-10-12)
+
+Starting list: Open Brewery DB records for Portland and 22 nearby cities
+(156 records, many stale) plus about 60 newer breweries and taprooms from
+memory. Each site was fetched with the scraper's own User-Agent, along with
+its menu-like pages, and searched for tap-list platforms. This says what a
+site serves to the scraper from a home connection; the droplet check (1.5) is
+still to do. Web addresses for the "not reached" group were guesses or old
+records, so that group says nothing yet about whether the venue is open.
+
+**Configured and scraping (13):** ABV Public House (Hillsboro), The
+BeerMongers, Belmont Station, Brothers Cascadia Evergreen Pub (Vancouver),
+Deschutes (Pearl District), Final Draft Taphouse (Vancouver), Heathen
+(Vancouver), The Hoppy Brewer (Gresham), Loyal Legion (Beaverton and
+Southeast Portland), Saraveza, Uptown Beer Co., and Victor 23 (Vancouver).
+Ten are Untappd embeds, two DigitalPour, and one TapHunter. The first live run
+found 154 matching beers (the two Loyal Legions alone had 59 fresh-hop beers).
+
+**Next batch: the list is text on the venue's own page** (existing
+`html-taplist` / `text-taplist` parsers, one selector or pattern each):
+Ancestry (Tualatin), Away Days, Bent Shovel (Oregon City), Brujos, Coin Toss
+(Oregon City), Duality, FlyBoy (Tigard), Function PDX, Grains of Wrath
+(Camas), Montavilla Brew Works, Prost, Ridgefield Craft Brewing, StormBreaker
+(St. Johns and Mississippi), Three Mugs brewery (Hillsboro), Threshold (a
+published Google Doc), TPK, and Wayfinder. Check first that each is a current
+draft list and not a beer catalogue: Barrel Mountain (Battle Ground),
+Breakside (per-location pages), Chuckanut P-Nut Beer Hall, Living Häus, Mad
+Cow, Rosenstadt, and Zoiglhaus.
+
+**Needs a closer look** (list loads by script, sits in a PDF or an ordering
+site, or was not found): Alameda, Baerlic, Binary (Beaverton), Cascade, Double
+Mountain (Overlook and Woodstock), Gigantic, Golden Valley (Beaverton), Grand
+Fir (PDF), Imperial Bottle Shop (Google Docs), John's Marketplace, Laurelwood,
+Level, Loowit (Vancouver), Oakshire's Portland beer hall (its embed is the
+Eugene pub's), Old Market Pub, Old Town, Oregon City Brewing, pFriem
+(Milwaukie), Roscoe's, Ruse (site "undergoing updates"), Sasquatch, Shoug
+(Washougal, PDF), Steeplejack (PDFs), Stickmen, Tiny Bubble Room, Trap Door
+(Vancouver), Vanguard (Wilsonville), Von Ebert, Waltz (Forest Grove), and
+Wolf Tree. McMenamins has one "On Tap" page for all its pubs; decide whether
+to treat it as Elliott Bay was in Seattle.
+
+**Would need a new parser or a decision:**
+
+- Canva draft lists: Migration (Glisan, Williams, and Gresham). The `canva`
+  parser sends a browser User-Agent, approved so far only for Old Stove and
+  Ship Canal; ask before using it here.
+- Pourwall embeds: Three Mugs pub and Vertigo (both Hillsboro). No parser yet.
+- Arryved online ordering: Wayfinder and Little Beast. No parser yet;
+  Wayfinder's menu page may do without one.
+- Untappd display boards (not the website embed): Cooper Mountain (Tigard and
+  Sherwood). No parser yet.
+- untappd.com venue page only: Horse Brass. Blocked from the droplet.
+
+**Bot challenge (Cloudflare) from a home connection:** Hopworks, Lucky
+Labrador, Crux (Portland), and 649 Taphouse (Aloha).
+
+**Skipped:** The Civic Taproom and Raindrop Taphouse (Beaverton): their pages
+carry an Untappd embed, but Untappd answers 404 for both. Full Sail and The
+Growler Guys showed no Portland-area location; Ex Novo's site lists only its
+New Mexico locations.
+
+**Closed:** Ambacht (Hillsboro; its site says so), Mayfly (closed 2026-09-12;
+its site says so), and, from 2026 news reports, Upright, Assembly, and Rogue.
+Believed closed, not verified: Ecliptic, Hair of the Dog, BridgePort, Burnside,
+Portland Brewing, Base Camp, and Culmination.
+
+**Domain now shows unrelated content** (likely closed, or the address is
+wrong): Gateway, Pono, Scout, Second Profession, Natian, Railside (Vancouver),
+Columbia River, Max's Fanno Creek, and Tin Bucket.
+
+**Not reached; need the right address:** Great Notion, Occidental, Back
+Pedal, Brewery 26, Doomsday (Washougal), Drinking Horse (Clackamas), Feckin
+(Oregon City), Hammer & Stitch, Dirty Pretty, Shattered Oak (Oregon City),
+Hetty Alice, Labrewatory, Mt Tabor, Smockville (Sherwood), Two Kilts
+(Sherwood), Hillbilly (Ridgefield), Apex, N.W.I.P.A., Lombard House, Bridgetown
+Beerhouse, Concordia Ale House, Growlers Hawthorne, Orenco Taphouse, Tigard
+Taphouse, Ben's Bottle Shop and The Thirsty Sasquatch (Vancouver), and
+Brewed (Vancouver). Empty or script-only home pages: Fortside, Heavy Metal,
+Irrelevant, and Vice (all Vancouver), Northwood (Battle Ground), Kaiser
+(Forest Grove), Tall Trees (Hillsboro), Beer Bunker, Beer Store Milwaukie,
+Little Hop, Look Long, Labyrinth Forge, Fracture, and Proper Pint.
+
+**Not yet looked up at all:** 10 Barrel's Portland pub, and anything that
+opened recently enough to be in neither starting list. Cross-check against
+The New School's openings and closings before calling the survey complete.
+
+Tuning notes from the first run: Uptown Beer Co. numbers its taps in the beer
+name ("2. 🌿Fresh Hop Cumulus (Citra)"); strip the number in 1.4. A pumpkin
+cider at Loyal Legion matches `pumpkin`, as it would in Seattle.
 
 ### 1.2 Site config: `config/sites/portland-freshies.json`
 

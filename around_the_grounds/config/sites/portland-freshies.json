@@ -1,0 +1,153 @@
+{
+  "key": "portland-freshies",
+  "name": "Portland Freshies",
+  "template": "fresh-hop",
+  "timezone": "America/Los_Angeles",
+  "public_url": "https://portlandfreshies.com",
+  "template_vars": {
+    "place": "Portland",
+    "author_home": "Seattle"
+  },
+  "generate_description": false,
+  "venues": [
+    {
+      "key": "abv-public-house-taps",
+      "name": "ABV Public House (Hillsboro)",
+      "url": "https://abvpub.com/hillsboro-abv-public-house-drink-menu",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 52751,
+        "theme_id": 178523,
+        "venue_type": "taproom"
+      }
+    },
+    {
+      "key": "beermongers-taps",
+      "name": "The BeerMongers (Southeast Portland)",
+      "url": "https://www.thebeermongers.com/",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 3566,
+        "theme_id": 10740,
+        "venue_type": "taproom"
+      }
+    },
+    {
+      "key": "belmont-station-taps",
+      "name": "Belmont Station (Sunnyside)",
+      "url": "https://www.belmont-station.com/on-tap",
+      "source_type": "taphunter",
+      "parser_config": {
+        "location_id": "6549318358269952",
+        "menu_id": "6427152616259584",
+        "venue_type": "taproom"
+      }
+    },
+    {
+      "key": "brothers-cascadia-evergreen-taps",
+      "name": "Brothers Cascadia Evergreen Pub (Vancouver)",
+      "url": "https://brotherscascadiabrewing.com/vancouver-brothers-cascadia-brewing-food-menu",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 44055,
+        "theme_id": 169619
+      }
+    },
+    {
+      "key": "deschutes-portland-taps",
+      "name": "Deschutes Brewery Public House (Pearl District)",
+      "url": "https://deschutesbrewery.com/pages/portland-public-house",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 32868,
+        "theme_id": 127001
+      }
+    },
+    {
+      "key": "final-draft-taps",
+      "name": "Final Draft Taphouse (Vancouver)",
+      "url": "https://www.finaldrafttaphouse.com/beer-food",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 4228,
+        "theme_id": 13190,
+        "venue_type": "taproom"
+      }
+    },
+    {
+      "key": "heathen-taps",
+      "name": "Heathen Brewing (Vancouver)",
+      "url": "https://www.heathenbrewing.com/brewery-menu",
+      "source_type": "digitalpour",
+      "parser_config": {
+        "company_id": "5577528c5e002c0d508d3a04",
+        "location_id": 2
+      }
+    },
+    {
+      "key": "hoppy-brewer-taps",
+      "name": "The Hoppy Brewer (Gresham)",
+      "url": "https://oregonshoppyplace.com/tap-list/",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 3057,
+        "theme_id": 8704,
+        "venue_type": "taproom"
+      }
+    },
+    {
+      "key": "loyal-legion-beaverton-taps",
+      "name": "Loyal Legion (Beaverton)",
+      "url": "https://www.loyallegionbeerhall.com/beaverton/taplist",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 51943,
+        "theme_id": 177711,
+        "venue_type": "taproom"
+      }
+    },
+    {
+      "key": "loyal-legion-portland-taps",
+      "name": "Loyal Legion (Southeast Portland)",
+      "url": "https://www.loyallegionbeerhall.com/portland/taplist",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 51389,
+        "theme_id": 177147,
+        "venue_type": "taproom"
+      }
+    },
+    {
+      "key": "saraveza-taps",
+      "name": "Saraveza (North Portland)",
+      "url": "https://www.saraveza.com/site/beer",
+      "source_type": "digitalpour",
+      "parser_config": {
+        "company_id": "51c24092fb890c13d86749af",
+        "location_id": 1,
+        "venue_type": "taproom"
+      }
+    },
+    {
+      "key": "uptown-beer-taps",
+      "name": "Uptown Beer Co. (Raleigh Hills)",
+      "url": "https://www.uptownbeer.co/taplist",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 29796,
+        "theme_id": 114718,
+        "venue_type": "taproom"
+      }
+    },
+    {
+      "key": "victor-23-taps",
+      "name": "Victor 23 Brewing (Vancouver)",
+      "url": "https://www.victor23.com/",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 3044,
+        "theme_id": 8652
+      }
+    }
+  ]
+}
