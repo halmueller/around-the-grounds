@@ -280,9 +280,13 @@ taproom at the old brewery's name; a draft list in text). 37 venues in all.
   and the only other source is untappd.com venue pages, which the droplet
   cannot reach. Skipped, as in Seattle.
 - Occidental (occidentalbeers.com) and Gigantic: no tap list in text.
-- Hopworks: reachable only some of the time (Cloudflare), and its menu is a
-  Canva design. Needs Hal's approval for the browser User-Agent, as Migration
-  did, and may still be blocked from the droplet.
+- Hopworks (Hal approved the browser User-Agent, 2026-10-13; tried, not
+  added). The Canva design on its home page is the food menu. Its beer page
+  (`/menus/beer`) is a catalogue by season. The live list is the "On Draft"
+  section of the Powell pub's ordering menu (`/menus/powell-drinks-ordering`,
+  a Popmenu site), but the page arrives with three of its items and loads the
+  rest by script, so it needs a new Popmenu parser. Cloudflare also challenged
+  about half the requests from a home connection, with either User-Agent.
 - The Thirsty Sasquatch (Vancouver) is now on hungrysasquatchpizza.com, with
   its beers in a Toast ordering menu. No parser for that yet.
 - Still not reached at any address tried: Brewery 26, Dirty Pretty, Drinking
