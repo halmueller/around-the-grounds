@@ -36,8 +36,8 @@ Everything else is already per-site: the matcher, the parsers, `venue_type`,
 
 Settled 2026-10-12: the Portland domain is `portlandfreshies.com` (not yet
 registered), and the first pass covers the metro area, including Vancouver,
-WA. Items 3 and 4 were built as recommended. Still open: the Yakima site's
-name (built as "Yakima Freshies" for now), and item 5.
+WA. Items 3 and 4 were built as recommended. The Yakima site is "Yakima Freshies"
+(settled 2026-10-13). Still open: item 5.
 
 1. **Names and domains.** As of 2026-10-12, `whois` shows no registration for
    `portlandfreshies.com`, `pdxfreshies.com`, `yakimafreshies.com`, or
@@ -457,10 +457,10 @@ Seattle venues.
 ## Phase 2: Yakima Valley, Ellensburg, Prosser, and the Tri-Cities
 
 First pass built 2026-10-13: `config/sites/yakima-freshies.json`, 13 venues,
-77 matching beers in the first live preview, and no errors. The working name
-is "Yakima Freshies" at `yakimafreshies.com` (not registered), and the pages
-say "Central Washington" where Seattle's say "Seattle"; both are placeholders
-until Hal settles the name. No event sources, so no Events tab.
+77 matching beers in the first live preview, and no errors. The site is
+"Yakima Freshies" at `yakimafreshies.com` (not registered), and the pages say
+"Central Washington" where Seattle's say "Seattle"; Hal confirmed both on
+2026-10-13. No event sources, so no Events tab.
 
 ### 2.1 Venue survey (2026-10-13)
 
@@ -479,10 +479,9 @@ Franklin county towns, plus tourism-board and Washington Beer Blog lists.
 
 **No list of what is pouring now:**
 
-- Dru Bru (Cle Elum), which Hal asked for: the site has a beer catalogue
-  ("check each product for availability") and an Instagram feed, and no tap
-  list for either taproom. Needs Hal's call; an Untappd venue page would be
-  blocked from the droplet.
+- Dru Bru (Cle Elum): the site has a beer catalogue ("check each product for
+  availability") and an Instagram feed, and no tap list for either taproom.
+  Hal, 2026-10-13: skip it.
 - Iron Horse (Ellensburg): catalogue and beer finder only.
 - Whipsaw (Ellensburg), Mule & Elk (Cle Elum), Roslyn Brewing, Paper Street
   (Pasco), Hop Capital (Yakima), and Wheat Head (Kennewick; menu is an
@@ -522,8 +521,7 @@ Ellensburg, Cle Elum, and Roslyn candidate lacks a readable list.
 
 ### 2.3 Still to do
 
-- Hal: the name and domain; whether "Central Washington" is the right phrase;
-  what to do about Dru Bru and the upper-county gap.
+- Register `yakimafreshies.com`.
 - Look for the unreachable venues' real addresses; try the Toast and Pourwall
   venues if parsers for them get written.
 - Droplet dry run and launch, as for Portland (1.5 and 1.6).
