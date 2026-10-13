@@ -14,19 +14,24 @@ Config (``source_type: "text-taplist"``; the venue ``url`` is fetched)::
       "include_sections": ["^MAIN BAR$"],    # optional, regexes
       "exclude_sections": ["closed"],        # optional, regexes
       "line_tags": ["h2"],                   # optional; default ["p", "li"]
-      "detail_lines": 2                      # optional; default 0
+      "detail_lines": 2,                     # optional; default 0
+      "source_url": "https://…"              # optional: fetch this instead
     }
 
 Optional named groups: ``style``, ``abv``, ``brewery``. ``line_tags`` names
 the elements whose lines can be entries; by default headings only divide the
 page, but some sites (Bizarre) put each beer in a heading.
 
+``source_url`` is for a list kept somewhere other than the page people visit
+(Imperial Bottle Shop's site links a public Google Doc; its
+``…/export?format=html`` address is the list as a web page).
+
 ``detail_lines`` is for lists that put the name on one line and say what the
 beer is on the next ("Faustian Luminary — 5.6%", then "Fresh Hopped, Hoppy
 Pilsner …"): up to that many lines after an entry, stopping at the next entry,
-section, or other heading, become its description. The description is used for matching (a
-beer can be a fresh hop by its description alone) and supplies the ABV when
-the name line has none.
+section, or other heading, become its description. The description is used
+for matching (a beer can be a fresh hop by its description alone) and supplies
+the ABV when the name line has none.
 """
 
 import re
@@ -147,7 +152,8 @@ class TextTaplistParser(BaseParser):
 
     async def parse(self, session: aiohttp.ClientSession) -> List[Event]:
         config = self.venue.parser_config or {}
-        html = await fetch_listing_text(session, self.venue.url)
+        url = str(config.get("source_url") or self.venue.url)
+        html = await fetch_listing_text(session, url)
         entries = parse_text_taplist(html, config)
         if not entries:
             self.logger.warning(f"{self.venue.name}: no tap-list lines matched")

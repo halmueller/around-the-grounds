@@ -6,7 +6,9 @@ The pages here are cut-down copies of the venues' own markup (2026-10-12).
 import logging
 from typing import Any, Dict, List
 
+import aiohttp
 import pytest
+from aioresponses import aioresponses
 
 from around_the_grounds.config.loader import load_site_config
 from around_the_grounds.models import Event
@@ -16,7 +18,11 @@ from around_the_grounds.parsers.generic.pdf_taplist import (
     find_pdf_link,
     parse_pdf_taplist,
 )
-from around_the_grounds.parsers.generic.text_taplist import parse_text_taplist
+from around_the_grounds.parsers.generic.text_taplist import (
+    TextTaplistParser,
+    parse_text_taplist,
+)
+from around_the_grounds.utils.host_throttle import listing_throttle
 
 LOGGER = logging.getLogger(__name__)
 VENUES = {v.key: v for v in load_site_config("portland-freshies").venues}
@@ -455,4 +461,58 @@ class TestMoreTextLists:
 
         assert [(e.name, e.style) for e in entries] == [
             ("Luminosa Livin’", "FRESH HOP JUICY PALE ALE")
+        ]
+
+
+IMPERIAL = """
+<p>Fresh Hop Beers listed in Green</p>
+<p>20 oz Imperial Pint glass $8</p>
+<p>4 oz Sample Pour: $3.50</p>
+<ol>
+<li>Pilsner: Recluse Brew Works Plant Sale Fresh Hop Pilsner 5.2% (fresh hallertau
+hops from Goschie Farms) (tap cleaned 10/7)</li>
+<li>Oktoberfest: Heater Allen Bobtoberfest Marzen-Style Lager 5.6% (tap cleaned 10/4)</li>
+<li>IPA: IPA: Barley Brown's Beer Mitch Fresh Hop IPA 6.3% (tap cleaned 10/7)</li>
+<li>Kombucha (Non-Alcoholic): Happy Mountain Kombucha Peach Blossom $5 for pint pour</li>
+<li>🍎2 Towns Ciderhouse Pumpkin Cider 6% (tap cleaned 10/5)</li>
+</ol>
+"""
+
+
+class TestImperialBottleShop:
+    def test_numbered_lines_from_the_document(self) -> None:
+        venue = VENUES["imperial-bottle-shop-taps"]
+        entries = parse_text_taplist(IMPERIAL, venue.parser_config or {})
+
+        # The pricing paragraphs, the kombucha (no ABV), and the cider (no
+        # "Style:" part) are not read as beers.
+        assert [(e.name, e.style, e.abv) for e in entries] == [
+            ("Recluse Brew Works Plant Sale Fresh Hop Pilsner", "Pilsner", "5.2%"),
+            ("Heater Allen Bobtoberfest Marzen-Style Lager", "Oktoberfest", "5.6%"),
+            ("Barley Brown's Beer Mitch Fresh Hop IPA", "IPA", "6.3%"),
+        ]
+
+    @pytest.mark.asyncio
+    async def test_fetches_the_document_not_the_shop_site(self) -> None:
+        venue = VENUES["imperial-bottle-shop-taps"]
+        source_url = (venue.parser_config or {})["source_url"]
+        assert source_url.startswith("https://docs.google.com/document/d/")
+        assert source_url.endswith("/export?format=html")
+
+        saved = listing_throttle.min_interval
+        listing_throttle.min_interval = 0
+        try:
+            with aioresponses() as mocked:
+                # Only the document is mocked: a request to the shop's own
+                # site would fail the test.
+                mocked.get(source_url, body=IMPERIAL)
+                async with aiohttp.ClientSession() as session:
+                    events = await TextTaplistParser(venue).parse(session)
+        finally:
+            listing_throttle.min_interval = saved
+
+        assert [[e.title, e.category] for e in events] == [
+            ["Recluse Brew Works Plant Sale Fresh Hop Pilsner", "fresh-hop"],
+            ["Heater Allen Bobtoberfest Märzen-Style Lager", "festbier"],
+            ["Barley Brown's Beer Mitch Fresh Hop IPA", "fresh-hop"],
         ]

@@ -1,7 +1,7 @@
 # Plan: Freshies sites for Portland, the Yakima Valley, and Bend
 
 Status: phase 0 done (2026-10-12). Phase 1 (Portland) started: first survey
-pass done and 41 venues configured (2026-10-13); not live.
+pass done and 42 venues configured (2026-10-13); not live.
 Written 2026-10-12.
 
 Goal: reuse the Seattle Freshies site (the `fresh-hop` template, the tap-list
@@ -282,8 +282,15 @@ run with all 39 venues finds 256 matching beers.
   is a draft list. Oregon City Brewing has a 127-item "Beer & Beverages"
   category that may be its draft list; not yet examined.
 - Binary (Beaverton): its beers page is "past, present & future", a catalogue.
-- Imperial Bottle Shop's site is a Canva website; would need the browser
-  User-Agent approval.
+- Imperial Bottle Shop: added. Its site is a Canva website, but the tap list
+  it links is a public Google Doc, read with the ordinary User-Agent through
+  `text-taplist`'s new `source_url` option. 42 venues; a live run finds 268
+  matching beers.
+- Oregon City Brewing (asked for by Hal): not added yet. Its Beer Menu page
+  is filled in by script, and Square's product address answers with no items
+  for every category, though the categories report 127. Needs a look at what
+  the page requests, in a real browser (the browser extension was not
+  connected when this was tried).
 
 **Settled by Hal, 2026-10-13:**
 

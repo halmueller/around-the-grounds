@@ -212,6 +212,21 @@
       }
     },
     {
+      "key": "imperial-bottle-shop-taps",
+      "name": "Imperial Bottle Shop & Taproom (Division)",
+      "url": "https://imperialbottleshop.com/",
+      "source_type": "text-taplist",
+      "parser_config": {
+        "note": "The site's tap list link opens a public Google Doc; source_url is that document as a web page. Each tap is a numbered line, 'Style: Brewery Beer 5.2% (notes) (tap cleaned 10/7)'. Cider and wine lines have no 'Style:' part and are left out, as are the pricing lines above the list.",
+        "source_url": "https://docs.google.com/document/d/1yDsoptwTsHoTVfMqp8HhrbmJ2D5IaluwUJYuOIYOPnI/export?format=html",
+        "line_tags": [
+          "li"
+        ],
+        "line_pattern": "^(?P<style>[^:$%]{2,60}?):\\s+(?:IPA:\\s+)?(?P<name>.+?)\\s+(?P<abv>\\d+(?:\\.\\d+)?%)",
+        "venue_type": "taproom"
+      }
+    },
+    {
       "key": "living-haus-taps",
       "name": "Living Häus Beer (Buckman)",
       "url": "https://www.livinghausbeer.com/beer",
