@@ -531,6 +531,18 @@ Nation, Redifer, Berchman's, Taneum Creek (404), and Whitstran/Green Oak.
 The site has nothing between Yakima and Snoqualmie Pass yet: every
 Ellensburg, Cle Elum, and Roslyn candidate lacks a readable list.
 
+**Ellensburg taprooms and bottle shops (2026-10-13):** none usable either.
+Pretty Fair Beer (420 N Pearl St, the town's beer bar) has a dead domain
+(prettyfairbeer.com no longer resolves) and only a stale, unverified Untappd
+venue page; it was listed for sale and may be closed. Rock & Reef Brewing
+(416 N Main St, the former Enchantment taproom) shows three flagship cans
+as images and an image-only food menu. Happy's Market (207 W University Way,
+20-plus taps and growler fills) has a one-page 2014 site with no list.
+Cornerstone Pie's domain is for sale; WineWorks and Gard Vintners have no
+working site. Bruce's Place, Frontier, The Tav, First and Last Chance,
+Huntsman's, Nodding Donkey, and Pearl Bar are general bars; no tap list
+for any of them turned up in searches, and their sites were not checked.
+
 ### 2.2 Parser changes made for this site
 
 - `html-taplist` gained `detail_sibling` for menus that put a beer's
