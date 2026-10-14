@@ -24,6 +24,7 @@ from .generic import (
     TapHunterParser,
     TapRowsParser,
     TextTaplistParser,
+    UntappdBoardParser,
     UntappdEmbedParser,
     UntappdVenueParser,
     WordPressParser,
@@ -62,6 +63,7 @@ class ParserRegistry:
         "square-online": SquareOnlineParser,
         "tap-rows": TapRowsParser,
         "pourwall": PourwallParser,
+        "untappd-board": UntappdBoardParser,
         "squarespace-events": SquarespaceEventsParser,
     }
 

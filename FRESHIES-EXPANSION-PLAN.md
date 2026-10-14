@@ -430,6 +430,26 @@ The New School's openings and closings before calling the survey complete.
   Rogue's old Newport pub, but its Newport tap tab is empty (only Eugene has
   an embed).
 
+**Second pass on the open items (2026-10-14):**
+
+- Added: Three Mugs Public House (Hillsboro; Pourwall, now that the parser
+  exists), Zoiglhaus (its Wix "Our Beers" page; the seasonal section is kept
+  current, and "Oktoberfresh" is matched as festbier for this venue),
+  Baerlic's three taprooms (Southeast, Alberta, and the Barley Pod; their
+  "Now On Tap" pages are text menus now, not the images found on the first
+  pass), and Cooper Mountain (Tigard and Sherwood) through a new
+  `untappd-board` parser for Untappd display boards. 55 venues.
+- Added to "Unable to read beer menus": 10 Barrel (an Incapsula bot
+  challenge on the whole site), Rosenstadt (image list), and Waltz (photos of
+  its board).
+- Skipped at Hal's direction: Great Notion, and Loowit's Ole's Outpost
+  (Vancouver), whose list is a Google Slides deck that would need its own
+  parser.
+- Rechecked, nothing usable: Barrel Mountain, Golden Valley (Toast), Gigantic
+  (links only), Old Town (catalogue), Shoug (its PDF is food), Trap Door
+  (awards only), Vertigo (three house beers), Laurelwood and Ruse (script
+  only); no site found for Oregon City Brewing or Little Beast.
+
 Tuning notes from the first run: Uptown Beer Co. numbers its taps in the beer
 name ("2. 🌿Fresh Hop Cumulus (Citra)"); leading tap numbers are now stripped
 for every site (2026-10-13). A pumpkin

@@ -11,57 +11,72 @@
   },
   "generate_description": false,
   "skipped_venues": [
-    {
-      "name": "649 Taphouse (Aloha)",
-      "url": "https://649bar.com/",
-      "type": "taproom",
-      "reason": "Its own site answers with a Cloudflare challenge (403)."
-    },
-    {
-      "name": "Crux Fermentation Project (Portland)",
-      "url": "https://cruxfermentation.com/portland",
-      "reason": "Its own site answers with a Cloudflare challenge (403)."
-    },
-    {
-      "name": "Function PDX (Alberta)",
-      "url": "https://functionpdx.com/now-tapped/",
-      "type": "taproom",
-      "reason": "Its Now Tapped page reads from a Mac, but answers the scraper on the droplet with a Cloudflare challenge (403) every time (three tries, 2026-10-14), though a plain curl from the droplet gets through."
-    },
-    {
-      "name": "Hopworks Urban Brewery",
-      "url": "https://www.hopworksbeer.com/",
-      "reason": "Its own site answers with a Cloudflare challenge (403)."
-    },
-    {
-      "name": "Horse Brass Pub (Belmont)",
-      "url": "https://horsebrass.com/",
-      "type": "taproom",
-      "reason": "Its site links only to its untappd.com venue page, and untappd.com is blocked from the droplet (Cloudflare)."
-    },
-    {
-      "name": "Lucky Labrador Brewing",
-      "url": "https://luckylab.com/",
-      "reason": "Its own site answers with a Cloudflare challenge (403)."
-    },
-    {
-      "name": "The Thirsty Sasquatch (Vancouver)",
-      "url": "https://www.hungrysasquatchpizza.com/",
-      "type": "taproom",
-      "reason": "Its site (hungrysasquatchpizza.com) is a Chowly site. Chowly's online ordering menu reads fine but has only pizzas, salads, sides, and sodas, no beers; the full menu would be on Toast, which answers with a Cloudflare challenge. Checked 2026-10-13."
-    },
-    {
-      "name": "Westside Taphouse & Growler Fill (West Salem)",
-      "url": "https://westsidetaphouse.com/",
-      "type": "taproom",
-      "reason": "Its site links only to its untappd.com page, and untappd.com is blocked from the droplet (Cloudflare)."
-    },
-    {
-      "name": "Xicha Brewing (Salem)",
-      "url": "https://www.xichabrewing.com/",
-      "reason": "Its site links only to its untappd.com page, and untappd.com is blocked from the droplet (Cloudflare)."
-    }
-  ],
+      {
+        "name": "10 Barrel Brewing (Pearl District)",
+        "url": "https://10barrel.com/pub/portland/",
+        "reason": "Its whole site answers with an Incapsula bot challenge."
+      },
+      {
+        "name": "649 Taphouse (Aloha)",
+        "url": "https://649bar.com/",
+        "type": "taproom",
+        "reason": "Its own site answers with a Cloudflare challenge (403)."
+      },
+      {
+        "name": "Crux Fermentation Project (Portland)",
+        "url": "https://cruxfermentation.com/portland",
+        "reason": "Its own site answers with a Cloudflare challenge (403)."
+      },
+      {
+        "name": "Function PDX (Alberta)",
+        "url": "https://functionpdx.com/now-tapped/",
+        "type": "taproom",
+        "reason": "Its Now Tapped page reads from a Mac, but answers the scraper on the droplet with a Cloudflare challenge (403) every time (three tries, 2026-10-14), though a plain curl from the droplet gets through."
+      },
+      {
+        "name": "Hopworks Urban Brewery",
+        "url": "https://www.hopworksbeer.com/",
+        "reason": "Its own site answers with a Cloudflare challenge (403)."
+      },
+      {
+        "name": "Horse Brass Pub (Belmont)",
+        "url": "https://horsebrass.com/",
+        "type": "taproom",
+        "reason": "Its site links only to its untappd.com venue page, and untappd.com is blocked from the droplet (Cloudflare)."
+      },
+      {
+        "name": "Lucky Labrador Brewing",
+        "url": "https://luckylab.com/",
+        "reason": "Its own site answers with a Cloudflare challenge (403)."
+      },
+      {
+        "name": "Rosenstadt Brewery (Portland)",
+        "url": "https://www.rosenstadtbrewery.com/taproom",
+        "reason": "Its taproom page has no tap list text; the list is an image."
+      },
+      {
+        "name": "The Thirsty Sasquatch (Vancouver)",
+        "url": "https://www.hungrysasquatchpizza.com/",
+        "type": "taproom",
+        "reason": "Its site (hungrysasquatchpizza.com) is a Chowly site. Chowly's online ordering menu reads fine but has only pizzas, salads, sides, and sodas, no beers; the full menu would be on Toast, which answers with a Cloudflare challenge. Checked 2026-10-13."
+      },
+      {
+        "name": "Waltz Brewing (Forest Grove)",
+        "url": "https://www.waltzbrewing.com/tap",
+        "reason": "Its On Tap page is a gallery of photos of the board."
+      },
+      {
+        "name": "Westside Taphouse & Growler Fill (West Salem)",
+        "url": "https://westsidetaphouse.com/",
+        "type": "taproom",
+        "reason": "Its site links only to its untappd.com page, and untappd.com is blocked from the droplet (Cloudflare)."
+      },
+      {
+        "name": "Xicha Brewing (Salem)",
+        "url": "https://www.xichabrewing.com/",
+        "reason": "Its site links only to its untappd.com page, and untappd.com is blocked from the droplet (Cloudflare)."
+      }
+    ],
   "venues": [
     {
       "key": "abv-public-house-taps",
@@ -97,6 +112,42 @@
         "item": ".menu-item",
         "name": ".menu-item-title",
         "name_pattern": "^(?P<name>.+?)\\s+-\\s+\\d",
+        "match_whole_item": true
+      }
+    },
+    {
+      "key": "baerlic-barley-pod-taps",
+      "name": "Baerlic Barley Pod (Northeast Portland)",
+      "url": "https://baerlicbrewing.com/now-on-tap-northeast-barley-pod",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "A Squarespace menu per taproom; only its BEER and CIDER sections are read.",
+        "item": ".menu-section:has(.menu-section-title:-soup-contains(\"BEER\")) .menu-item, .menu-section:has(.menu-section-title:-soup-contains(\"CIDER\")) .menu-item",
+        "name": ".menu-item-title",
+        "match_whole_item": true
+      }
+    },
+    {
+      "key": "baerlic-alberta-taps",
+      "name": "Baerlic Brewing (Alberta)",
+      "url": "https://baerlicbrewing.com/now-on-tap-northeast-alberta-taproom",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "A Squarespace menu per taproom; only its BEER and CIDER sections are read.",
+        "item": ".menu-section:has(.menu-section-title:-soup-contains(\"BEER\")) .menu-item, .menu-section:has(.menu-section-title:-soup-contains(\"CIDER\")) .menu-item",
+        "name": ".menu-item-title",
+        "match_whole_item": true
+      }
+    },
+    {
+      "key": "baerlic-southeast-taps",
+      "name": "Baerlic Brewing (Southeast Portland)",
+      "url": "https://baerlicbrewing.com/now-on-tap-southeast-brewery-taproom",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "A Squarespace menu per taproom; only its BEER and CIDER sections are read.",
+        "item": ".menu-section:has(.menu-section-title:-soup-contains(\"BEER\")) .menu-item, .menu-section:has(.menu-section-title:-soup-contains(\"CIDER\")) .menu-item",
+        "name": ".menu-item-title",
         "match_whole_item": true
       }
     },
@@ -201,6 +252,26 @@
         "name": ".menu-item-title",
         "name_pattern": "^(?P<name>.+?)(?:\\s+-\\s+[^-]+?)?\\s+ABV:",
         "match_whole_item": true
+      }
+    },
+    {
+      "key": "cooper-mountain-sherwood-taps",
+      "name": "Cooper Mountain Ale Works (Sherwood)",
+      "url": "https://www.coopermountainaleworks.com/sherwood",
+      "source_type": "untappd-board",
+      "parser_config": {
+        "note": "The pub page links its Untappd display board.",
+        "board_id": 67649
+      }
+    },
+    {
+      "key": "cooper-mountain-tigard-taps",
+      "name": "Cooper Mountain Ale Works (Tigard)",
+      "url": "https://www.coopermountainaleworks.com/tigard",
+      "source_type": "untappd-board",
+      "parser_config": {
+        "note": "The pub page links its Untappd display board.",
+        "board_id": 57393
       }
     },
     {
@@ -526,6 +597,16 @@
       }
     },
     {
+      "key": "three-mugs-pub-taps",
+      "name": "Three Mugs Public House (Hillsboro)",
+      "url": "https://threemugsbrewing.com/three-mugs-public-house/pub-taplist/",
+      "source_type": "pourwall",
+      "parser_config": {
+        "location_id": "66498612b87d2d00088fb17a",
+        "venue_type": "taproom"
+      }
+    },
+    {
       "key": "threshold-taps",
       "name": "Threshold Brewing (Montavilla)",
       "url": "https://www.threshold.beer/",
@@ -657,6 +738,21 @@
         "detail_lines": 2,
         "listing_exclude": [
           "not to be mistaken with a fresh hop"
+        ]
+      }
+    },
+    {
+      "key": "zoiglhaus-taps",
+      "name": "Zoiglhaus Brewing (Lents)",
+      "url": "https://www.zoiglhaus.com/beers",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "A Wix page of repeater blocks (year-round and seasonal, the list shown twice); names are the blocks that aren't ABV lines, with a zero-width space, 'NEW!', or '®' trimmed. 'Oktoberfresh' is its Oktoberfest-season beer.",
+        "item": "div.wixui-rich-text[id*=\"__item-\"]:not(:-soup-contains(\"ABV\")):not(:-soup-contains(\"Alc. by Vol\"))",
+        "name": "p, h3",
+        "name_pattern": "^[\\s\\u200b]*(?:NEW!\\s*)?(?P<name>.+?)[\\s®]*$",
+        "festbier_include": [
+          "\\boktoberfresh\\b"
         ]
       }
     }

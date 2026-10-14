@@ -19,6 +19,7 @@ from .square_online import SquareOnlineParser
 from .squarespace_events import SquarespaceEventsParser
 from .tap_rows import TapRowsParser
 from .text_taplist import TextTaplistParser
+from .untappd_board import UntappdBoardParser
 from .untappd_embed import UntappdEmbedParser
 from .untappd_venue import UntappdVenueParser
 from .wordpress import WordPressParser
@@ -46,4 +47,5 @@ __all__ = [
     "SquarespaceEventsParser",
     "TapRowsParser",
     "PourwallParser",
+    "UntappdBoardParser",
 ]

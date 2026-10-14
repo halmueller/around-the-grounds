@@ -303,6 +303,57 @@ class TestConfiguredVenues:
         ]
         assert [[e.title, e.category] for e in events] == [["Fest Bier", "festbier"]]
 
+    def test_zoiglhaus_names_from_wix_blocks(self) -> None:
+        html = """
+        <div class="wixui-rich-text" id="comp-a__item-1"><h3>ZOIGL-PILS</h3></div>
+        <div class="wixui-rich-text" id="comp-b__item-1"><h3>4.8% ABV / 42 IBU</h3></div>
+        <div class="wixui-rich-text" id="comp-c__item-2"><h3>\u200b FRESH HOP KÖLSCH</h3></div>
+        <div class="wixui-rich-text" id="comp-d__item-2"><h3>4.9% Alc. by Vol. / 20 IBU</h3></div>
+        <div class="wixui-rich-text" id="comp-c__item-3"><p>OKTOBERFRESH <span>®</span></p></div>
+        <div class="wixui-rich-text" id="comp-c__item-4"><h3>NEW! PETITE PILSNER</h3></div>
+        <div class="wixui-rich-text" id="comp-e__item-4"><h3></h3></div>
+        <div class="wixui-rich-text" id="comp-f"><h3>OUR BEERS</h3></div>
+        """
+        venue = VENUES["zoiglhaus-taps"]
+        entries = parse_html_taplist(html, venue.parser_config or {})
+        events = build_listings(venue, entries, "html", LOGGER)
+
+        assert [e.name for e in entries] == [
+            "ZOIGL-PILS",
+            "FRESH HOP KÖLSCH",
+            "OKTOBERFRESH",
+            "PETITE PILSNER",
+        ]
+        assert [[e.title, e.category] for e in events] == [
+            ["FRESH HOP KÖLSCH", "fresh-hop"],
+            ["OKTOBERFRESH", "festbier"],
+        ]
+
+    @pytest.mark.parametrize(
+        "key",
+        ["baerlic-southeast-taps", "baerlic-alberta-taps", "baerlic-barley-pod-taps"],
+    )
+    def test_baerlic_beer_and_cider_sections(self, key: str) -> None:
+        html = """
+        <div class="menu-section"><div class="menu-section-title">BEER</div>
+          <div class="menu-item"><div class="menu-item-title">GREEN WATER *FRESH
+            HOP* PALE LAGER</div></div>
+          <div class="menu-item"><div class="menu-item-title">OKTOBAERFEST MARZEN
+            LAGER</div></div></div>
+        <div class="menu-section"><div class="menu-section-title">CIDER</div>
+          <div class="menu-item"><div class="menu-item-title">YONDER DRY</div></div></div>
+        <div class="menu-section"><div class="menu-section-title">NON-ALCOHOLIC</div>
+          <div class="menu-item"><div class="menu-item-title">PUMPKIN
+            SODA</div></div></div>
+        """
+        venue = VENUES[key]
+        entries = parse_html_taplist(html, venue.parser_config or {})
+        assert [e.name for e in entries] == [
+            "GREEN WATER *FRESH HOP* PALE LAGER",
+            "OKTOBAERFEST MARZEN LAGER",
+            "YONDER DRY",
+        ]
+
     def test_flyboy_numbered_taps_and_no_cans_line(self) -> None:
         html = """
         <h2>Whiskey</h2>
