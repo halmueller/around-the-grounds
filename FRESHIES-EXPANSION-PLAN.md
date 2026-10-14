@@ -456,10 +456,12 @@ Seattle venues.
 
 ## Phase 2: Yakima Valley, Ellensburg, Prosser, and the Tri-Cities
 
-First pass built 2026-10-13: `config/sites/yakima-freshies.json`, 19 venues
+First pass built 2026-10-13: `config/sites/yakima-freshies.json`, 18 venues
 (13 at first; Leavenworth, Wenatchee, and 5th Line added the same day at
-Hal's request), 98 matching beers in the latest live preview, and no errors. The site is
-"Yakima Freshies" at `yakimafreshies.com` (not registered), and the pages say
+Hal's request; Valley Brewing dropped after the droplet's first run, see
+Blocked below), 98 matching beers in the latest live preview, and no errors. The site is
+"Yakima Freshies" at `yakimafreshies.com` (registered; DNS and HTTPS set
+up on the droplet 2026-10-13), and the pages say
 "Central Washington" where Seattle's say "Seattle"; Hal confirmed both on
 2026-10-13. No event sources, so no Events tab.
 
@@ -468,12 +470,12 @@ Hal's request), 98 matching beers in the latest live preview, and no errors. The
 Candidates came from Open Brewery DB for Kittitas, Yakima, Benton, and
 Franklin county towns, plus tourism-board and Washington Beer Blog lists.
 
-**Configured (19):**
+**Configured (18):**
 
 - Yakima area: 5th Line (Pourwall), Bale Breaker (Moxee; Untappd embed), The Kiln Taproom (Untappd
   embed), Public House of Yakima East and West (DigitalPour list in the page),
-  Shorthead (Tieton; Untappd embed), Single Hill (its own menu table), Valley
-  Brewing (Taplist.io), and Varietal (Sunnyside; Untappd embed).
+  Shorthead (Tieton; Untappd embed), Single Hill (its own menu table), and
+  Varietal (Sunnyside; Untappd embed).
 - Tri-Cities: Ice Harbor Downtown Kennewick and Clover Island (their own tap
   list pages), Moonshot (Kennewick; one list for the brewery), Sage (Pasco;
   Untappd embed), and White Bluffs (Richland; TapHunter).
@@ -520,7 +522,9 @@ Pony (Cashmere) is on Facebook only, so Cashmere has no venue. Badger
 Mountain and Triune are closed.
 
 **Blocked or unreachable:** Snipes Mountain (Sunnyside) and HopTown Pizza
-(Wapato) answer with a Cloudflare challenge. No working site found for Horse
+(Wapato) answer with a Cloudflare challenge. Valley Brewing (Yakima) frames
+a Taplist.io menu that loads from a Mac but returns a Cloudflare 403 to the
+droplet; it was configured, then removed on 2026-10-13 at Hal's direction. No working site found for Horse
 Heaven Hills (Prosser), Rattlesnake Mountain (Richland), Copper Top Tap
 House, Lazy River Taphouse, Underground Taphouse, Tap & Barrel, Ellensburg
 Brewing, Enchantment (Ellensburg), or Wild Earth (Roslyn; reported closed).

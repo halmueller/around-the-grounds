@@ -79,3 +79,9 @@ def test_static_beer_menus_stay_out(site: SiteConfig) -> None:
     keys = " ".join(v.key for v in site.venues)
     for name in ("outskirts", "bombing-range", "atomic-ale"):
         assert name not in keys, name
+
+
+def test_valley_brewing_is_left_out(site: SiteConfig) -> None:
+    # Hal, 2026-10-13: its Taplist.io menu is behind Cloudflare, which refuses
+    # the droplet (403), and Cloudflare blocks are not worked around.
+    assert not [v.key for v in site.venues if "valley-brewing" in v.key]

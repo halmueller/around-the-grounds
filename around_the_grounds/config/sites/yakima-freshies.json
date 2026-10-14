@@ -196,22 +196,6 @@
       }
     },
     {
-      "key": "valley-brewing-taps",
-      "name": "Valley Brewing (Yakima)",
-      "url": "https://www.valleybrewingco.com/",
-      "source_type": "html-taplist",
-      "parser_config": {
-        "note": "The home page frames a Taplist.io menu, which is fetched directly.",
-        "source_url": "https://taplist.io/taplist-897383",
-        "item": ".list-group-item",
-        "name": "h5 .fw-bold",
-        "brewery": "h5 small",
-        "style": "#metadata-style",
-        "abv": "#metadata-abv",
-        "match_whole_item": true
-      }
-    },
-    {
       "key": "varietal-taps",
       "name": "Varietal Beer (Sunnyside)",
       "url": "https://varietalbeer.com/taproom/",
