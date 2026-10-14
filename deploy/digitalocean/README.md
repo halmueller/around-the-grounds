@@ -74,9 +74,10 @@ sudo -iu freshies ~/around-the-grounds/deploy/digitalocean/run.sh "$SITE"
 ls -l /var/www/$DOMAIN     # index.html, data.json, events.ics
 ```
 
-`run.sh` takes the site key (default `seattle-freshies`) and publishes into
-`/var/www/<host of the site's public_url>`; set `WEB_ROOT` to publish
-somewhere else.
+`run.sh` requires the site key (`seattle-freshies`, `portland-freshies`, or
+`yakima-freshies`; a new site is added to `SITES` at the top of the script)
+and publishes into `/var/www/<host of the site's public_url>`; set `WEB_ROOT`
+to publish somewhere else.
 
 ## 4. Apache
 

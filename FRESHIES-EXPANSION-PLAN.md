@@ -130,8 +130,9 @@ Original notes:
 
 Shipped:
 
-- `run.sh [site key]` (default `seattle-freshies`, so the live cron line keeps
-  working). The web root defaults to `/var/www/<host of public_url>`, read from
+- `run.sh <site key>`. At first the key defaulted to `seattle-freshies`, so
+  the live cron line kept working; since 2026-10-13 it is required and must be
+  one of the sites listed in `SITES` in the script. The web root defaults to `/var/www/<host of public_url>`, read from
   the site config, and the per-site lock to `/tmp/<site key>.lock`.
 - Sites take turns: `run.sh` holds one lock shared by every site while it
   scrapes, waiting up to 25 minutes, so staggered cron minutes are a

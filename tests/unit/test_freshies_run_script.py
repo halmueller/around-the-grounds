@@ -50,10 +50,10 @@ def fake_repo(tmp_path: Path) -> Path:
     (sites / "seattle-freshies.json").write_text(
         json.dumps({"public_url": "https://seattlefreshies.com"})
     )
-    (sites / "hop-town-freshies.json").write_text(
+    (sites / "portland-freshies.json").write_text(
         json.dumps({"public_url": "https://www.hoptown.example:8443/path/"})
     )
-    (sites / "no-url.json").write_text(json.dumps({"key": "no-url"}))
+    (sites / "yakima-freshies.json").write_text(json.dumps({"key": "no-url"}))
     return tmp_path / "repo"
 
 
@@ -87,11 +87,20 @@ def _calls(tmp_path: Path) -> List[str]:
     return path.read_text().splitlines() if path.exists() else []
 
 
-def test_default_is_seattle_with_its_existing_paths(
-    tmp_path: Path, fake_repo: Path
+@pytest.mark.parametrize("env", [None, {"SITE_KEY": "seattle-freshies"}])
+def test_site_key_argument_is_required(
+    tmp_path: Path, fake_repo: Path, env: Optional[Dict[str, str]]
 ) -> None:
-    """The cron line installed before run.sh took a site key keeps working."""
-    result = _run(tmp_path, fake_repo, [], None)
+    result = _run(tmp_path, fake_repo, [], env)
+
+    assert result.returncode == 1
+    assert "usage: run.sh <site key>, one of: seattle-freshies, " in result.stdout
+    assert "not a site key" not in result.stdout
+    assert _calls(tmp_path) == []
+
+
+def test_seattle_keeps_its_existing_paths(tmp_path: Path, fake_repo: Path) -> None:
+    result = _run(tmp_path, fake_repo, ["seattle-freshies"], None)
 
     assert result.returncode == 0, result.stdout + result.stderr
     calls = _calls(tmp_path)
@@ -105,22 +114,22 @@ def test_default_is_seattle_with_its_existing_paths(
 def test_site_key_argument_picks_the_site_and_its_web_root(
     tmp_path: Path, fake_repo: Path
 ) -> None:
-    result = _run(tmp_path, fake_repo, ["hop-town-freshies"], None)
+    result = _run(tmp_path, fake_repo, ["portland-freshies"], None)
 
     assert result.returncode == 0, result.stdout + result.stderr
     calls = _calls(tmp_path)
     assert calls[-1] == (
-        "uv run --no-sync around-the-grounds --site hop-town-freshies "
+        "uv run --no-sync around-the-grounds --site portland-freshies "
         "--output-dir /var/www/www.hoptown.example"
     )
-    assert calls[0].startswith("flock -n -E 75 /tmp/hop-town-freshies.lock ")
-    assert "hop-town-freshies: starting refresh" in result.stdout
+    assert calls[0].startswith("flock -n -E 75 /tmp/portland-freshies.lock ")
+    assert "portland-freshies: starting refresh" in result.stdout
 
 
 def test_sites_queue_on_one_shared_lock(tmp_path: Path, fake_repo: Path) -> None:
     """Sites share upstream hosts, so only one scrapes at a time."""
-    _run(tmp_path, fake_repo, [], None)
-    _run(tmp_path, fake_repo, ["hop-town-freshies"], None)
+    _run(tmp_path, fake_repo, ["seattle-freshies"], None)
+    _run(tmp_path, fake_repo, ["portland-freshies"], None)
 
     queue = [c for c in _calls(tmp_path) if c.startswith("flock -w ")]
     assert len(queue) == 2
@@ -128,32 +137,36 @@ def test_sites_queue_on_one_shared_lock(tmp_path: Path, fake_repo: Path) -> None
 
 
 def test_environment_overrides(tmp_path: Path, fake_repo: Path) -> None:
-    env = {
-        "SITE_KEY": "hop-town-freshies",
-        "WEB_ROOT": "/srv/hops",
-        "LOCK_FILE": "/tmp/mine.lock",
-    }
-    result = _run(tmp_path, fake_repo, [], env)
+    env = {"WEB_ROOT": "/srv/hops", "LOCK_FILE": "/tmp/mine.lock"}
+    result = _run(tmp_path, fake_repo, ["portland-freshies"], env)
 
     assert result.returncode == 0, result.stdout + result.stderr
     calls = _calls(tmp_path)
-    assert calls[-1].endswith("--site hop-town-freshies --output-dir /srv/hops")
+    assert calls[-1].endswith("--site portland-freshies --output-dir /srv/hops")
     assert calls[0].startswith("flock -n -E 75 /tmp/mine.lock ")
 
 
-@pytest.mark.parametrize("key", ["no-url", "not-a-site"])
 def test_site_without_a_public_url_fails_before_scraping(
-    tmp_path: Path, fake_repo: Path, key: str
+    tmp_path: Path, fake_repo: Path
 ) -> None:
-    result = _run(tmp_path, fake_repo, [key], None)
+    result = _run(tmp_path, fake_repo, ["yakima-freshies"], None)
 
     assert result.returncode == 1
     assert "set WEB_ROOT" in result.stdout
     assert _calls(tmp_path) == []
 
 
-@pytest.mark.parametrize("key", ["../../etc/passwd", "two words", "a;b"])
-def test_rejects_keys_that_are_not_a_slug(
+@pytest.mark.parametrize(
+    "key",
+    [
+        "ballard-food-trucks",
+        "not-a-site",
+        "../../etc/passwd",
+        "seattle-freshies portland-freshies",
+        "a;b",
+    ],
+)
+def test_rejects_keys_that_are_not_freshies_sites(
     tmp_path: Path, fake_repo: Path, key: str
 ) -> None:
     result = _run(tmp_path, fake_repo, [key], None)
@@ -164,14 +177,15 @@ def test_rejects_keys_that_are_not_a_slug(
 
 
 def test_scrape_exit_code_is_passed_through(tmp_path: Path, fake_repo: Path) -> None:
-    result = _run(tmp_path, fake_repo, [], {"UV_EXIT": "2"})
+    result = _run(tmp_path, fake_repo, ["seattle-freshies"], {"UV_EXIT": "2"})
 
     assert result.returncode == 2
     assert "finished with exit code 2" in result.stdout
 
 
 def test_real_site_configs_give_run_sh_a_web_root(tmp_path: Path) -> None:
-    """Every fresh-hop site resolves to /var/www/<its domain> from the real repo."""
+    """Every fresh-hop site is one run.sh accepts, and resolves to
+    /var/www/<its domain> from the real repo."""
     for site in load_all_sites():
         if site.template != "fresh-hop":
             continue
@@ -205,8 +219,9 @@ def test_crontab_example_names_the_site_on_each_line() -> None:
         minutes.setdefault(key, line.split()[0])
         if not line.startswith(minutes[key]):
             pytest.fail(f"{key} has two different minutes")
-    assert "seattle-freshies" in minutes and minutes["seattle-freshies"] == "7"
-    # Live sites run at different minutes; lines for sites not configured yet
-    # are examples and stay commented out.
-    live = [m for k, m in minutes.items() if k in keys]
-    assert len(live) == len(set(live))
+    assert minutes == {
+        "seattle-freshies": "7",
+        "portland-freshies": "22",
+        "yakima-freshies": "37",
+    }
+    assert set(minutes) <= keys

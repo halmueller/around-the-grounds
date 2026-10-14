@@ -3,20 +3,27 @@
 # its Apache document root. Run hourly from cron as the sites' user; see
 # README.md.
 #
-#   run.sh [site key]        default: seattle-freshies
+#   run.sh <site key>        seattle-freshies, portland-freshies, or
+#                            yakima-freshies (add new sites to SITES below)
 #
 # The document root defaults to /var/www/<host of the site's public_url>.
-# Overridable via environment: SITE_KEY, REPO_DIR, WEB_ROOT, LOCK_FILE,
+# Overridable via environment: REPO_DIR, WEB_ROOT, LOCK_FILE,
 # QUEUE_LOCK, QUEUE_WAIT, HEALTHCHECK_URL (optional healthchecks.io ping URL).
 set -uo pipefail
 
-SITE_KEY="${1:-${SITE_KEY:-seattle-freshies}}"
+SITES="seattle-freshies portland-freshies yakima-freshies"
+SITE_KEY="${1:-}"
 REPO_DIR="${REPO_DIR:-$HOME/around-the-grounds}"
 
 now() { date "+%Y-%m-%dT%H:%M:%S%z"; }
 
-if [[ ! "$SITE_KEY" =~ ^[A-Za-z0-9_-]+$ ]]; then
-    echo "$(now) not a site key: $SITE_KEY"
+known=""
+for site in $SITES; do
+    [ "$SITE_KEY" = "$site" ] && known=yes
+done
+if [ -z "$known" ]; then
+    [ -n "$SITE_KEY" ] && echo "$(now) not a site key: $SITE_KEY"
+    echo "$(now) usage: run.sh <site key>, one of: ${SITES// /, }"
     exit 1
 fi
 
