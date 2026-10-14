@@ -21,6 +21,24 @@
       "name": "Elliott Bay Brewing",
       "url": "https://elliottbaybrewing.com/",
       "reason": "Its per-pub tap lists are only in Toast ordering pages, and Toast answers with a Cloudflare challenge (403)."
+    },
+    {
+      "name": "Moss Bay Hall (Kirkland)",
+      "url": "https://thehall.group/",
+      "type": "taproom",
+      "reason": "The group's own site (thehall.group) answers with a Cloudflare challenge (403), and its tap lists are on untappd.com venue pages, which are blocked from the droplet (Cloudflare)."
+    },
+    {
+      "name": "Queen Anne Beerhall (Queen Anne)",
+      "url": "https://thehall.group/",
+      "type": "taproom",
+      "reason": "The group's own site (thehall.group) answers with a Cloudflare challenge (403), and its tap lists are on untappd.com venue pages, which are blocked from the droplet (Cloudflare)."
+    },
+    {
+      "name": "The Hall on Occidental (Pioneer Square)",
+      "url": "https://thehall.group/",
+      "type": "taproom",
+      "reason": "The group's own site (thehall.group) answers with a Cloudflare challenge (403), and its tap lists are on untappd.com venue pages, which are blocked from the droplet (Cloudflare)."
     }
   ],
   "venues": [

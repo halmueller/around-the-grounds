@@ -499,9 +499,13 @@ Taphouse, Crux (Portland), Function PDX, Hopworks, and Lucky Labrador; Yakima: B
 Cowiche Creek, HopTown Wood-Fired Pizza, Snipes Mountain, and Valley Brewing.
 It also covers a menu that can be read but has no beers in it: The Thirsty
 Sasquatch (Portland; Chowly). Each entry's reason stays in the config.
-Breweries show on the three brewery lists, taprooms on the Taprooms list. Not included:
-places blocked only by untappd.com venue pages (the Hall group in Seattle,
-Horse Brass in Portland), since that block is Untappd's, not the venue's.
+Breweries show on the three brewery lists, taprooms on the Taprooms list.
+Places whose list is only on untappd.com venue pages were left out at first,
+since that block is Untappd's, not the venue's; Hal added them on
+2026-10-14: the Hall group in Seattle (Queen Anne Beerhall, The Hall on
+Occidental, and Moss Bay Hall, whose own site thehall.group also answers with
+a Cloudflare challenge), Horse Brass, Xicha, and Westside Taphouse in
+Portland, and Iron Horse in Yakima.
 
 ## Phase 2: Yakima Valley, Ellensburg, Prosser, and the Tri-Cities
 
@@ -600,6 +604,27 @@ Cornerstone Pie's domain is for sale; WineWorks and Gard Vintners have no
 working site. Bruce's Place, Frontier, The Tav, First and Last Chance,
 Huntsman's, Nodding Donkey, and Pearl Bar are general bars; no tap list
 for any of them turned up in searches, and their sites were not checked.
+
+**Second pass (2026-10-14):**
+
+- Added: Mule & Elk (Cle Elum), whose site now has an "On Tap" page (cards
+  with an "Out" badge are skipped), and Atomic Ale (Richland), whose page now
+  has a "Seasonal Tap List" below its regular beers. Neither had a match on
+  the day. Atomic writes ABV as "4.8 abv  20 ibu", so the shared ABV reader
+  now takes a number just before "ABV" ahead of one after it. 20 venues.
+- Added to the "Unable to read beer menus" note, at Hal's direction: Iron
+  Horse (its tap room page links only to untappd.com, which is blocked from
+  the droplet), Hop Capital (its Tap List link is a 404; its Menu is food),
+  and Wenatchee Valley Brewing (its Tap List page is empty, with no embed in
+  the Wix page model; its PDFs are wine, non-beer drinks, and food). The
+  Portland site got Xicha and Westside Taphouse (Salem) the same day, both
+  untappd.com only.
+- Rechecked, still unusable: McGlinn's (a fixed menu with "Seasonal Rotator"
+  lines) and Bombing Range (its signature list, last edited in March).
+- Taphouses found, no usable site: The Tap (Yakima; the domain shows a
+  host's default page), Brews Taphouse (Pasco; a parked domain), and Stones
+  Gastropub (Wenatchee), West Richland Beer & Wine, and Tapp'd (West
+  Richland), with no site found.
 
 ### 2.2 Parser changes made for this site
 

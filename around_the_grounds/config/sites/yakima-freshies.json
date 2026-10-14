@@ -22,10 +22,20 @@
       "reason": "Its tap list is only in a Toast ordering page, and Toast answers with a Cloudflare challenge (403), with the honest or a browser User-Agent."
     },
     {
+      "name": "Hop Capital Brewing (Yakima)",
+      "url": "https://www.hopcapitalbrewing.com/",
+      "reason": "Its Tap List link goes to a page that no longer exists (404), and its Menu page is food only."
+    },
+    {
       "name": "HopTown Wood-Fired Pizza (Wapato)",
       "url": "https://hoptownpizza.com/",
       "type": "taproom",
       "reason": "Its own site answers with a Cloudflare challenge (403)."
+    },
+    {
+      "name": "Iron Horse Brewery (Ellensburg)",
+      "url": "https://www.ironhorsebrewery.com/the-tap-room/",
+      "reason": "Its tap room page has no list, only a link to its untappd.com page, and untappd.com is blocked from the droplet (Cloudflare)."
     },
     {
       "name": "Snipes Mountain Brewing (Sunnyside)",
@@ -36,6 +46,11 @@
       "name": "Valley Brewing (Yakima)",
       "url": "https://www.valleybrewingco.com/",
       "reason": "Its tap list is a Taplist.io menu, and Taplist.io answers the droplet with a Cloudflare challenge (403)."
+    },
+    {
+      "name": "Wenatchee Valley Brewing (Wenatchee)",
+      "url": "https://www.wenatcheevalleybrewing.com/tap-list",
+      "reason": "Its Tap List page is empty (no embed in the Wix page model), and its linked PDFs are wine, non-beer drinks, and food."
     }
   ],
   "venues": [
@@ -46,6 +61,18 @@
       "source_type": "pourwall",
       "parser_config": {
         "location_id": "613b681edda9c1000831588a"
+      }
+    },
+    {
+      "key": "atomic-ale-taps",
+      "name": "Atomic Ale Brewpub (Richland)",
+      "url": "https://atomicalebrewpub.com/tap-list",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "A GoDaddy menu: its regular beers, a 'Seasonal Tap List', then ciders and wines, one block per item with the name in an h4.",
+        "item": "[data-aid^=\"MENU_ITEM_\"]:not([data-aid^=\"MENU_ITEM_CONTAINER\"])",
+        "name": "h4",
+        "match_whole_item": true
       }
     },
     {
@@ -125,6 +152,19 @@
         "note": "'Name 6.9% ABV' in bold, then a paragraph saying what the beer is.",
         "line_pattern": "^(?P<name>.{2,60}?)\\s+(?P<abv>\\d+(?:\\.\\d+)?%)(?:\\s*ABV)?\\s*$",
         "detail_lines": 1
+      }
+    },
+    {
+      "key": "mule-and-elk-taps",
+      "name": "Mule & Elk Brewing (Cle Elum)",
+      "url": "https://www.muleandelk.com/our-beers-and-food",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "One card per beer or cider: a style badge, the name in an h3, the ABV, and a description. A card with an 'Out' badge is not pouring and is skipped.",
+        "item": "div.rounded-2xl:has(> h3):not(:has(span.bg-muted:-soup-contains-own(\"Out\")))",
+        "name": "h3",
+        "style": "span.inline-block",
+        "match_whole_item": true
       }
     },
     {

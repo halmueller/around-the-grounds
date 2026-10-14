@@ -25,6 +25,8 @@ DEFAULT_TIMEZONE = "America/Los_Angeles"
 # "ABV: 6.80%" / "ABV | 6 | %", then a bare "5.9%".
 _ABV_PATTERNS = [
     re.compile(r"(\d+(?:\.\d+)?)\s*%\s*ABV", re.I),
+    # "4.8 abv  20 ibu": the number before ABV, not the IBU after it
+    re.compile(r"(\d+(?:\.\d+)?)\s*ABV\b", re.I),
     re.compile(r"ABV[:\s|]*(\d+(?:\.\d+)?)\s*%?", re.I),
     re.compile(r"(\d+(?:\.\d+)?)\s*%"),
 ]

@@ -77,8 +77,10 @@ def test_static_beer_menus_stay_out(site: SiteConfig) -> None:
     # Outskirts' drink menu lists its flagships, not what is pouring (its own
     # fresh hop was on at the Public House and not on that menu, 2026-10-13),
     # and one flagship's description names a fresh-hop festival award.
+    # Atomic Ale was left out too until its page gained a "Seasonal Tap List"
+    # (2026-10-14).
     keys = " ".join(v.key for v in site.venues)
-    for name in ("outskirts", "bombing-range", "atomic-ale"):
+    for name in ("outskirts", "bombing-range"):
         assert name not in keys, name
 
 

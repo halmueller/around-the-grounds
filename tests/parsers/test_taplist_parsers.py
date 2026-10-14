@@ -113,6 +113,8 @@ def test_source_types_are_registered(source_type: str, parser: type) -> None:
         ("ABV | 6 | % | IBU | 52", "6%"),  # Reuben's
         ("Fresh Hop West Coast IPA, 6.5% ABV. Hops: Fresh Amarillo", "6.5%"),
         ("5.4% ABV 35 IBU", "5.4%"),  # IBU must not be read as ABV
+        ("4.8 abv  20 ibu", "4.8%"),  # Atomic Ale: no percent sign
+        ("Helles Lager | 5.6 ABV | IBUs 19", "5.6%"),  # Benedictine
         ("5.9%", "5.9%"),
         ("IBU: 40", None),
         (None, None),
