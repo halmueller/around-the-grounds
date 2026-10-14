@@ -47,3 +47,10 @@ def test_no_venue_uses_the_canva_parser(site: SiteConfig) -> None:
     # venue. Migration was approved, but its Canva designs are food and
     # catering menus with no beer list, so it is not here.
     assert [v.key for v in site.venues if v.source_type == "canva"] == []
+
+
+def test_function_pdx_is_skipped_not_scraped(site: SiteConfig) -> None:
+    # Hal, 2026-10-14: Cloudflare challenges the scraper (403) on every run
+    # from the droplet, and Cloudflare blocks are not worked around.
+    assert not [v.key for v in site.venues if "function-pdx" in v.key]
+    assert "Function PDX (Alberta)" in [v["name"] for v in site.skipped_venues]

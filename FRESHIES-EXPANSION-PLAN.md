@@ -1,7 +1,8 @@
 # Plan: Freshies sites for Portland, the Yakima Valley, and Bend
 
 Status: phase 0 done (2026-10-12). Phase 1 (Portland) started: first survey
-pass done and 42 venues configured (2026-10-13); not live.
+pass done and 42 venues configured (2026-10-13), 41 after Function PDX moved
+to the skipped list (2026-10-14). Portland and Yakima went live 2026-10-13.
 Written 2026-10-12.
 
 Goal: reuse the Seattle Freshies site (the `fresh-hop` template, the tap-list
@@ -246,7 +247,10 @@ found 154 matching beers (the two Loyal Legions alone had 59 fresh-hop beers).
 **Second batch, configured 2026-10-13 (15):** Ancestry (Tualatin), Away Days,
 Bent Shovel (Oregon City), Brujos, Duality, FlyBoy (Tigard), Function PDX,
 Grains of Wrath (Camas), Montavilla Brew Works, Prost, StormBreaker (St. Johns
-and Mississippi), Three Mugs brewery (Hillsboro), TPK, and Wayfinder. All use
+and Mississippi), Three Mugs brewery (Hillsboro), TPK, and Wayfinder. Function
+PDX was removed on 2026-10-14 at Hal's direction: Cloudflare challenges the
+scraper (403) on every droplet run, though its page reads from a Mac; it is
+now on the skipped list. All use
 `html-taplist` or `text-taplist`. Brujos and Wayfinder put the name on one
 line and what the beer is on the next, so `text-taplist` gained a
 `detail_lines` option. With both batches a live run finds 191 matching beers
@@ -465,7 +469,7 @@ pages name them all in one line, "Unable to read beer menus:", with links
 and no reasons (Hal: don't single anyone out). It covers places whose own
 site, or the service holding their tap list (Toast, Taplist.io, checkle),
 blocks automated access: Seattle: Diamond Knot and Elliott Bay; Portland: 649
-Taphouse, Crux (Portland), Hopworks, and Lucky Labrador; Yakima: Bron Yr Aur,
+Taphouse, Crux (Portland), Function PDX, Hopworks, and Lucky Labrador; Yakima: Bron Yr Aur,
 Cowiche Creek, HopTown Wood-Fired Pizza, Snipes Mountain, and Valley Brewing.
 It also covers a menu that can be read but has no beers in it: The Thirsty
 Sasquatch (Portland; Chowly). Each entry's reason stays in the config.

@@ -22,6 +22,12 @@
       "reason": "Its own site answers with a Cloudflare challenge (403)."
     },
     {
+      "name": "Function PDX (Alberta)",
+      "url": "https://functionpdx.com/now-tapped/",
+      "type": "taproom",
+      "reason": "Its Now Tapped page reads from a Mac, but answers the scraper on the droplet with a Cloudflare challenge (403) every time (three tries, 2026-10-14), though a plain curl from the droplet gets through."
+    },
+    {
       "name": "Hopworks Urban Brewery",
       "url": "https://www.hopworksbeer.com/",
       "reason": "Its own site answers with a Cloudflare challenge (403)."
@@ -182,17 +188,6 @@
         "listing_exclude": [
           "available in cans"
         ]
-      }
-    },
-    {
-      "key": "function-pdx-taps",
-      "name": "Function PDX (Alberta)",
-      "url": "https://functionpdx.com/now-tapped/",
-      "source_type": "html-taplist",
-      "parser_config": {
-        "item": ".elementor-price-list-item",
-        "name": ".elementor-price-list-title",
-        "venue_type": "taproom"
       }
     },
     {
