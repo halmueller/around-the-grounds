@@ -10,6 +10,18 @@
     "ballard_food_trucks": "yes"
   },
   "generate_description": false,
+  "skipped_venues": [
+    {
+      "name": "Diamond Knot Brewing (Mukilteo)",
+      "url": "https://diamondknot.com/",
+      "reason": "Its tap lists are checkle.menu embeds behind a Vercel bot challenge (429)."
+    },
+    {
+      "name": "Elliott Bay Brewing",
+      "url": "https://elliottbaybrewing.com/",
+      "reason": "Its per-pub tap lists are only in Toast ordering pages, and Toast answers with a Cloudflare challenge (403)."
+    }
+  ],
   "venues": [
     {
       "key": "bale-breaker-seattle-taps",

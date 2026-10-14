@@ -293,7 +293,22 @@ async def generate_web_data(
     # because the Temporal deploy activity only ever sees this dict.
     if site and site.template_vars:
         web_data["template_vars"] = _site_template_vars(site)
+    # Places whose beer menus cannot be read, named on the pages with links. Omitted when there are none, so other
+    # sites' data.json is unchanged.
+    if site and site.skipped_venues:
+        web_data["skipped_venues"] = _skipped_venues(site)
     return web_data
+
+
+def _skipped_venues(site: SiteConfig) -> List[dict]:
+    """The published part of *site*'s skipped venues: name, url, and type."""
+    skipped = []
+    for venue in site.skipped_venues:
+        entry = {"name": venue["name"], "url": venue["url"]}
+        if venue.get("type"):
+            entry["type"] = venue["type"]
+        skipped.append(entry)
+    return skipped
 
 
 def _site_template_vars(site: SiteConfig) -> Dict[str, str]:

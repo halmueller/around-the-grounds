@@ -55,6 +55,7 @@ def test_site_to_dict_contains_every_field() -> None:
         public_url="https://example.com",
         calendar_max_timed_hours=6.5,
         template_vars={"place": "Somewhere"},
+        skipped_venues=[{"name": "S", "url": "https://s", "reason": "blocked"}],
     )
     assert site_to_dict(site) == {
         "key": "k",
@@ -76,6 +77,7 @@ def test_site_to_dict_contains_every_field() -> None:
         "public_url": "https://example.com",
         "calendar_max_timed_hours": 6.5,
         "template_vars": {"place": "Somewhere"},
+        "skipped_venues": [{"name": "S", "url": "https://s", "reason": "blocked"}],
     }
 
 
@@ -89,6 +91,7 @@ def test_site_from_dict_applies_defaults_for_legacy_payloads() -> None:
     assert site.deploy_subdir == ""
     assert site.public_url == ""
     assert site.calendar_max_timed_hours is None
+    assert site.skipped_venues == []
     assert site.venues[0].source_type == "html"
     assert site.venues[0].parser_config == {}
 

@@ -41,6 +41,7 @@ def site_from_dict(data: Dict[str, Any]) -> SiteConfig:
         public_url=data.get("public_url", ""),
         calendar_max_timed_hours=data.get("calendar_max_timed_hours"),
         template_vars=dict(data.get("template_vars") or {}),
+        skipped_venues=[dict(v) for v in data.get("skipped_venues") or []],
     )
 
 

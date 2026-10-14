@@ -9,6 +9,34 @@
     "author_home": "Seattle"
   },
   "generate_description": false,
+  "skipped_venues": [
+    {
+      "name": "Bron Yr Aur Brewing (Naches)",
+      "url": "https://bronyraurbrewing.com/",
+      "reason": "Its tap list is only in a Toast ordering page, and Toast answers with a Cloudflare challenge (403), with the honest or a browser User-Agent."
+    },
+    {
+      "name": "Cowiche Creek Brewing (Cowiche)",
+      "url": "https://www.cowichecreekbrewing.com/",
+      "reason": "Its tap list is only in a Toast ordering page, and Toast answers with a Cloudflare challenge (403), with the honest or a browser User-Agent."
+    },
+    {
+      "name": "HopTown Wood-Fired Pizza (Wapato)",
+      "url": "https://hoptownpizza.com/",
+      "type": "taproom",
+      "reason": "Its own site answers with a Cloudflare challenge (403)."
+    },
+    {
+      "name": "Snipes Mountain Brewing (Sunnyside)",
+      "url": "https://snipesmountain.com/",
+      "reason": "Its own site answers with a Cloudflare challenge (403)."
+    },
+    {
+      "name": "Valley Brewing (Yakima)",
+      "url": "https://www.valleybrewingco.com/",
+      "reason": "Its tap list is a Taplist.io menu, and Taplist.io answers the droplet with a Cloudflare challenge (403)."
+    }
+  ],
   "venues": [
     {
       "key": "fifth-line-taps",

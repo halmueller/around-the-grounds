@@ -9,6 +9,35 @@
     "author_home": "Seattle"
   },
   "generate_description": false,
+  "skipped_venues": [
+    {
+      "name": "649 Taphouse (Aloha)",
+      "url": "https://649bar.com/",
+      "type": "taproom",
+      "reason": "Its own site answers with a Cloudflare challenge (403)."
+    },
+    {
+      "name": "Crux Fermentation Project (Portland)",
+      "url": "https://cruxfermentation.com/portland",
+      "reason": "Its own site answers with a Cloudflare challenge (403)."
+    },
+    {
+      "name": "Hopworks Urban Brewery",
+      "url": "https://www.hopworksbeer.com/",
+      "reason": "Its own site answers with a Cloudflare challenge (403)."
+    },
+    {
+      "name": "Lucky Labrador Brewing",
+      "url": "https://luckylab.com/",
+      "reason": "Its own site answers with a Cloudflare challenge (403)."
+    },
+    {
+      "name": "The Thirsty Sasquatch (Vancouver)",
+      "url": "https://www.hungrysasquatchpizza.com/",
+      "type": "taproom",
+      "reason": "Its site (hungrysasquatchpizza.com) is a Chowly site. Chowly's online ordering menu reads fine but has only pizzas, salads, sides, and sodas, no beers; the full menu would be on Toast, which answers with a Cloudflare challenge. Checked 2026-10-13."
+    }
+  ],
   "venues": [
     {
       "key": "abv-public-house-taps",

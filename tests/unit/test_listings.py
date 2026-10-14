@@ -147,6 +147,36 @@ class TestListingVenues:
         data = await generate_web_data([], site=load_site_config(site_key))
         assert "listing_venues" not in data
         assert "failed_venues" not in data
+        assert "skipped_venues" not in data
+
+    @pytest.mark.asyncio
+    async def test_skipped_venues_are_published_without_the_reason(self) -> None:
+        site = load_site_config("yakima-freshies")
+        data = await generate_web_data([], site=site)
+        by_name = {v["name"]: v for v in data["skipped_venues"]}
+        assert by_name["Cowiche Creek Brewing (Cowiche)"] == {
+            "name": "Cowiche Creek Brewing (Cowiche)",
+            "url": "https://www.cowichecreekbrewing.com/",
+        }
+        assert by_name["HopTown Wood-Fired Pizza (Wapato)"]["type"] == "taproom"
+        assert len(data["skipped_venues"]) == len(site.skipped_venues)
+
+
+    @pytest.mark.parametrize(
+        "site_key", ["seattle-freshies", "portland-freshies", "yakima-freshies"]
+    )
+    def test_skipped_venues_are_complete(self, site_key: str) -> None:
+        """Every skipped place has a name, a link, and a reason, and none is
+        also on the site."""
+        site = load_site_config(site_key)
+        assert site.skipped_venues
+        listed = {v.name for v in site.venues}
+        for venue in site.skipped_venues:
+            assert set(venue) <= {"name", "url", "type", "reason"}, venue
+            assert venue["name"] and venue["reason"], venue
+            assert venue["url"].startswith("https://"), venue
+            assert venue.get("type", "taproom") == "taproom", venue
+            assert venue["name"] not in listed, venue
 
     def test_only_tap_list_parsers_produce_listings(self) -> None:
         listing_types = {

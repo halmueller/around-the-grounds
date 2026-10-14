@@ -28,3 +28,10 @@ class SiteConfig:
     # (e.g. {"place": "Seattle"}). Setting it turns substitution on for the
     # site; {{site_name}} and {{public_url}} are filled from the fields above.
     template_vars: Dict[str, str] = field(default_factory=dict)
+    # Places whose beer menus cannot be read: the brewery, or a service it
+    # uses for its tap list (e.g. Toast), blocks automated access, or the menu
+    # that can be read has no beers in it. Pages name them with links so
+    # readers know they were not overlooked. Each is a dict with "name" and
+    # "url", optional "type" ("taproom" puts it with the taprooms rather than
+    # the breweries), and "reason" (for maintainers; not published).
+    skipped_venues: List[Dict[str, str]] = field(default_factory=list)

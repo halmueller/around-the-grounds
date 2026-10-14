@@ -317,8 +317,11 @@ run with all 39 venues finds 256 matching beers.
   a Popmenu site), but the page arrives with three of its items and loads the
   rest by script, so it needs a new Popmenu parser. Cloudflare also challenged
   about half the requests from a home connection, with either User-Agent.
-- The Thirsty Sasquatch (Vancouver) is now on hungrysasquatchpizza.com, with
-  its beers in a Toast ordering menu. No parser for that yet.
+- The Thirsty Sasquatch (Vancouver) is now on hungrysasquatchpizza.com, a
+  Chowly site. Rechecked 2026-10-13: Chowly's online ordering menu (the same
+  Toast menu data, readable) has only pizzas, salads, sides, and sodas, no
+  beers; Toast's own pages are Cloudflare-challenged. Listed on the pages as
+  "Unable to read beer menus" (see Skipped-venue notes below).
 - Still not reached at any address tried: Brewery 26, Dirty Pretty, Drinking
   Horse, Feckin, Hetty Alice, Labrewatory, Shattered Oak, Smockville, Orenco
   Taphouse, Growlers Hawthorne, Bridgetown Beerhouse (Facebook only), and
@@ -454,6 +457,21 @@ Seattle venues.
 5. Docs: `CLAUDE.md` (site list, config tree, test count), `README.md`, and
    `ADDING-VENUES.md` (the `template_vars` field).
 
+## Skipped-venue notes on the pages (2026-10-13)
+
+At Hal's request, each site's config lists `skipped_venues`, and the list
+pages name them all in one line, "Unable to read beer menus:", with links
+and no reasons (Hal: don't single anyone out). It covers places whose own
+site, or the service holding their tap list (Toast, Taplist.io, checkle),
+blocks automated access: Seattle: Diamond Knot and Elliott Bay; Portland: 649
+Taphouse, Crux (Portland), Hopworks, and Lucky Labrador; Yakima: Bron Yr Aur,
+Cowiche Creek, HopTown Wood-Fired Pizza, Snipes Mountain, and Valley Brewing.
+It also covers a menu that can be read but has no beers in it: The Thirsty
+Sasquatch (Portland; Chowly). Each entry's reason stays in the config.
+Breweries show on the three brewery lists, taprooms on the Taprooms list. Not included:
+places blocked only by untappd.com venue pages (the Hall group in Seattle,
+Horse Brass in Portland), since that block is Untappd's, not the venue's.
+
 ## Phase 2: Yakima Valley, Ellensburg, Prosser, and the Tri-Cities
 
 First pass built 2026-10-13: `config/sites/yakima-freshies.json`, 18 venues
@@ -504,8 +522,13 @@ Franklin county towns, plus tourism-board and Washington Beer Blog lists.
 **Asked for by Hal, not possible:** Cowiche Creek and Bron Yr Aur keep their
 beer lists only in Toast ordering pages, and Toast answers every request
 (the pages and its data service) with a Cloudflare challenge; that is a
-deliberate block, so it is left alone. Cowiche Creek's own site has a
-catalogue only. Wandering Hop's site is an unfinished site-builder page
+deliberate block, so it is left alone. Rechecked 2026-10-13 at Hal's request
+with the canva parser's browser User-Agent: Toast still returns the
+Cloudflare JavaScript challenge (403) for both, so only running that
+challenge would get through, and that is not done. Cowiche Creek's own site
+(`beers.asp`) is a year-round catalogue that lists all six of its fresh-hop
+beers in and out of season, and its "Current Food and Beer Menu" link goes
+to Toast. Wandering Hop's site is an unfinished site-builder page
 ("Add a description here") that links to Facebook and Instagram and has no
 beer list anywhere. A Toast parser would also not help Brewminatti or
 Colchuck's, for the same reason.

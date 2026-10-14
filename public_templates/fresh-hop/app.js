@@ -250,6 +250,17 @@ function renderListingsPage(data, venueInfo, listingsEl, summaryEl) {
                 : esc(v.name)
         ).join(', ') + '.');
     }
+
+    // Places whose beer menus cannot be read, so readers know they were not
+    // overlooked.
+    const skipped = (data.skipped_venues || []).filter(v => PAGE.venueType(v.type || 'brewery'));
+    if (skipped.length) {
+        showNotice('skipped', 'Unable to read beer menus: ' + skipped.map(v =>
+            safeUrl(v.url)
+                ? `<a href="${esc(v.url)}" target="_blank" rel="noopener">${esc(v.name)}</a>`
+                : esc(v.name)
+        ).join(', ') + '.');
+    }
     return pageVenues;
 }
 
