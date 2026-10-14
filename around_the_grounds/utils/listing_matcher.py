@@ -46,7 +46,9 @@ DEFAULT_EXCLUDE = [r"\bfest(?:ival)?\b(?![\s-]*b(?:ie|ee)r\b)"]
 # Also the patterns checked in descriptions ("our yearly golden Festbier").
 FESTBIER_CORE = [
     r"\bfest[\s-]*b(?:ie|ee)r\b",  # Festbier, Fest Bier, Fest Beer
-    r"tober[\s-]*fest",  # Oktoberfest, Octoberfest, Bobtoberfest
+    # Oktoberfest, Octoberfest, Bobtoberfest; not Artoberfest, an art fair
+    # named in Santiam's beer awards
+    r"(?<!\bar)tober[\s-]*fest",
     r"\bm(?:ä|ae|a)rzen\b",  # Märzen, Maerzen, Marzen
     r"\bwies[’'`]?n\b",  # Wiesn, Wies'n
 ]

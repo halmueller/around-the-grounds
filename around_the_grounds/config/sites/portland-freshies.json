@@ -106,6 +106,18 @@
       }
     },
     {
+      "key": "benedictine-taps",
+      "name": "Benedictine Brewery (Mount Angel)",
+      "url": "https://www.benedictinebrewery.com/menu",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "A Squarespace menu; only its 'Beer on Tap' section, without the tasting-flight item. Bottles are a separate section and are left out.",
+        "item": ".menu-section:has(.menu-section-title:-soup-contains(\"Beer on Tap\")) .menu-item:not(:-soup-contains(\"Tasting\"))",
+        "name": ".menu-item-title",
+        "match_whole_item": true
+      }
+    },
+    {
       "key": "bent-shovel-taps",
       "name": "Bent Shovel Brewing (Oregon City)",
       "url": "https://www.bentshovelbrewing.com/taplist",
@@ -382,6 +394,18 @@
           "\\bF\\.H[.,]"
         ],
         "venue_type": "taproom"
+      }
+    },
+    {
+      "key": "santiam-taps",
+      "name": "Santiam Brewing (Salem)",
+      "url": "https://www.santiambrewing.com/tap-list.html",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "A Weebly page: one paragraph per beer, its name in a size-5 font, then 'Style:' and 'Specifications:' lines. Only the name and style are matched: descriptions list awards ('2015 Artoberfest - People's Choice winner').",
+        "item": "div.paragraph:has(font[size='5'])",
+        "name": "font[size='5']",
+        "style_pattern": "Style:\\s*(.+?)\\s+Specifications:"
       }
     },
     {

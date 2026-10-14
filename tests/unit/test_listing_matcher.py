@@ -148,6 +148,7 @@ class TestFestbierCategory:
             "Oktoberfest Märzen",  # Obec
             "Oktoberfest Marzen",
             "Bobtoberfest",  # Heater Allen, at Beer Junction
+            "Bloktoberfest",  # Block 15
             "Octoberfest Lager",
             "Maerzen",
             "Märzen",
@@ -164,6 +165,7 @@ class TestFestbierCategory:
             "Fresh Hop Festival",
             "Festive Winter Ale",
             "Fresh Hop IPA",
+            "2015 Artoberfest - People's Choice winner",  # Santiam's awards
         ],
     )
     def test_look_alikes_do_not_match(

@@ -3,8 +3,8 @@
 Status: phase 0 done (2026-10-12). Phase 1 (Portland) started: first survey
 pass done and 42 venues configured (2026-10-13), 41 after Function PDX moved
 to the skipped list (2026-10-14), 46 after Treebeerd's (Corvallis and
-Portland), Block 15 (two Corvallis pubs), and Calapooia (Albany) were added
-(2026-10-14). Portland and Yakima
+Portland), Block 15 (two Corvallis pubs), and Calapooia (Albany) were added,
+48 with Santiam (Salem) and Benedictine (Mount Angel) (2026-10-14). Portland and Yakima
 went live 2026-10-13.
 Written 2026-10-12.
 
@@ -415,10 +415,13 @@ The New School's openings and closings before calling the survey complete.
   each page links as "Drink Menu" (`pdf-taplist` gained `join_pattern` for
   its wrapped names); and Calapooia Brewing (Albany), from the "Current Brews
   On Tap" section of its Squarespace menu.
-- Readable but nothing matched on the day: Santiam (Salem; its own beers on a
-  text tap list that still showed a Maibock) and Deluxe (Albany; a "Currently
-  on tap" page). Not added.
-- No usable list: Sky High (2019 tap-handle images), Common Fields, Gilgamesh and Benedictine (catalogs), Ratchet,
+- Readable, nothing matching on the day, added anyway: Santiam (Salem; its
+  own beers on a Weebly tap list, matched on name and style only because its
+  descriptions list awards such as "Artoberfest") and Benedictine (Mount
+  Angel; the "Beer on Tap" section of its Squarespace menu; its seasonal
+  Canticle Oktoberfest was in bottles only).
+- Readable but not added: Deluxe (Albany; a "Currently on tap" page).
+- No usable list: Sky High (2019 tap-handle images), Common Fields, Gilgamesh (a catalog), Ratchet,
   Barrel & Keg, and Archive Coffee & Bar. Xicha and Westside Taphouse link
   only to untappd.com venue pages, which are blocked from the droplet.
 - Closed or gone: Rogue (all pubs), Newport Brewing (2025), and Wolf Tree.

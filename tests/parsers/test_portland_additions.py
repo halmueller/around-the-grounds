@@ -258,6 +258,51 @@ class TestConfiguredVenues:
             ["Märzen", "festbier"],
         ]
 
+    def test_benedictine_draft_beers_only(self) -> None:
+        html = """
+        <div class="menu-section">
+          <div class="menu-section-header"><h3 class="menu-section-title">Beer on Tap</h3></div>
+          <div class="menu-item"><div class="menu-item-title">St. Michael</div>
+            <div class="menu-item-description">Helles Lager | 5.6 ABV | IBUs 19</div></div>
+          <div class="menu-item"><div class="menu-item-title">Canticle</div>
+            <div class="menu-item-description">Oktoberfest Lager | 6.7 ABV</div></div>
+          <div class="menu-item"><div class="menu-item-title">*Tasting Flights</div>
+            <div class="menu-item-description">*4oz glass</div></div>
+        </div>
+        <div class="menu-section">
+          <div class="menu-section-header"><h3 class="menu-section-title">Beer by the Bottle</h3></div>
+          <div class="menu-item"><div class="menu-item-title">Fresh Hop Hemina</div></div>
+        </div>
+        """
+        venue = VENUES["benedictine-taps"]
+        entries = parse_html_taplist(html, venue.parser_config or {})
+        events = build_listings(venue, entries, "html", LOGGER)
+
+        assert [e.name for e in entries] == ["St. Michael", "Canticle"]
+        assert [[e.title, e.category] for e in events] == [["Canticle", "festbier"]]
+
+    def test_santiam_awards_are_not_matched(self) -> None:
+        html = """
+        <table><tr><td class="wsite-multicol-col">
+        <div class="paragraph"><strong><font size="6">PORTERS AND STOUTS</font></strong>
+          Name: <strong><font size="5">Pirate Stout</font></strong><br/>
+          Style: Rum Barrel Flavoured Coconut Stout<br/>
+          Specifications: 8% abv, 59 IBU<br/>
+          2015 Artoberfest - People's Choice winner</div>
+        <div class="paragraph">Name: <strong><font size="5">Fest Bier</font></strong><br/>
+          Style: Oktoberfest Lager<br/>Specifications: 5.9% abv, 22 IBU</div>
+        </td></tr></table>
+        """
+        venue = VENUES["santiam-taps"]
+        entries = parse_html_taplist(html, venue.parser_config or {})
+        events = build_listings(venue, entries, "html", LOGGER)
+
+        assert [(e.name, e.style, e.abv) for e in entries] == [
+            ("Pirate Stout", "Rum Barrel Flavoured Coconut Stout", "8%"),
+            ("Fest Bier", "Oktoberfest Lager", "5.9%"),
+        ]
+        assert [[e.title, e.category] for e in events] == [["Fest Bier", "festbier"]]
+
     def test_flyboy_numbered_taps_and_no_cans_line(self) -> None:
         html = """
         <h2>Whiskey</h2>
