@@ -559,3 +559,100 @@ class TestConfiguredVenues:
         assert VENUES[key].source_type == "untappd-embed"
         assert isinstance(config["location_id"], int)
         assert isinstance(config["theme_id"], int)
+
+
+class TestSecondPassVenues:
+    """Venues added on 2026-10-14, from cut-down copies of their pages."""
+
+    def test_sound_to_summit_beer_columns_only(self) -> None:
+        html = """
+        <div class="dmRespCol large-12">
+          <div class="dmNewParagraph"><h1>CURRENTLY POURING</h1></div>
+          <div class="dmRespColsWrapper">
+            <div class="dmRespCol small-12">
+              <div class="dmNewParagraph"><h1><span>SNOTOBERFEST MARZEN</span></h1></div>
+              <div class="dmNewParagraph"><p>Marzen | 5.7% ABV | 25 IBU</p>
+                <p>Rich and malty.</p></div>
+            </div>
+            <div class="dmRespCol small-12">
+              <div class="dmNewParagraph"><h1>APEX IPA</h1></div>
+              <div class="dmNewParagraph"><p>West Coast IPA | 6.8% ABV</p>
+                <p>Fresh hop season is here!</p></div>
+            </div>
+            <div class="dmRespCol small-12">
+              <div class="dmNewParagraph"><h1>Caprese</h1></div>
+              <div class="dmNewParagraph"><p>Fresh mozzarella. $15</p></div>
+            </div>
+          </div>
+        </div>
+        """
+        for key in ("sound-to-summit-everett-taps", "sound-to-summit-snohomish-taps"):
+            venue = VENUES[key]
+            entries = parse_html_taplist(html, venue.parser_config or {})
+            events = build_listings(venue, entries, "html", LOGGER)
+
+            assert [(e.name, e.abv) for e in entries] == [
+                ("SNOTOBERFEST MARZEN", "5.7%"),
+                ("APEX IPA", "6.8%"),
+            ]
+            # A description is matched too (include when unsure).
+            assert [[e.title, e.category] for e in events] == [
+                ["SNOTOBERFEST MÄRZEN", "festbier"],
+                ["APEX IPA", "fresh-hop"],
+            ]
+
+    def test_side_hustle_names_styles_and_medals(self) -> None:
+        html = """
+        <div class="menu-item"><div class="menu-item-title">Festbier
+          (German Oktoberfest)</div></div>
+        <div class="menu-item"><div class="menu-item-title">Uno Mas (Mexican
+          Cerveza) *Gold Medal Winner</div></div>
+        <div class="menu-item"><div class="menu-item-title">Woodinville Cider
+          Spicy Mama (6.4% abv)</div></div>
+        """
+        venue = VENUES["side-hustle-taps"]
+        entries = parse_html_taplist(html, venue.parser_config or {})
+        assert [(e.name, e.style, e.abv) for e in entries] == [
+            ("Festbier", "German Oktoberfest", None),
+            ("Uno Mas", "Mexican Cerveza", None),
+            ("Woodinville Cider Spicy Mama", None, "6.4%"),
+        ]
+
+    def test_bellevue_brewing_beer_and_cider_sections_only(self) -> None:
+        html = """
+        <div class="menu-section"><div class="menu-section-title">Beers</div>
+          <div class="menu-item"><div class="menu-item-title">Goofy Boots Fresh
+            Hop IPA</div></div></div>
+        <div class="menu-section"><div class="menu-section-title">Seltzer &amp;
+          Guest Cider</div>
+          <div class="menu-item"><div class="menu-item-title">Pumpkin
+            Cider</div></div></div>
+        <div class="menu-section"><div class="menu-section-title">Cocktails</div>
+          <div class="menu-item"><div class="menu-item-title">Pumpkin Spice
+            Martini</div></div></div>
+        """
+        venue = VENUES["bellevue-brewing-taps"]
+        entries = parse_html_taplist(html, venue.parser_config or {})
+        assert [e.name for e in entries] == [
+            "Goofy Boots Fresh Hop IPA",
+            "Pumpkin Cider",
+        ]
+
+    def test_at_large_google_doc_lines(self) -> None:
+        html = """
+        <p>AT LARGE BREWING TAP-LIST</p>
+        <table><tr><td><p>6</p></td><td><p>PUMP U UP - Pumpkin Ale 5.8%</p></td></tr>
+        <tr><td><p>10</p></td><td><p>BOTH BARRELS - Double IPA 9% Hops: Citra,
+          Eldorado</p></td></tr>
+        <tr><td><p>11</p></td><td><p>DOLCITA FRESH HOP - 6.9</p></td></tr>
+        <tr><td><p>16</p></td><td><p>NA ROOT BEER - Diamond Knot $4-pint,
+          $2-6oz</p></td></tr></table>
+        <p>Sauvignon Blanc 12%</p>
+        """
+        venue = VENUES["at-large-taps"]
+        entries = parse_text_taplist(html, venue.parser_config or {})
+        assert [(e.name, e.style, e.abv) for e in entries] == [
+            ("PUMP U UP", "Pumpkin Ale", "5.8%"),
+            ("BOTH BARRELS", "Double IPA", "9%"),
+            ("DOLCITA FRESH HOP", None, None),
+        ]

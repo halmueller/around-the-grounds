@@ -70,6 +70,7 @@ def test_bottle_shops_and_taprooms_are_typed(site: SiteConfig) -> None:
         "prost-phinney-taps",
         "prost-west-seattle-taps",
         "ridgecrest-taps",
+        "special-brews-taps",
         "teku-taps",
         "trailbend-taps",
         "uber-tavern-taps",

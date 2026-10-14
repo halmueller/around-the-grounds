@@ -505,7 +505,16 @@ since that block is Untappd's, not the venue's; Hal added them on
 2026-10-14: the Hall group in Seattle (Queen Anne Beerhall, The Hall on
 Occidental, and Moss Bay Hall, whose own site thehall.group also answers with
 a Cloudflare challenge), Horse Brass, Xicha, and Westside Taphouse in
-Portland, and Iron Horse in Yakima.
+Portland, and Iron Horse in Yakima. Seattle's second pass the same day added, at Hal's direction, every place
+whose menu can't be read: Aslan (Fremont, Seward Park, and Tangletown;
+jumbled drinks PDFs), Bottleworks (Cloudflare), Dirty Bucket (a frozen
+Wayback Machine widget), Figurehead (two beers and "10 more rotating"),
+Halcyon, Ounces, and Salish Sea (image menus), and Triplehorn (its Untappd
+embed answers 404). The same pass added seven Seattle-area tap lists: Special Brews
+(Lynnwood; Untappd embed), Scuttlebutt (Everett; Untappd embed), Bellevue
+Brewing and its Bothell pub Side Hustle Taps (Squarespace menus), Sound to
+Summit (Everett and Snohomish; its own pages), and At Large (Everett; a
+public Google Doc linked from its Tap List page). 79 tap-list venues.
 
 ## Phase 2: Yakima Valley, Ellensburg, Prosser, and the Tri-Cities
 

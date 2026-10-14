@@ -12,36 +12,99 @@
   },
   "generate_description": false,
   "skipped_venues": [
-    {
-      "name": "Diamond Knot Brewing (Mukilteo)",
-      "url": "https://diamondknot.com/",
-      "reason": "Its tap lists are checkle.menu embeds behind a Vercel bot challenge (429)."
-    },
-    {
-      "name": "Elliott Bay Brewing",
-      "url": "https://elliottbaybrewing.com/",
-      "reason": "Its per-pub tap lists are only in Toast ordering pages, and Toast answers with a Cloudflare challenge (403)."
-    },
-    {
-      "name": "Moss Bay Hall (Kirkland)",
-      "url": "https://thehall.group/",
-      "type": "taproom",
-      "reason": "The group's own site (thehall.group) answers with a Cloudflare challenge (403), and its tap lists are on untappd.com venue pages, which are blocked from the droplet (Cloudflare)."
-    },
-    {
-      "name": "Queen Anne Beerhall (Queen Anne)",
-      "url": "https://thehall.group/",
-      "type": "taproom",
-      "reason": "The group's own site (thehall.group) answers with a Cloudflare challenge (403), and its tap lists are on untappd.com venue pages, which are blocked from the droplet (Cloudflare)."
-    },
-    {
-      "name": "The Hall on Occidental (Pioneer Square)",
-      "url": "https://thehall.group/",
-      "type": "taproom",
-      "reason": "The group's own site (thehall.group) answers with a Cloudflare challenge (403), and its tap lists are on untappd.com venue pages, which are blocked from the droplet (Cloudflare)."
-    }
-  ],
+      {
+        "name": "Aslan Brewing (Fremont)",
+        "url": "https://www.aslanbrewing.com/seattle-fremont",
+        "reason": "Its drinks menu is a PDF whose text comes out jumbled (prices, wines, and beers run together), so its beers can't be picked out."
+      },
+      {
+        "name": "Aslan Brewing (Seward Park)",
+        "url": "https://www.aslanbrewing.com/seward-park",
+        "reason": "Its drinks menu is a PDF whose text comes out jumbled (prices, wines, and beers run together), so its beers can't be picked out."
+      },
+      {
+        "name": "Aslan Brewing (Tangletown)",
+        "url": "https://www.aslanbrewing.com/seattle-tangletown",
+        "reason": "Its drinks menu is a PDF whose text comes out jumbled (prices, wines, and beers run together), so its beers can't be picked out."
+      },
+      {
+        "name": "Bottleworks (Wallingford)",
+        "url": "https://www.bottleworks.com/",
+        "type": "taproom",
+        "reason": "Its own site answers with a Cloudflare challenge (403)."
+      },
+      {
+        "name": "Diamond Knot Brewing (Mukilteo)",
+        "url": "https://diamondknot.com/",
+        "reason": "Its tap lists are checkle.menu embeds behind a Vercel bot challenge (429)."
+      },
+      {
+        "name": "Dirty Bucket Brewing (Woodinville)",
+        "url": "https://dirtybucketbrewery.com/",
+        "reason": "Its site's tap-list widget is a frozen Wayback Machine copy, not a live list."
+      },
+      {
+        "name": "Elliott Bay Brewing",
+        "url": "https://elliottbaybrewing.com/",
+        "reason": "Its per-pub tap lists are only in Toast ordering pages, and Toast answers with a Cloudflare challenge (403)."
+      },
+      {
+        "name": "Figurehead Brewing",
+        "url": "https://www.figureheadbrewingcompany.com/menus?menu=beers",
+        "reason": "Its Current Tap List names two beers and then '10 more rotating Figurehead beers (see taplist)'."
+      },
+      {
+        "name": "Halcyon Brewing (Tukwila)",
+        "url": "https://www.halcyonbrewingco.com/beer-menu",
+        "reason": "Its tap list is an image, not text."
+      },
+      {
+        "name": "Moss Bay Hall (Kirkland)",
+        "url": "https://thehall.group/",
+        "type": "taproom",
+        "reason": "The group's own site (thehall.group) answers with a Cloudflare challenge (403), and its tap lists are on untappd.com venue pages, which are blocked from the droplet (Cloudflare)."
+      },
+      {
+        "name": "Ounces Taproom & Beer Garden (West Seattle)",
+        "url": "https://www.ounceswestseattle.com/taplist",
+        "type": "taproom",
+        "reason": "Its tap list is an image, not text."
+      },
+      {
+        "name": "Queen Anne Beerhall (Queen Anne)",
+        "url": "https://thehall.group/",
+        "type": "taproom",
+        "reason": "The group's own site (thehall.group) answers with a Cloudflare challenge (403), and its tap lists are on untappd.com venue pages, which are blocked from the droplet (Cloudflare)."
+      },
+      {
+        "name": "Salish Sea Brewing (Edmonds)",
+        "url": "https://salishbrewing.com/beers-1",
+        "reason": "Its beer list is a single image, and its Square site has food and non-alcoholic drinks only."
+      },
+      {
+        "name": "The Hall on Occidental (Pioneer Square)",
+        "url": "https://thehall.group/",
+        "type": "taproom",
+        "reason": "The group's own site (thehall.group) answers with a Cloudflare challenge (403), and its tap lists are on untappd.com venue pages, which are blocked from the droplet (Cloudflare)."
+      },
+      {
+        "name": "Triplehorn Brewing (Woodinville)",
+        "url": "https://triplehornbrewing.com/on-tap-now/",
+        "reason": "Its On Tap Now page frames an Untappd embed that answers 404."
+      }
+    ],
   "venues": [
+    {
+      "key": "at-large-taps",
+      "name": "At Large Brewing (Everett)",
+      "url": "https://atlargebrewing.com/tap-list",
+      "source_type": "text-taplist",
+      "parser_config": {
+        "note": "The Tap List page links a public Google Doc; its export is the list as a web page. One line per beer: 'NAME - Style 5.5%', sometimes followed by its hops.",
+        "source_url": "https://docs.google.com/document/d/1JwAbLiGiKrGROMKj9lPGQPfp3T67WE7LPUQRaR2oRTw/export?format=html",
+        "line_pattern": "^(?P<name>[^a-z]+?)\\s+-\\s+(?P<style>.*?)\\s*(?P<abv>\\d+(?:\\.\\d+)?%?)(?:\\s+Hops:.*)?\\s*$"
+      }
+    },
     {
       "key": "bale-breaker-seattle-taps",
       "name": "Bale Breaker + Yonder Cider (Ballard)",
@@ -100,6 +163,17 @@
         "company_id": "590e40cc5e002c09f467f375",
         "location_id": 1,
         "venue_type": "taproom"
+      }
+    },
+    {
+      "key": "bellevue-brewing-taps",
+      "name": "Bellevue Brewing (Spring District)",
+      "url": "https://www.bellevuebrewing.com/menu-bbc",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "A Squarespace menu with food, cocktails, and spirits; only its 'Beers' and 'Seltzer & Guest Cider' sections are read.",
+        "item": ".menu-section:has(.menu-section-title:-soup-contains(\"Beers\")) .menu-item, .menu-section:has(.menu-section-title:-soup-contains(\"Cider\")) .menu-item",
+        "name": ".menu-item-title"
       }
     },
     {
@@ -766,6 +840,16 @@
       }
     },
     {
+      "key": "scuttlebutt-taps",
+      "name": "Scuttlebutt Brewing (Everett)",
+      "url": "https://www.scuttlebuttbrewing.com/whats-on-tap",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 8023,
+        "theme_id": 28313
+      }
+    },
+    {
       "key": "seapine-taps",
       "name": "Seapine Brewing (SoDo)",
       "url": "https://www.seapinebrewing.com/the-taproom",
@@ -783,6 +867,19 @@
       }
     },
     {
+      "key": "side-hustle-taps",
+      "name": "Side Hustle Taps (Bothell)",
+      "url": "https://www.sidehustletaps.com/beer",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "Bellevue Brewing's Bothell pub. A Squarespace menu; each title is 'Name (Style) *Medal'.",
+        "item": ".menu-item",
+        "name": ".menu-item-title",
+        "name_pattern": "^(?P<name>[^(*]+?)\\s*(?:[(*]|$)",
+        "style_pattern": "\\(([^)\\d][^)]*)\\)"
+      }
+    },
+    {
       "key": "single-hill-commons-taps",
       "name": "Single Hill Commons (Ballard)",
       "url": "https://business.untappd.com/embeds/iframes/51329/177087",
@@ -790,6 +887,41 @@
       "parser_config": {
         "location_id": 51329,
         "theme_id": 177087
+      }
+    },
+    {
+      "key": "sound-to-summit-everett-taps",
+      "name": "Sound to Summit Brewing (Everett)",
+      "url": "https://www.sound2summit.com/everett",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "A Duda site: one column per beer, the name in an h1, then 'Style | 5.7% ABV | 25 IBU' and a description. Columns without an ABV line (food, headings) are skipped.",
+        "item": "div.dmRespCol:not(:has(div.dmRespCol)):has(> .dmNewParagraph > h1):has(p:-soup-contains(\"ABV\"))",
+        "name": "h1",
+        "match_whole_item": true
+      }
+    },
+    {
+      "key": "sound-to-summit-snohomish-taps",
+      "name": "Sound to Summit Brewing (Snohomish)",
+      "url": "https://www.sound2summit.com/snohomish",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "Same layout as the Everett page.",
+        "item": "div.dmRespCol:not(:has(div.dmRespCol)):has(> .dmNewParagraph > h1):has(p:-soup-contains(\"ABV\"))",
+        "name": "h1",
+        "match_whole_item": true
+      }
+    },
+    {
+      "key": "special-brews-taps",
+      "name": "Special Brews (Lynnwood)",
+      "url": "https://www.special-brews.com/taplist/",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 3529,
+        "theme_id": 10592,
+        "venue_type": "taproom"
       }
     },
     {
