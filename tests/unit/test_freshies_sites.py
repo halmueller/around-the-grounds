@@ -171,16 +171,37 @@ def test_page_layout(
     if not site.template_vars.get("ballard_food_trucks"):
         assert "ballardfoodtrucks" not in html
         food_trucks = ""
+    # Then one line linking the other Freshies sites.
+    sister_sites = r'<p class="byline">For [^<]*, see <a [^\n]*</a></p>\s*'
     assert re.search(
         r'</h1>\s*<p class="byline">By '
         + re.escape(site.template_vars["author_home"])
         + r' resident <a href="https://www.linkedin.com/in/halmueller/">'
         r'Hal Mueller</a> with the help of <a href="https://claude.ai">'
-        r"Claude Code</a></p>\s*" + food_trucks + r'<nav class="tabs"',
+        r"Claude Code</a></p>\s*" + food_trucks + sister_sites + r'<nav class="tabs"',
         html,
     ), page
     tabs = re.findall(r'<nav class="tabs".*?</nav>', html, re.S)[0]
     assert re.findall(r'href="([^"]+)"', tabs) == _pages(site), page
+
+
+@pytest.mark.parametrize("page", [name for name, _ in PAGES])
+def test_header_links_every_other_freshies_site(
+    site: SiteConfig, rendered: Path, page: str
+) -> None:
+    if page not in _pages(site):
+        return
+    html = (rendered / page).read_text()
+    header = html[html.index("</h1>") : html.index('<nav class="tabs"')]
+    lines = [line for line in header.splitlines() if "freshies.com" in line]
+    assert len(lines) == 1, page
+    # The other sites, in alphabetical order, named by place in the same order.
+    others = [s for s in SITES if s.key != site.key]
+    assert re.findall(r'<a href="([^"]+)">([^<]+)</a>', lines[0]) == [
+        (s.public_url, s.public_url.split("://", 1)[1]) for s in others
+    ], page
+    places = " and ".join(s.template_vars["place"] for s in others)
+    assert lines[0].strip().startswith(f'<p class="byline">For {places}, see '), page
 
 
 def test_template_ships_the_shared_files(rendered: Path) -> None:

@@ -6,7 +6,8 @@
   "public_url": "https://yakimafreshies.com",
   "template_vars": {
     "place": "Central Washington",
-    "author_home": "Seattle"
+    "author_home": "Seattle",
+    "sister_sites_yakima": "yes"
   },
   "generate_description": false,
   "skipped_venues": [

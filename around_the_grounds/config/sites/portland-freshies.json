@@ -6,7 +6,8 @@
   "public_url": "https://portlandfreshies.com",
   "template_vars": {
     "place": "Portland",
-    "author_home": "Seattle"
+    "author_home": "Seattle",
+    "sister_sites_portland": "yes"
   },
   "generate_description": false,
   "skipped_venues": [

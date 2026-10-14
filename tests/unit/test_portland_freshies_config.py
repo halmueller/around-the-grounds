@@ -20,7 +20,11 @@ def test_site_basics(site: SiteConfig) -> None:
     assert site.public_url == "https://portlandfreshies.com"
     assert site.template == "fresh-hop"
     # The author lives in Seattle; the Ballard food-truck line is Seattle's.
-    assert site.template_vars == {"place": "Portland", "author_home": "Seattle"}
+    assert site.template_vars == {
+        "place": "Portland",
+        "author_home": "Seattle",
+        "sister_sites_portland": "yes",
+    }
 
 
 def test_covers_the_metro_area_on_both_sides_of_the_river(site: SiteConfig) -> None:

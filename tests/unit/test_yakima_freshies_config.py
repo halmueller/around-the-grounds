@@ -26,6 +26,7 @@ def test_site_basics(site: SiteConfig) -> None:
     assert site.template_vars == {
         "place": "Central Washington",
         "author_home": "Seattle",
+        "sister_sites_yakima": "yes",
     }
 
 
