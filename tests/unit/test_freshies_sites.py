@@ -166,13 +166,13 @@ def test_page_layout(
     food_trucks = (
         r'<p class="byline">For food trucks at Ballard breweries, see '
         r'<a href="https://www.ballardfoodtrucks.com">ballardfoodtrucks.com</a>'
-        r"</p>\s*"
+        r"\.</p>\s*"
     )
     if not site.template_vars.get("ballard_food_trucks"):
         assert "ballardfoodtrucks" not in html
         food_trucks = ""
     # Then one line linking the other Freshies sites.
-    sister_sites = r'<p class="byline">For [^<]*, see <a [^\n]*</a></p>\s*'
+    sister_sites = r'<p class="byline">For [^<]*, see <a [^\n]*</a>\.</p>\s*'
     assert re.search(
         r'</h1>\s*<p class="byline">By '
         + re.escape(site.template_vars["author_home"])
