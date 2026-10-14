@@ -53,6 +53,20 @@ def test_no_venue_uses_the_canva_parser(site: SiteConfig) -> None:
     assert [v.key for v in site.venues if v.source_type == "canva"] == []
 
 
+def test_treebeerds_taphouses_are_their_own_embeds(site: SiteConfig) -> None:
+    """Treebeerd's Corvallis and Portland taphouses each have an Untappd menu."""
+    by_key = {v.key: v for v in site.venues}
+    embeds = {
+        key: (by_key[key].parser_config or {})
+        for key in ("treebeerds-corvallis-taps", "treebeerds-portland-taps")
+    }
+    assert {k: (c["location_id"], c["theme_id"]) for k, c in embeds.items()} == {
+        "treebeerds-corvallis-taps": (27404, 105214),
+        "treebeerds-portland-taps": (38860, 150959),
+    }
+    assert all(c["venue_type"] == "taproom" for c in embeds.values())
+
+
 def test_function_pdx_is_skipped_not_scraped(site: SiteConfig) -> None:
     # Hal, 2026-10-14: Cloudflare challenges the scraper (403) on every run
     # from the droplet, and Cloudflare blocks are not worked around.

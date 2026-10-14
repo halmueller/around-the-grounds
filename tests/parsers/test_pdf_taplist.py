@@ -181,6 +181,23 @@ class TestParsePdfTaplist:
         )
         assert [(e.name, e.abv) for e in entries] == [("Fresh Hop IPA", "6%")]
 
+    def test_join_pattern_puts_a_wrapped_entry_back_together(self) -> None:
+        config = {
+            "line_pattern": r"^(?P<name>[A-Z: ]+?) / (?P<style>.+)$",
+            "join_pattern": r"^/ ",
+        }
+        lines = [
+            "/ Not joined to nothing",
+            "STICKY HANDS: FRESH HOP",
+            "/ Ale",
+            "NEBULA / Stout",
+        ]
+        entries = parse_pdf_taplist(lines, config)
+        assert [(e.name, e.style) for e in entries] == [
+            ("STICKY HANDS: FRESH HOP", "Ale"),
+            ("NEBULA", "Stout"),
+        ]
+
     @pytest.mark.parametrize(
         "config,message",
         [
@@ -190,6 +207,10 @@ class TestParsePdfTaplist:
             (
                 {"line_pattern": "^(?P<name>.+)$", "detail_pattern": "("},
                 "Invalid detail_pattern",
+            ),
+            (
+                {"line_pattern": "^(?P<name>.+)$", "join_pattern": "("},
+                "Invalid join_pattern",
             ),
         ],
     )

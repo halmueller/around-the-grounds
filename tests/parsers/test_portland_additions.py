@@ -219,6 +219,45 @@ class TestConfiguredVenues:
 
         assert [e.name for e in entries] == ["Academy Amber", "Fresh Hop Flam Tap IPA"]
 
+    def test_calapooia_on_tap_section_only(self) -> None:
+        html = """
+        <div class="menu-section">
+          <div class="menu-section-header"><h3 class="menu-section-title">Desserts</h3></div>
+          <div class="menu-item"><div class="menu-item-title">Pumpkin Pie</div></div>
+        </div>
+        <div class="menu-section">
+          <div class="menu-section-header">
+            <h3 class="menu-section-title">Current Brews On Tap</h3></div>
+          <div class="menu-item"><div class="menu-item-title">Our seasonal &amp;
+            specialty craft beers are constantly changing!</div></div>
+          <div class="menu-item"><div class="menu-item-title">Lórien Fresh Hop
+            Kölsch ABV: 5%</div></div>
+          <div class="menu-item"><div class="menu-item-title">Märzen - Amber Lager
+            ABV: 5%  |  12 IBU</div>
+            <div class="menu-item-description">Toasty malt.</div></div>
+          <div class="menu-item"><div class="menu-item-title">Hazy Shores IPA
+            ABV: 7% | 35 IBU</div></div>
+        </div>
+        <div class="menu-section">
+          <div class="menu-section-header"><h3 class="menu-section-title">Brews To Go</h3></div>
+          <div class="menu-item"><div class="menu-item-title">Fresh Hop Crowler
+            ABV: 6%</div></div>
+        </div>
+        """
+        venue = VENUES["calapooia-taps"]
+        entries = parse_html_taplist(html, venue.parser_config or {})
+        events = build_listings(venue, entries, "html", LOGGER)
+
+        assert [e.name for e in entries][1:] == [
+            "Lórien Fresh Hop Kölsch",
+            "Märzen",
+            "Hazy Shores IPA",
+        ]
+        assert [[e.title, e.category] for e in events] == [
+            ["Lórien Fresh Hop Kölsch", "fresh-hop"],
+            ["Märzen", "festbier"],
+        ]
+
     def test_flyboy_numbered_taps_and_no_cans_line(self) -> None:
         html = """
         <h2>Whiskey</h2>
@@ -243,6 +282,53 @@ class TestConfiguredVenues:
 
 
 class TestPdfMenus:
+    @pytest.mark.parametrize(
+        "key", ["block-15-downtown-taps", "block-15-southtown-taps"]
+    )
+    def test_block_15_beers_and_wrapped_names(self, key: str) -> None:
+        lines = [
+            "DRIN K MENU",
+            "SPRITE / DIET COKE",
+            "BLOCK WA TER / Sparkling Hop Water with CBD",
+            "16oz 5.50 / Draft Only",
+            "ANIMAL COOKIES / Fresh Hop Hazy IPA - 7.00%",
+            "Made with fresh Centennial CGX NUVO hops from Crosby",
+            "STICKY HANDS: FRESH HOP",
+            "/ Hop Experience Ale - 8.10%",
+            "ORBITAL Limited-release. Brewed periodically.",
+            "BLOCKTOBERFEST / Marzen Lager - 5.50%",
+            "TC PECHE / Lambic Ale Matured in Oak Barrels with",
+            "NW Peaches - 6.00%",
+        ]
+        venue = VENUES[key]
+        entries = parse_pdf_taplist(lines, venue.parser_config or {})
+        events = build_listings(venue, entries, "pdf", LOGGER)
+
+        assert [(e.name, e.abv) for e in entries] == [
+            ("BLOCK WA TER", None),
+            ("ANIMAL COOKIES", "7%"),
+            ("STICKY HANDS: FRESH HOP", "8.1%"),
+            ("BLOCKTOBERFEST", "5.5%"),
+            ("TC PECHE", None),
+        ]
+        assert [[e.title, e.category] for e in events] == [
+            ["ANIMAL COOKIES", "fresh-hop"],
+            ["STICKY HANDS: FRESH HOP", "fresh-hop"],
+            ["BLOCKTOBERFEST", "festbier"],
+        ]
+
+    def test_block_15_menu_is_found_by_its_link_text(self) -> None:
+        html = (
+            '<a href="/s/Pub-Food-Menu10726.pdf">Food Menu</a>'
+            '<a href="/s/10126-Pub-Drink-Menu.pdf">Drink Menu</a>'
+        )
+        venue = VENUES["block-15-downtown-taps"]
+        link = (venue.parser_config or {})["link_pattern"]
+        assert (
+            find_pdf_link(html, venue.url, link)
+            == "https://block15.com/s/10126-Pub-Drink-Menu.pdf"
+        )
+
     def test_pfriem_names_are_followed_by_pour_sizes(self) -> None:
         lines = [
             "Belgian-Inspired",

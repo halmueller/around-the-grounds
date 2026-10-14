@@ -117,6 +117,30 @@
       }
     },
     {
+      "key": "block-15-downtown-taps",
+      "name": "Block 15 Brewing (Downtown Corvallis)",
+      "url": "https://block15.com/downtown-pub",
+      "source_type": "pdf-taplist",
+      "parser_config": {
+        "note": "The page's 'Drink Menu' link is a PDF renamed with each update. A beer is 'NAME / Style - 5.50%'; a long name wraps, and its '/ Style' line is joined back on.",
+        "link_pattern": "^drink menu",
+        "join_pattern": "^/ ",
+        "line_pattern": "^(?P<name>[A-Z0-9][^a-z/]*?)\\s*/\\s*(?P<style>[A-Z][^/]*?[a-z][^/]*?)(?:\\s*-\\s*(?P<abv>\\d+(?:\\.\\d+)?%))?$"
+      }
+    },
+    {
+      "key": "block-15-southtown-taps",
+      "name": "Block 15 Southtown Tap Room (Corvallis)",
+      "url": "https://block15.com/southtown-tap-room",
+      "source_type": "pdf-taplist",
+      "parser_config": {
+        "note": "The page's 'Drink Menu' link is a PDF renamed with each update. A beer is 'NAME / Style - 5.50%'; a long name wraps, and its '/ Style' line is joined back on.",
+        "link_pattern": "^drink menu",
+        "join_pattern": "^/ ",
+        "line_pattern": "^(?P<name>[A-Z0-9][^a-z/]*?)\\s*/\\s*(?P<style>[A-Z][^/]*?[a-z][^/]*?)(?:\\s*-\\s*(?P<abv>\\d+(?:\\.\\d+)?%))?$"
+      }
+    },
+    {
       "key": "brothers-cascadia-evergreen-taps",
       "name": "Brothers Cascadia Evergreen Pub (Vancouver)",
       "url": "https://brotherscascadiabrewing.com/vancouver-brothers-cascadia-brewing-food-menu",
@@ -135,6 +159,19 @@
         "note": "'Name — 5.6%' in bold, then a line or two saying what the beer is; a fresh hop is often named only there.",
         "line_pattern": "^(?P<name>[^—–]{2,60}?)[\\s\\u200d]*[—–]\\s*(?P<abv>\\d+(?:\\.\\d+)?%)",
         "detail_lines": 2
+      }
+    },
+    {
+      "key": "calapooia-taps",
+      "name": "Calapooia Brewing (Albany)",
+      "url": "https://www.calapooiabrewing.com/food-drink-2025",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "A Squarespace menu; only the 'Current Brews On Tap' section, where each title is 'Name ABV: 5% | 12 IBU' or 'Name - Style ABV: 5%'. Its first two items are notes, not beers.",
+        "item": ".menu-section:has(.menu-section-title:-soup-contains(\"On Tap\")) .menu-item",
+        "name": ".menu-item-title",
+        "name_pattern": "^(?P<name>.+?)(?:\\s+-\\s+[^-]+?)?\\s+ABV:",
+        "match_whole_item": true
       }
     },
     {
@@ -479,6 +516,28 @@
       "source_type": "text-taplist",
       "parser_config": {
         "line_pattern": "^(?P<name>[^|]{2,60}?)\\s*\\|\\s*(?P<style>.+?)\\s+-\\s+(?P<abv>\\d+(?:\\.\\d+)?%)"
+      }
+    },
+    {
+      "key": "treebeerds-corvallis-taps",
+      "name": "Treebeerd's Taphouse (Corvallis)",
+      "url": "https://www.treebeerdstaphouse.com/corvallis",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 27404,
+        "theme_id": 105214,
+        "venue_type": "taproom"
+      }
+    },
+    {
+      "key": "treebeerds-portland-taps",
+      "name": "Treebeerd's Taphouse (Downtown Portland)",
+      "url": "https://www.treebeerdstaphouse.com/portland",
+      "source_type": "untappd-embed",
+      "parser_config": {
+        "location_id": 38860,
+        "theme_id": 150959,
+        "venue_type": "taproom"
       }
     },
     {

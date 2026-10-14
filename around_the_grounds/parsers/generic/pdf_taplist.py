@@ -11,6 +11,10 @@ Some menus put the name on one line and the rest on the next
 supply the brewery, style, and ABV; a name line not followed by a matching
 line is ignored, which keeps a menu's other headings out.
 
+A menu that sometimes wraps an entry ("STICKY HANDS: FRESH HOP" /
+"/ Hop Experience Ale - 8.10%") can set ``join_pattern``: a line matching it
+is appended to the line before it, before any matching.
+
 Site builders (Wix) give every upload a new file name, so the PDF is usually
 found through the page linking to it rather than addressed directly.
 
@@ -19,6 +23,7 @@ Config (``source_type: "pdf-taplist"``)::
     "parser_config": {
       "line_pattern": "^(?P<name>[^|]+)\\\\|(?P<style>[^|]+)$",  # needs name
       "detail_pattern": "^(?P<style>.+) (?P<abv>[\\\\d.]+%)$",  # optional
+      "join_pattern": "^/ ",   # optional: join to the line before
       "link_pattern": "beer"   # optional regex, case-insensitive
     }
 
@@ -103,6 +108,20 @@ def parse_pdf_taplist(lines: List[str], config: Dict[str, Any]) -> List[TapEntry
             detail_pattern = re.compile(config["detail_pattern"])
         except (re.error, TypeError) as e:
             raise ValueError(f"Invalid detail_pattern: {e}") from e
+
+    join_text = config.get("join_pattern")
+    if join_text:
+        try:
+            join_pattern = re.compile(join_text)
+        except (re.error, TypeError) as e:
+            raise ValueError(f"Invalid join_pattern: {e}") from e
+        joined: List[str] = []
+        for line in lines:
+            if joined and join_pattern.search(line):
+                joined[-1] = f"{joined[-1]} {line}"
+            else:
+                joined.append(line)
+        lines = joined
 
     entries = []
     for index, line in enumerate(lines):

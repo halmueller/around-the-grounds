@@ -2,7 +2,10 @@
 
 Status: phase 0 done (2026-10-12). Phase 1 (Portland) started: first survey
 pass done and 42 venues configured (2026-10-13), 41 after Function PDX moved
-to the skipped list (2026-10-14). Portland and Yakima went live 2026-10-13.
+to the skipped list (2026-10-14), 46 after Treebeerd's (Corvallis and
+Portland), Block 15 (two Corvallis pubs), and Calapooia (Albany) were added
+(2026-10-14). Portland and Yakima
+went live 2026-10-13.
 Written 2026-10-12.
 
 Goal: reuse the Seattle Freshies site (the `fresh-hop` template, the tap-list
@@ -403,6 +406,26 @@ Little Hop, Look Long, Labyrinth Forge, Fracture, and Proper Pint.
 **Not yet looked up at all:** 10 Barrel's Portland pub, and anything that
 opened recently enough to be in neither starting list. Cross-check against
 The New School's openings and closings before calling the survey complete.
+
+**Salem, Corvallis, and Newport (2026-10-14):**
+
+- Added: Treebeerd's Taphouse, both the Corvallis taproom and its downtown
+  Portland one (Untappd embeds inside a Wix HTML component, found through the
+  page model); Block 15's Downtown pub and Southtown Tap Room, from the PDF
+  each page links as "Drink Menu" (`pdf-taplist` gained `join_pattern` for
+  its wrapped names); and Calapooia Brewing (Albany), from the "Current Brews
+  On Tap" section of its Squarespace menu.
+- Readable but nothing matched on the day: Santiam (Salem; its own beers on a
+  text tap list that still showed a Maibock) and Deluxe (Albany; a "Currently
+  on tap" page). Not added.
+- No usable list: Sky High (2019 tap-handle images), Common Fields, Gilgamesh and Benedictine (catalogs), Ratchet,
+  Barrel & Keg, and Archive Coffee & Bar. Xicha and Westside Taphouse link
+  only to untappd.com venue pages, which are blocked from the droplet.
+- Closed or gone: Rogue (all pubs), Newport Brewing (2025), and Wolf Tree.
+  Bier One's domain is for sale, Vagabond's shows unrelated content, and
+  Seven Brides' sends visitors to an unrelated site. Claim 52 now runs
+  Rogue's old Newport pub, but its Newport tap tab is empty (only Eugene has
+  an embed).
 
 Tuning notes from the first run: Uptown Beer Co. numbers its taps in the beer
 name ("2. 🌿Fresh Hop Cumulus (Citra)"); leading tap numbers are now stripped
