@@ -36,7 +36,7 @@ const CATEGORY_LABELS = { 'fresh-hop': 'Fresh hop', festbier: 'Festbier', pumpki
 const PAGES = {
     freshhop: {
         href: 'fresh-hops.html',
-        label: 'Fresh hops',
+        label: 'Fresh Hops',
         venueType: type => type !== 'taproom',
         categories: ['fresh-hop'],
         places: BREWERIES,
