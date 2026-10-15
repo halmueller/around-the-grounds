@@ -143,6 +143,8 @@ function setupSearch(listingsEl, summaryEl, summary) {
     search.hidden = false;
     search.addEventListener('input', () => {
         const q = search.value.trim().toLowerCase();
+        // Counts beers shown, since a search can match a beer, a brewery,
+        // or a city.
         let shown = 0;
         listingsEl.querySelectorAll('.venue').forEach(section => {
             const venueName = section.querySelector('.venue-name').textContent.toLowerCase();
@@ -153,9 +155,9 @@ function setupSearch(listingsEl, summaryEl, summary) {
                 if (hit) visibleBeers++;
             });
             section.hidden = !(section.dataset.search.includes(q) && visibleBeers);
-            if (!section.hidden) shown++;
+            if (!section.hidden) shown += visibleBeers;
         });
-        summaryEl.innerHTML = q ? `${esc(PAGE.places(shown))} match “${esc(q)}”.` : summary;
+        summaryEl.innerHTML = q ? `${esc(count(shown, 'match', 'matches'))} for “${esc(q)}”.` : summary;
     });
 }
 
