@@ -24,6 +24,7 @@ def test_site_basics(site: SiteConfig) -> None:
     # food-truck site from its header.
     assert site.template_vars == {
         "place": "Seattle",
+        "area": "Seattle area",
         "author_home": "Ballard",
         "sister_sites_seattle": "yes",
         "ballard_food_trucks": "yes",

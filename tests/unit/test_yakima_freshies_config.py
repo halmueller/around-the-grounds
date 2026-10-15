@@ -25,6 +25,7 @@ def test_site_basics(site: SiteConfig) -> None:
     # confirmed the name and wording, 2026-10-13). The author lives in Seattle.
     assert site.template_vars == {
         "place": "Central Washington",
+        "area": "Central Washington",
         "author_home": "Seattle",
         "sister_sites_yakima": "yes",
     }

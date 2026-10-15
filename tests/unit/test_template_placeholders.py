@@ -179,7 +179,13 @@ def test_unmatched_section_marker_fails(tmp_path: Path, text: str) -> None:
 def test_fresh_hop_byline_for_another_city(tmp_path: Path) -> None:
     """The food-truck line is Seattle's; other cities credit a Seattle resident."""
     out = tmp_path / "out"
-    data = _web_data(template_vars={"place": "Hop Town", "author_home": "Seattle"})
+    data = _web_data(
+        template_vars={
+            "place": "Hop Town",
+            "area": "Hop Town area",
+            "author_home": "Seattle",
+        }
+    )
     _write_site_output(out, TEMPLATES / "fresh-hop", data)
 
     for page in out.glob("*.html"):
@@ -278,4 +284,5 @@ def test_sites_on_the_fresh_hop_template_set_template_vars() -> None:
     for site in load_all_sites():
         if site.template == "fresh-hop":
             assert site.template_vars.get("place"), site.key
+            assert site.template_vars.get("area"), site.key
             assert site.template_vars.get("author_home"), site.key

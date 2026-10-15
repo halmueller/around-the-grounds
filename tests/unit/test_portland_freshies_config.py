@@ -22,6 +22,7 @@ def test_site_basics(site: SiteConfig) -> None:
     # The author lives in Seattle; the Ballard food-truck line is Seattle's.
     assert site.template_vars == {
         "place": "Portland",
+        "area": "Portland area",
         "author_home": "Seattle",
         "sister_sites_portland": "yes",
     }

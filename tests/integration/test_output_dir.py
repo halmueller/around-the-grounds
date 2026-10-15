@@ -24,7 +24,11 @@ def _site() -> SiteConfig:
         timezone="America/Los_Angeles",
         venues=VENUES,
         public_url="https://seattlefreshies.com",
-        template_vars={"place": "Seattle", "author_home": "Ballard"},
+        template_vars={
+            "place": "Seattle",
+            "area": "Seattle area",
+            "author_home": "Ballard",
+        },
     )
 
 

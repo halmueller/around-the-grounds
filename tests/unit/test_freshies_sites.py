@@ -84,6 +84,7 @@ def test_site_basics(site: SiteConfig) -> None:
     # Published from cron with --output-dir; --deploy must skip it.
     assert site.target_repo == ""
     assert site.template_vars.get("place")
+    assert site.template_vars.get("area")
     assert site.template_vars.get("author_home")
     assert (TEMPLATES / site.template / HOME).is_file()
 
@@ -312,6 +313,21 @@ def test_favicon_files(rendered: Path) -> None:
 
 
 @pytest.mark.skipif(shutil.which("node") is None, reason="Node not available")
+def test_list_taglines_name_the_area(site: SiteConfig, rendered: Path) -> None:
+    # The lists reach past the city (Everett, Corvallis), so they say "Seattle
+    # area breweries"; Central Washington is already a region (Hal,
+    # 2026-10-15). The events page keeps "in and around Seattle".
+    area = site.template_vars["area"]
+    for page, where in (
+        ("fresh-hops.html", "breweries"),
+        ("festbier.html", "breweries"),
+        ("pumpkin.html", "breweries"),
+        ("taprooms.html", "bottle shops and taprooms"),
+    ):
+        html = (rendered / page).read_text()
+        assert f"on tap right now at {area} {where}." in html, page
+
+
 def test_events_summary_names_the_place(site: SiteConfig, rendered: Path) -> None:
     """app.js is filled in too: its one sentence that names the place."""
     data = {
