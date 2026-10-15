@@ -180,8 +180,8 @@ around_the_grounds/
 │   │   ├── ballard-food-trucks.json   # Ballard food trucks (9 venues, deploy_subdir="public")
 │   │   ├── park-slope-music.json      # Park Slope music venues (2 venues, deploy to repo root)
 │   │   ├── childrens-events.json      # Brooklyn children's events (2 venues, deploy to repo root)
-│   │   ├── seattle-freshies.json    # Seattle fresh-hop tap lists (79 listing venues + 6
-│   │   │                              #   beer event sources; no target_repo → preview-only)
+│   │   ├── seattle-freshies.json    # Seattle fresh-hop tap lists (79 listing venues; no
+│   │   │                              #   event sources; no target_repo → preview-only)
 │   │   ├── portland-freshies.json   # Portland-metro tap lists (same template; in progress,
 │   │   │                              #   not live yet; see FRESHIES-EXPANSION-PLAN.md)
 │   │   └── yakima-freshies.json     # Central Washington tap lists: Yakima Valley, Tri-Cities,
@@ -276,7 +276,9 @@ public_templates/                  # Per-site web interface templates
     │                              #   venue_type "taproom")
     ├── events.html                #   upcoming beer events + calendar link
     │                              #   (page, tab, and sitemap entry are left out of a site
-    │                              #   with no event sources, e.g. Portland)
+    │                              #   with no event sources, which today is every site;
+    │                              #   Seattle's former sources are kept in
+    │                              #   tests/fixtures/config/seattle_event_sources.json)
     ├── app.js
     ├── analytics.js               #   TelemetryDeck loader; app ID comes from a server-only
     │                              #   analytics-config.js (deploy/digitalocean/*.example.js)

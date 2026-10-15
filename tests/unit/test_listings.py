@@ -4,6 +4,7 @@ calendar feed, and must round-trip through the Temporal activity payloads.
 Ordinary events must serialize exactly as before so existing sites' output
 does not change."""
 
+import dataclasses
 import logging
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -127,6 +128,20 @@ class TestListingVenues:
     async def test_failed_venues_are_attributed_by_key(self) -> None:
         """Fremont's tap list and its events source share a name."""
         site = load_site_config("seattle-freshies")
+        # Seattle's events sources were taken off the site; add Fremont's back.
+        site = dataclasses.replace(
+            site,
+            venues=site.venues
+            + [
+                Venue(
+                    "fremont-events",
+                    "Fremont Brewing (Fremont)",
+                    "https://www.fremontbrewing.com/events",
+                    "squarespace-events",
+                    {"event_filter": True},
+                )
+            ],
+        )
         failed = [
             v
             for v in site.venues
@@ -160,7 +175,6 @@ class TestListingVenues:
         }
         assert by_name["HopTown Wood-Fired Pizza (Wapato)"]["type"] == "taproom"
         assert len(data["skipped_venues"]) == len(site.skipped_venues)
-
 
     @pytest.mark.parametrize(
         "site_key", ["seattle-freshies", "portland-freshies", "yakima-freshies"]

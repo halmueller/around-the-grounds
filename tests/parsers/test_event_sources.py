@@ -1,5 +1,7 @@
-"""Tests for the fresh-hop event sources of seattle-freshies. Fixtures are
-live pages saved on 2026-09-29 and 2026-09-30: Georgetown Brewing's event
+"""Tests for the beer-event sources Seattle Freshies used until 2026-10-15,
+when its Events page was taken down; their configs now live in
+tests/fixtures/config/seattle_event_sources.json. Fixtures are live pages
+saved on 2026-09-29 and 2026-09-30: Georgetown Brewing's event
 list, Beveridge Place Pub's events page, Stoup's events page, and Fremont's
 Squarespace events collection (JSON)."""
 
@@ -15,7 +17,6 @@ from aioresponses import aioresponses
 from bs4 import BeautifulSoup
 from freezegun import freeze_time
 
-from around_the_grounds.config.loader import load_site_config
 from around_the_grounds.models import Venue
 from around_the_grounds.parsers.generic import HtmlSelectorParser
 from around_the_grounds.parsers.generic.squarespace_events import (
@@ -25,7 +26,16 @@ from around_the_grounds.parsers.generic.squarespace_events import (
 from around_the_grounds.scrapers.coordinator import ScraperCoordinator
 from around_the_grounds.utils.host_throttle import listing_throttle
 
-VENUES = {v.key: v for v in load_site_config("seattle-freshies").venues}
+EVENT_SOURCES = (
+    Path(__file__).resolve().parents[1]
+    / "fixtures"
+    / "config"
+    / "seattle_event_sources.json"
+)
+VENUES = {
+    v["key"]: Venue(v["key"], v["name"], v["url"], v["source_type"], v["parser_config"])
+    for v in json.loads(EVENT_SOURCES.read_text())["venues"]
+}
 # 8 PM Sept 29 Pacific, when the fixtures were saved.
 NOW = "2026-09-30 03:00:00"
 

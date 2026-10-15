@@ -374,7 +374,7 @@ def test_events_tab_and_page_follow_the_event_sources(
 
 
 def test_which_sites_have_events() -> None:
-    # Hal, 2026-10-13: Seattle lists beer events; Portland, Yakima, and Bend
-    # list what is on tap only.
-    with_events = {site.key for site in SITES if _has_events(site)}
-    assert with_events == {"seattle-freshies"}
+    # Hal, 2026-10-15: no site lists beer events (Seattle did until then; too
+    # many sources to cover well). The events machinery stays for a site
+    # that adds an event source.
+    assert not [site.key for site in SITES if _has_events(site)]

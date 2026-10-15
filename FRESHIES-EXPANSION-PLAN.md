@@ -469,7 +469,13 @@ cider at Loyal Legion matches `pumpkin`, as it would in Seattle.
 Hal, 2026-10-13: no event sources for Portland, Yakima, or Bend. These sites
 list beers on tap only. Their Events tab, page, and sitemap entry are left
 out (done 2026-10-13): the template's `{{#events}}` blocks are kept only for
-a site with at least one event source, which today is Seattle alone.
+a site with at least one event source.
+
+Hal, 2026-10-15: Seattle's Events page is gone too ("there are too many
+different sources and we are missing a lot of them"). Its six sources
+(Fremont ×2, Georgetown, Beveridge Place, and Stoup ×2) moved to
+`tests/fixtures/config/seattle_event_sources.json`, where the event-source
+parser tests read them. No site has an Events page now.
 
 Original notes:
 
