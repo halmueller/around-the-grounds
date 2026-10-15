@@ -1,6 +1,6 @@
 // Freshies sites: renders one page, chosen by <body data-page>, from the
 // shared data.json:
-//   freshhop  fresh-hop beers at breweries
+//   freshhop  fresh hop beers at breweries
 //   festbier  festbiers, Oktoberfests, and Märzens at breweries
 //   pumpkin   pumpkin beers at breweries
 //   taprooms  all three, at bottle shops and taprooms
@@ -40,7 +40,7 @@ const PAGES = {
         venueType: type => type !== 'taproom',
         categories: ['fresh-hop'],
         places: BREWERIES,
-        beers: n => count(n, 'fresh-hop beer', 'fresh-hop beers'),
+        beers: n => count(n, 'fresh hop beer', 'fresh hop beers'),
         none: 'no fresh hops',
         months: [8, 10],
         offSeason: 'Fresh hops are out of season.',
@@ -73,7 +73,7 @@ const PAGES = {
         venueType: type => type === 'taproom',
         categories: ['fresh-hop', 'festbier', 'pumpkin'],
         places: n => count(n, 'bottle shop or taproom', 'bottle shops and taprooms'),
-        beers: n => count(n, 'fresh-hop, festbier, or pumpkin beer', 'fresh-hop, festbier, and pumpkin beers'),
+        beers: n => count(n, 'fresh hop, festbier, or pumpkin beer', 'fresh hop, festbier, and pumpkin beers'),
         none: 'no fresh hops, festbiers, or pumpkin beers',
         tags: true,
         tabCountsPlaces: true,

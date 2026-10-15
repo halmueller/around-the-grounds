@@ -103,7 +103,7 @@ def test_beers_show_even_out_of_season() -> None:
     rendered = _render("freshhop", 12, [_listing("fresh-hop")])
     assert "A fresh-hop beer" in rendered["listings"]
     assert "out of season" not in rendered["listings"]
-    assert "1 fresh-hop beer" in rendered["summary"]
+    assert "1 fresh hop beer" in rendered["summary"]
 
 
 def test_month_is_read_in_site_time() -> None:
@@ -138,7 +138,7 @@ def test_taprooms_and_events_never_say_out_of_season() -> None:
 @pytest.mark.parametrize(
     "page, sentence",
     [
-        ("fresh-hops.html", "Fresh-hop season runs from late August through October."),
+        ("fresh-hops.html", "Fresh hop season runs from late August through October."),
         ("festbier.html", "Festbier season runs from September through October."),
         ("pumpkin.html", "Pumpkin beer season runs from September through November."),
     ],
