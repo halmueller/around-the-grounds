@@ -170,8 +170,10 @@ h2 { font-size: 1.1rem; margin: 28px 0 10px; }
 /* Phones: fit all five tabs and keep the credit bar to about two lines. */
 @media (max-width: 480px) {
     .topbar h1 { font-size: 1.25rem; padding-top: 10px; }
-    .tabs { gap: 0; }
+    .tabs { gap: 0; align-items: flex-end; }
     .tabs a { padding: 8px 5px; font-size: 12px; }
+    /* Counts sit above their labels so the tabs stay as narrow as without. */
+    .tab-count { display: block; font-size: 11px; line-height: 1.2; }
     .credits { font-size: 11px; gap: 0 10px; padding: 6px 16px; line-height: 1.4; }
     .credits .sep { display: none; }
 }

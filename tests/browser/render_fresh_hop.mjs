@@ -15,9 +15,17 @@ const element = () => ({
   addEventListener() {},
   querySelectorAll: () => [],
 });
+// The header's list tabs, as in the template.
+const tabs = ['fresh-hops.html', 'festbier.html', 'pumpkin.html', 'taprooms.html', 'events.html']
+  .map((href) => ({
+    text: '',
+    getAttribute: (name) => (name === 'href' ? href : null),
+    insertAdjacentHTML(where, html) { this.text = html + this.text; },
+  }));
 const document = {
   body: { dataset: { page } },
   getElementById: (id) => (elements[id] ||= element()),
+  querySelectorAll: (selector) => (selector === '.tabs a' ? tabs : []),
 };
 const done = Promise.resolve({ json: () => JSON.parse(dataJson) });
 vm.runInNewContext(fs.readFileSync(appPath, 'utf8'), {
@@ -29,4 +37,5 @@ console.log(JSON.stringify({
   listings: elements.listings?.innerHTML ?? '',
   summary: elements.summary?.innerHTML ?? '',
   quiet: elements.quiet && !elements.quiet.hidden ? elements.quiet.innerHTML : null,
+  tabCounts: tabs.map((t) => t.text),
 }));

@@ -76,6 +76,7 @@ const PAGES = {
         beers: n => count(n, 'fresh-hop, festbier, or pumpkin beer', 'fresh-hop, festbier, and pumpkin beers'),
         none: 'no fresh hops, festbiers, or pumpkin beers',
         tags: true,
+        tabCountsPlaces: true,
     },
     events: { events: true },
 };
@@ -192,6 +193,20 @@ function outOfSeason(page, data) {
     return first <= last ? month < first || month > last : month < first && month > last;
 }
 
+// Each list's tab leads with its count: beers on the beer lists, places
+// pouring something on the taprooms list.
+function countTabs(data, venueInfo) {
+    document.querySelectorAll('.tabs a').forEach(a => {
+        const page = Object.values(PAGES).find(p => p.href === a.getAttribute('href'));
+        if (!page || !page.categories) return;
+        const listings = pageListings(page, data, venueInfo);
+        const n = page.tabCountsPlaces
+            ? new Set(listings.map(e => e.venue_key)).size
+            : listings.length;
+        a.insertAdjacentHTML('afterbegin', `<span class="tab-count">${n}</span> `);
+    });
+}
+
 // Shown in place of an empty out-of-season list: what is pouring instead.
 function renderOffSeason(data, venueInfo) {
     const others = Object.values(PAGES)
@@ -275,6 +290,7 @@ fetch('data.json')
         }
 
         const venueInfo = new Map((data.listing_venues || []).map(v => [v.key, v]));
+        countTabs(data, venueInfo);
         const listingsEl = document.getElementById('listings');
         const summaryEl = document.getElementById('summary');
         const pageVenues = PAGE.events

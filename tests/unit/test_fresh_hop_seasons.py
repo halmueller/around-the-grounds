@@ -149,3 +149,22 @@ def test_pages_state_their_season_in_static_html(page: str, sentence: str) -> No
         r'<p class="tagline">(.*?)</p>', (TEMPLATE / page).read_text()
     )
     assert tagline and sentence in tagline.group(1)
+
+
+@pytest.mark.parametrize("page", ["freshhop", "taprooms", "events"])
+def test_tabs_lead_with_their_counts(page: str) -> None:
+    # Beer counts on the beer lists; the taprooms tab counts places pouring
+    # something (the shop's two beers are one place). Events has no count.
+    rendered = _render(
+        page,
+        10,
+        [
+            _listing("fresh-hop"),
+            _listing("fresh-hop"),
+            _listing("festbier"),
+            _listing("fresh-hop", "shop"),
+            _listing("pumpkin", "shop"),
+        ],
+    )
+    counts = [re.sub(r"<[^>]+>", "", t) for t in rendered["tabCounts"]]
+    assert counts == ["2 ", "1 ", "0 ", "1 ", ""]
