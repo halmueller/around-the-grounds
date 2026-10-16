@@ -93,7 +93,7 @@ function renderVenue(venue) {
         const tag = PAGE.tags && CATEGORY_LABELS[b.category]
             ? ` <span class="tag tag-${esc(b.category)}">${esc(CATEGORY_LABELS[b.category])}</span>`
             : '';
-        return `<div class="beer">
+        return `<div class="beer" data-search="${esc(`${b.title} ${b.description || ''}`.toLowerCase())}">
             <div class="beer-name">${esc(b.title)}${tag}</div>
             ${b.description ? `<div class="beer-meta">${esc(b.description)}</div>` : ''}
         </div>`;
@@ -108,7 +108,7 @@ function renderVenue(venue) {
         : `<span class="venue-count">${venue.beers.length}</span>`;
     return `<section class="venue" data-search="${esc(venue.search)}">
         <div class="venue-head">
-            <div class="venue-name">${esc(venue.name)}${counts}</div>
+            <div class="venue-name" data-search="${esc(venue.name.toLowerCase())}">${esc(venue.name)}${counts}</div>
             ${link}
         </div>
         ${items}
@@ -143,21 +143,25 @@ function setupSearch(listingsEl, summaryEl, summary) {
     search.hidden = false;
     search.addEventListener('input', () => {
         const q = search.value.trim().toLowerCase();
-        // Counts beers shown, since a search can match a beer, a brewery,
-        // or a city.
-        let shown = 0;
+        // Counts the lines that match: a venue name (which holds the city)
+        // or a beer. A matching venue shows all its beers, but they count
+        // only if they match too. Matches the names and descriptions, not
+        // the category chips.
+        let matches = 0;
         listingsEl.querySelectorAll('.venue').forEach(section => {
-            const venueName = section.querySelector('.venue-name').textContent.toLowerCase();
+            const venueHit = section.querySelector('.venue-name').dataset.search.includes(q);
             let visibleBeers = 0;
+            let beerHits = 0;
             section.querySelectorAll('.beer').forEach(beer => {
-                const hit = !q || beer.textContent.toLowerCase().includes(q) || venueName.includes(q);
-                beer.hidden = !hit;
-                if (hit) visibleBeers++;
+                const beerHit = beer.dataset.search.includes(q);
+                beer.hidden = !(!q || beerHit || venueHit);
+                if (!beer.hidden) visibleBeers++;
+                if (beerHit) beerHits++;
             });
             section.hidden = !(section.dataset.search.includes(q) && visibleBeers);
-            if (!section.hidden) shown += visibleBeers;
+            if (!section.hidden) matches += (venueHit ? 1 : 0) + beerHits;
         });
-        summaryEl.innerHTML = q ? `${esc(count(shown, 'match', 'matches'))} for “${esc(q)}”.` : summary;
+        summaryEl.innerHTML = q ? `${esc(count(matches, 'match', 'matches'))} for “${esc(q)}”.` : summary;
     });
 }
 
