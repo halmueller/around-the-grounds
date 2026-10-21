@@ -36,6 +36,10 @@ winter beers do not reach taps until roughly November. So:
 - The events change (step 4) did not depend on winter and has shipped.
 - Publish the page and its tab a few weeks before making it the home page, so
   it is crawled and indexed with real content first.
+- To check live lists before the category exists, run
+  `uv run python scripts/winter_scan.py` (all Freshies sites, or name one). It
+  registers the first-guess patterns below in its own process only and prints
+  the matches; nothing is written or deployed. Delete it once step 1 ships.
 
 ## Steps
 
