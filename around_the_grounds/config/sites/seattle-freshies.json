@@ -1005,7 +1005,7 @@
     {
       "key": "uber-tavern-taps",
       "name": "Über Tavern (Green Lake)",
-      "url": "https://www.ubertavern.com/",
+      "url": "https://www.uberbier.com/",
       "source_type": "html-taplist",
       "parser_config": {
         "note": "The tavern's menu board (uberbier.com/mobilemenu) loads this table. Style and ABV are loose text in the name cell, so the whole row is matched.",
