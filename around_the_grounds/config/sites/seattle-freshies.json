@@ -562,11 +562,11 @@
     },
     {
       "key": "jellyfish-taps",
-      "name": "Jellyfish Brewing (Georgetown)",
+      "name": "Jellyfish Brewing (Georgetown and Green Lake)",
       "url": "https://jellyfishbrewing.com/",
       "source_type": "text-taplist",
       "parser_config": {
-        "note": "The home page lists the taps as numbered h4 headings ('5. Medusa Oktoberfest'); bottles and cans below are unnumbered.",
+        "note": "One tap list covers both taprooms. The home page lists the taps as numbered h4 headings ('5. Medusa Oktoberfest'); bottles and cans below are unnumbered.",
         "line_tags": [
           "h4"
         ],
