@@ -88,8 +88,10 @@ _SPICE = (
     r"|mexican[\s-]*(?:hot[\s-]*)?chocolate|chai|peppermint)"
 )
 
-# Also the patterns checked in descriptions: phrases a brewer would not use
-# for a year-round beer ("perfect for winter nights" stays out).
+# Also the patterns checked in descriptions: seasonal phrases and winter style
+# names, which a brewer would not use for some other beer ("perfect for
+# winter nights" stays out; "a malt-forward wee heavy" or "Barrel-aged
+# Belgian Quadrupel" counts).
 WINTER_CORE = [
     r"\bwinter[\s-]+(?:ale|warmer|ipa|lager|seasonal|beer)\b",
     r"\bholiday[\s-]+(?:ale|beer|seasonal)\b",
@@ -110,6 +112,13 @@ WINTER_CORE = [
     # and style joined (Hal, 2026-11-06)
     r"\bfir[\s-]*tips?\b.*\bporter\b",
     r"\bporter\b.*\bfir[\s-]*tips?\b",
+    # Belgian quads and strong ales, dark or golden (Hal, 2026-11-06): style
+    # "Belgian Quadrupel", "Belgian Strong Dark Ale", "Belgian Strong Golden
+    # Ale"; Obec's "B.A. Belgian Quad". Not a quadruple IPA ("Quad IPA").
+    r"\bquad(?:rupel|ruple)?\b(?![\s-]*(?:ipa|ddh|dry[\s-]*hop|hop))",
+    # "Belgian Strong", "Belgian Strong Dark Ale", "Belgian-Style Golden
+    # Strong" (Flying Lion's Velvet Uppercut)
+    r"\bbelgian(?:[\s-]+style)?[\s-]+(?:(?:dark|golden|blonde?|pale)[\s-]+)?strong\b",
     # Solstice beers, except summer ones (Anderson Valley's Summer Solstice)
     r"(?<!summer\s)(?<!summer-)\bsolstice\b",
     # Winter-warmer recipes: "SPICED AMBER ALE WITH ORANGE PEEL, CINNAMON…"

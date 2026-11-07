@@ -162,7 +162,8 @@ Roger, Ol' Saint Nick, High Camp, and Sierra Nevada's Celebration; holiday
 ciders: wassail, mulled, spiced, and cranberry with spice; Scotch ales and
 wee heavies (not light Scottish ales); doppelbocks (by style, or by name:
 Celebrator, Salvator, Optimator); fir-tip porters; solstice beers (not
-"Summer Solstice"); barleywines and wheatwines; and stouts
+"Summer Solstice"); Belgian quads and Belgian strong ales, dark or golden
+(not a "Quad IPA"); barleywines and wheatwines; and stouts
 that are barrel-aged, "BA", or spiced, such as cinnamon, gingerbread, or Mexican chocolate. A plain, imperial,
 coffee, or pastry stout does not count).
 

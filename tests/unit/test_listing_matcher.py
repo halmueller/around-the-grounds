@@ -377,6 +377,14 @@ class TestWinter:
             ("Solstice", "Winter Warmer"),
             ("Solstice Stout", None),
             ("Winter Solstice Ale", None),
+            ("B.A. Belgian Quad", None),  # Obec
+            ("Abt 12", "Belgian Quadrupel"),  # St. Bernardus at The Pine Box
+            ("Meet Your Maker", "Belgian Strong Dark Ale"),  # Beveridge Place
+            ("BELGIAN STRONG DARK", None),  # pFriem
+            ("Delirium Tremens", "Belgian Golden Strong Ale"),  # Beer Star
+            ("Damnation", "Belgian Strong Golden Ale"),  # The Pine Box
+            ("Belgian Strong Blonde", None),  # Roscoe's
+            ("Velvet Uppercut", "Belgian-Style Golden Strong"),  # Flying Lion
         ],
     )
     def test_tuning_additions_match(
@@ -389,6 +397,16 @@ class TestWinter:
         assert winter.matches_description(
             "A malt-forward ‘wee heavy’ Scottish Ale, loaded with Special B",
             "Caber Toss Scottish Ale",
+        )
+
+    def test_quad_in_a_description_matches(self, winter: ListingMatcher) -> None:
+        # Tiny Bubble Room's Enfant Terriple
+        assert winter.matches_description(
+            "Barrel-aged Belgian Quadrupel- Aged in rum barrels. Raisin, boozy",
+            "Enfant Terriple Rum Infused",
+        )
+        assert not winter.matches_description(
+            "A quad-hopped hazy with Citra", "Hop Stack"
         )
 
     def test_spiced_amber_ale_description_matches(self, winter: ListingMatcher) -> None:
@@ -416,6 +434,10 @@ class TestWinter:
             ("Summer-Solstice Saison", None),
             ("The Greater Tingle", "IPA brewed with spruce tips"),  # Stickmen
             ("Venus In Firs", "Farmhouse Ale - Saison"),
+            ("Quad IPA", "IPA - Imperial / Double"),
+            ("Quad Dry Hopped Hazy", None),
+            ("Quilter's Irish Death NITRO", "Strong Ale - Other"),
+            ("Belgian Blonde", "Grodziskie"),  # Old Stove
             ("Shipwreck Spiced Rum, Scotch, lemon", None),
         ],
     )
