@@ -277,6 +277,30 @@ Done 2026-11-06 with steps 1 and 2.
 
 ### 7. Tune against live data
 
+First pass done 2026-11-06. Every tap-list entry on all three sites was
+captured (3,806 entries, 101 winter matches), and the 297 unmatched entries
+with any winter-ish word were read by hand. Added to the built-ins: Sierra
+Nevada's Celebration (name starts with "Celebration"), "New Year", "sugar
+plum", spiced ciders (`spiced` with `cider` across name and style), cranberry
+with spice, and, in descriptions, "spiced amber/red/dark/strong ale". Old
+Stove Pike Place got a `winter_exclude` for its cocktail rows. That added 12
+entries and dropped none. The three unexplained October matches are right:
+Calapooia's Turkish Coffee Stout is brewed with cardamom and cinnamon, Urban
+Family's Treehouse is a barrel-aged barleywine by its description, and Big
+Time's Breakfast Cereal Killer Stout lists Cinnamon Toast Crunch (kept under
+include-when-unsure).
+
+Scotch ales and wee heavies added the same day (Hal): nine beers, 13 tap
+listings; light Scottish ales (Shepherd's Crook, Scottish exports) and a
+Scottish oatmeal porter stay off. Left out on purpose, pending Hal's call:
+doppelbocks (Old Stove's Incinerator says
+"Welcome in the season"), fir-tip porters (Ferment's Woodsman), Belgian quads
+and strong ales, "solstice" (Anderson Valley's Summer Solstice would show in
+June), and plain cranberry, apple-cinnamon, or caramel-cinnamon ciders. No
+old ales were pouring.
+
+Run a second pass in early December, when more holiday releases are out.
+
 ```bash
 uv run around-the-grounds --site seattle-freshies --preview --verbose
 cd public && python -m http.server 8000

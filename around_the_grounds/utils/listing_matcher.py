@@ -98,6 +98,14 @@ WINTER_CORE = [
     r"\bwheat[\s-]*wine",
     r"\bwassail",
     r"\bmulled\b",
+    # Scotch ales and wee heavies (Hal, 2026-11-06). Not light "Scottish"
+    # ales such as Shepherd's Crook (4.6%) or a Scottish oatmeal porter.
+    r"\bscotch[\s-]+ale\b",  # "Scotch Ale", "Strong Scotch Ale"
+    r"\bwee[\s-]*heavy\b",
+    # Winter-warmer recipes: "SPICED AMBER ALE WITH ORANGE PEEL, CINNAMON…"
+    # (Strange Weather). Not spiced brown ale: Beer of the Dead is a Day of
+    # the Dead beer.
+    r"\bspiced[\s-]+(?:amber|red|dark|strong|winter|holiday)\b",
 ]
 
 # Counted by name or style (alone or joined).
@@ -127,6 +135,18 @@ WINTER_INCLUDE = WINTER_CORE + [
     r"\bhigh[\s-]*camp\b",  # Bale Breaker
     r"\bwarmer\b",
     r"\bhot[\s-]*spiced\b",  # Old Stove Hot Spiced Cider
+    # Spiced ciders ("Spiced Pear", style "Cider - Herbed"; Lost Lake Cider,
+    # style "Imperial Spiced"), and cranberry with spice. "Pumpkin Spice"
+    # says "spice", not "spiced", so pumpkin ciders stay on the pumpkin list.
+    r"\bspiced\b.*\bcider\b",
+    r"\bcider\b.*\bspiced\b",
+    r"\bspiced[\s-]+cranberr",  # Offset Spiced Cranberry
+    r"\bcranberr\w*\s*(?:\+|&|and)?\s*spice",  # "CRANBERRY + SPICE"
+    r"\bsugar[\s-]*plum",  # Reuben's Fresh! Sugar Plum
+    r"\bnew[\s-]*year",  # Seapine "New Year, Old Habits" strong ale
+    # Sierra Nevada's winter IPA, listed as "Celebration (2026)". Only at the
+    # start of the name: Dirty Couch's "Premature Celebration" is a festbier.
+    r"^\s*(?:sierra[\s-]+nevada[\s-]+)?celebration\b",
     rf"\b{_AGED}\b.*\bstout\b",
     rf"\bstout\b.*\b{_AGED}\b",
     r"\bBA\b.*\bstout\b",  # "BA Imperial Stout", "Mayan Chocolate BA Stout"

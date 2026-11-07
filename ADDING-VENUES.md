@@ -158,9 +158,10 @@ Listings are sorted into **categories**: `fresh-hop` (fresh/wet hop, or the abbr
 lagers, Dunkels/Munich Dark, and Weizenbocks; not Dunkelweizen), `pumpkin`
 (pumpkin, gourd, jack-o'-lantern, calabaza), and `winter` (winter, Christmas,
 holiday, Noël, yule, Jul/Jule, and named seasonals such as Jubelale, Jolly
-Roger, Ol' Saint Nick, and High Camp; holiday ciders: wassail, mulled, hot
-spiced; barleywines and wheatwines; and stouts that are barrel-aged, "BA", or
-spiced, such as cinnamon, gingerbread, or Mexican chocolate. A plain, imperial,
+Roger, Ol' Saint Nick, High Camp, and Sierra Nevada's Celebration; holiday
+ciders: wassail, mulled, spiced, and cranberry with spice; Scotch ales and
+wee heavies (not light Scottish ales); barleywines and wheatwines; and stouts
+that are barrel-aged, "BA", or spiced, such as cinnamon, gingerbread, or Mexican chocolate. A plain, imperial,
 coffee, or pastry stout does not count).
 
 The name and style are also matched joined, as "name | style", so a winter

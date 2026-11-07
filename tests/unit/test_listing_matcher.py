@@ -348,6 +348,65 @@ class TestWinter:
     ) -> None:
         assert not winter.matches(name, style)
 
+    @pytest.mark.parametrize(
+        "name, style",
+        [
+            # Step 7 misses, live lists 2026-11-06
+            ("Celebration (2026)", "IPA - American"),  # Sierra Nevada
+            ("Sierra Nevada Celebration Fresh Hop IPA", None),
+            ("New Year, Old Habits - Dry Hopped Strong Ale", None),  # Seapine
+            ("Fresh! Sugar Plum 2026", None),  # Reuben's
+            ("Spiced Pear", "Cider - Herbed"),  # Single Hill Commons
+            ("Lost Lake Cider", "Imperial Spiced"),  # Fremont
+            ("Spiced Apple Cider Slushy", None),  # Stoup
+            ("16oz Can - Offset Spiced Cranberry", None),  # Big Time
+            ("CRANBERRY + SPICE", "Cider - Sweet"),  # Special Brews
+            ("Cranberry Spice", None),  # Offset Ciderworks at Ridgecrest
+            ("Second Sight", "Strong Scotch Ale"),  # Black Raven
+            ("Muckle Flugga Scotch Ale", None),  # Bellevue Brewing
+            ("Willie Heavy", "Wee Heavy Scotch Ale"),  # Roscoe's
+            ("Cold Smoke", "Scotch Ale"),  # KettleHouse at Public House
+        ],
+    )
+    def test_tuning_additions_match(
+        self, winter: ListingMatcher, name: str, style: str
+    ) -> None:
+        assert winter.matches(name, style)
+
+    def test_wee_heavy_in_a_description_matches(self, winter: ListingMatcher) -> None:
+        # Calapooia's Caber Toss is listed as a Scottish Ale
+        assert winter.matches_description(
+            "A malt-forward ‘wee heavy’ Scottish Ale, loaded with Special B",
+            "Caber Toss Scottish Ale",
+        )
+
+    def test_spiced_amber_ale_description_matches(self, winter: ListingMatcher) -> None:
+        # Strange Weather at Special Brews
+        assert winter.matches_description(
+            "SPICED AMBER ALE WITH ORANGE PEEL, CINNAMON, GINGER, NUTMEG",
+            "Strange Weather",
+            "Red Ale - American Amber",
+        )
+
+    @pytest.mark.parametrize(
+        "name, style",
+        [
+            ("Elvira's - Spicy Pumpkin Spice Cider", "Cider"),  # pumpkin list
+            ("Seattle Cider Pumpkin Spice", None),
+            ("Beer of the Dead Spiced Brown Ale", "Brown Ale - Other"),
+            ("Cranberry Cider", "Cider - Other Fruit"),
+            ("Premature Celebration", "Festbier"),
+            ("SHEPHERD'S CROOK SCOTTISH EXPORT", None),  # 4.6%
+            ("Thistle While You Work", "Scottish Export Ale"),
+            ("Scottish Oatmeal Porter", None),  # Montavilla
+            ("Shipwreck Spiced Rum, Scotch, lemon", None),
+        ],
+    )
+    def test_tuning_look_alikes_do_not_match(
+        self, winter: ListingMatcher, name: str, style: str
+    ) -> None:
+        assert not winter.matches(name, style)
+
     def test_aged_and_stout_do_not_span_into_extra_text(
         self, winter: ListingMatcher
     ) -> None:
@@ -444,6 +503,11 @@ class TestVenueWinterExcludes:
         assert not self._winter("yakima-freshies", "stein-leavenworth-taps").matches(
             name
         )
+
+    def test_old_stove_pike_place_cocktails_stay_off(self) -> None:
+        winter = self._winter("seattle-freshies", "old-stove-pike-place-taps")
+        assert not winter.matches("Shipwreck Spiced Rum, Ryan’s Apple Cider")
+        assert winter.matches("HOT SPICED CIDER")
 
     def test_stein_winter_beers_stay_on(self) -> None:
         winter = self._winter("yakima-freshies", "stein-leavenworth-taps")

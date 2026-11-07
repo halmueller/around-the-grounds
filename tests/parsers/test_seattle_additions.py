@@ -514,12 +514,14 @@ class TestConfiguredVenues:
         assert by_name["Kickstep IPA"].abv is None
         events = build_listings(venue, entries, "sheet", LOGGER)
         assert summary(events) == [
+            ["Scotch Ale", "winter", "Boundary Bay Brewing · 6.4%"],
             ["Charivari Festbier", "festbier", "E9 Brewing · 5.7%"],
             ["Fake Train FH Pale", "fresh-hop", "Bizarre Brewing · 5.2%"],
             ["Petrichor FH NW IPA", "fresh-hop", "Human People Brewing · 6.8%"],
             ["Easy Being Green FH Hazy IPA", "fresh-hop", "Matchless Brewing · 6.4%"],
             ["FH Hoprissian IPA", "fresh-hop", "Loowit Brewing · 6.4%"],
             ["Moonshake Pumpkin Oat Stout", "pumpkin", "Bizarre Brewing · 5.5%"],
+            ["Cranberry Spice", "winter", "Offset Ciderworks · 6.1%"],
         ]
 
     def test_abv_column_wins_over_the_name_cell(self) -> None:
