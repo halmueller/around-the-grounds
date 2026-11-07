@@ -366,6 +366,17 @@ class TestWinter:
             ("Muckle Flugga Scotch Ale", None),  # Bellevue Brewing
             ("Willie Heavy", "Wee Heavy Scotch Ale"),  # Roscoe's
             ("Cold Smoke", "Scotch Ale"),  # KettleHouse at Public House
+            ("Incinerator Doppelbock", None),  # Old Stove Pike Place
+            ("Salvator", "Doppelbock"),  # Paulaner at Stein
+            ("Co-conspirator - Doppelbock", None),  # Victor 23
+            ("Celebrator", "Bock - Doppelbock"),
+            ("Ayinger Celebrator, 6.7% ABV", None),  # Prost! West Seattle
+            ("Spaten Optimator", None),
+            ("Ferment Brewing Woodsman Porter brewed with fir tips", "Porter"),
+            ("Woodsman", "Porter w/ Doug Fir Tips"),  # Saraveza
+            ("Solstice", "Winter Warmer"),
+            ("Solstice Stout", None),
+            ("Winter Solstice Ale", None),
         ],
     )
     def test_tuning_additions_match(
@@ -399,6 +410,12 @@ class TestWinter:
             ("SHEPHERD'S CROOK SCOTTISH EXPORT", None),  # 4.6%
             ("Thistle While You Work", "Scottish Export Ale"),
             ("Scottish Oatmeal Porter", None),  # Montavilla
+            ("Maibock", "Bock - Hell / Maibock / Lentebock"),
+            ("Imitator IPA", "IPA - American"),  # Victor 23
+            ("Summer Solstice", "Cream Ale"),  # Anderson Valley
+            ("Summer-Solstice Saison", None),
+            ("The Greater Tingle", "IPA brewed with spruce tips"),  # Stickmen
+            ("Venus In Firs", "Farmhouse Ale - Saison"),
             ("Shipwreck Spiced Rum, Scotch, lemon", None),
         ],
     )
@@ -507,6 +524,7 @@ class TestVenueWinterExcludes:
     def test_old_stove_pike_place_cocktails_stay_off(self) -> None:
         winter = self._winter("seattle-freshies", "old-stove-pike-place-taps")
         assert not winter.matches("Shipwreck Spiced Rum, Ryan’s Apple Cider")
+        assert not winter.matches("Solstice Sipper")
         assert winter.matches("HOT SPICED CIDER")
 
     def test_stein_winter_beers_stay_on(self) -> None:

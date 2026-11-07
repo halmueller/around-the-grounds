@@ -292,12 +292,16 @@ include-when-unsure).
 
 Scotch ales and wee heavies added the same day (Hal): nine beers, 13 tap
 listings; light Scottish ales (Shepherd's Crook, Scottish exports) and a
-Scottish oatmeal porter stay off. Left out on purpose, pending Hal's call:
-doppelbocks (Old Stove's Incinerator says
-"Welcome in the season"), fir-tip porters (Ferment's Woodsman), Belgian quads
-and strong ales, "solstice" (Anderson Valley's Summer Solstice would show in
-June), and plain cranberry, apple-cinnamon, or caramel-cinnamon ciders. No
-old ales were pouring.
+Scottish oatmeal porter stay off. Doppelbocks added the
+same day (Hal): Old Stove's Incinerator, Victor 23's Co-conspirator,
+Paulaner Salvator, and Ayinger Celebrator at the three Prost! bars (by name,
+with Salvator and Optimator). Fir-tip porters (Ferment's Woodsman at
+Imperial Bottle Shop and Saraveza) and solstice beers added the same day
+(Hal); "Summer Solstice" is excluded, and Old Stove Pike Place's "Solstice
+Sipper" cocktail is a venue exclude. No winter solstice beer was pouring.
+Left out on purpose, pending Hal's call: Belgian quads and strong ales, and
+plain cranberry, apple-cinnamon, or caramel-cinnamon ciders. No old ales
+were pouring.
 
 Run a second pass in early December, when more holiday releases are out.
 

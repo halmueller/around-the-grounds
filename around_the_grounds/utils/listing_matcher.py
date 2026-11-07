@@ -102,6 +102,16 @@ WINTER_CORE = [
     # ales such as Shepherd's Crook (4.6%) or a Scottish oatmeal porter.
     r"\bscotch[\s-]+ale\b",  # "Scotch Ale", "Strong Scotch Ale"
     r"\bwee[\s-]*heavy\b",
+    r"\bdoppel[\s-]*bock",  # Doppelbock, Doppel Bock (Hal, 2026-11-06)
+    # Classic doppelbocks often listed by name alone (Ayinger Celebrator at
+    # the Prost! bars)
+    r"\b(?:celebrator|salvator|optimator)\b",
+    # Fir-tip porters (Ferment's Woodsman, "Porter w/ Doug Fir Tips"), name
+    # and style joined (Hal, 2026-11-06)
+    r"\bfir[\s-]*tips?\b.*\bporter\b",
+    r"\bporter\b.*\bfir[\s-]*tips?\b",
+    # Solstice beers, except summer ones (Anderson Valley's Summer Solstice)
+    r"(?<!summer\s)(?<!summer-)\bsolstice\b",
     # Winter-warmer recipes: "SPICED AMBER ALE WITH ORANGE PEEL, CINNAMON…"
     # (Strange Weather). Not spiced brown ale: Beer of the Dead is a Day of
     # the Dead beer.
