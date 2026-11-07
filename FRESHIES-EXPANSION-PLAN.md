@@ -475,7 +475,12 @@ Hal, 2026-10-15: Seattle's Events page is gone too ("there are too many
 different sources and we are missing a lot of them"). Its six sources
 (Fremont ×2, Georgetown, Beveridge Place, and Stoup ×2) moved to
 `tests/fixtures/config/seattle_event_sources.json`, where the event-source
-parser tests read them. No site has an Events page now.
+parser tests read them.
+
+Hal, 2026-11-06: Seattle's six event sources are back in
+`seattle-freshies.json` (a revert of the 2026-10-15 change), so Seattle has
+its Events tab, page, and sitemap entry again. Portland and Yakima still list
+beers on tap only.
 
 Original notes:
 
