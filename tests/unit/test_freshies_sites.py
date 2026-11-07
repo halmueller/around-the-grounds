@@ -32,6 +32,7 @@ PAGES = (
     ("fresh-hops.html", "freshhop"),
     ("festbier.html", "festbier"),
     ("pumpkin.html", "pumpkin"),
+    ("winter-beers.html", "winter"),
     ("taprooms.html", "taprooms"),
     ("events.html", "events"),
 )
@@ -322,6 +323,7 @@ def test_list_taglines_name_the_area(site: SiteConfig, rendered: Path) -> None:
         ("fresh-hops.html", "breweries"),
         ("festbier.html", "breweries"),
         ("pumpkin.html", "breweries"),
+        ("winter-beers.html", "breweries"),
         ("taprooms.html", "bottle shops and taprooms"),
     ):
         html = (rendered / page).read_text()

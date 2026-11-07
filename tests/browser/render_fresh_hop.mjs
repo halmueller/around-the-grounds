@@ -16,7 +16,10 @@ const element = () => ({
   querySelectorAll: () => [],
 });
 // The header's list tabs, as in the template.
-const tabs = ['fresh-hops.html', 'festbier.html', 'pumpkin.html', 'taprooms.html', 'events.html']
+const tabs = [
+  'fresh-hops.html', 'festbier.html', 'pumpkin.html', 'winter-beers.html', 'taprooms.html',
+  'events.html',
+]
   .map((href) => ({
     text: '',
     getAttribute: (name) => (name === 'href' ? href : null),

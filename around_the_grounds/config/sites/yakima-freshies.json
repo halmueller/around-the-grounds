@@ -260,9 +260,15 @@
       "url": "https://www.steinleavenworth.com/55-beers",
       "source_type": "untappd-embed",
       "parser_config": {
+        "note": "The menu has a cocktail section whose rows read \"Name - ingredient / ingredient\" (\"Old Saint Nick - dark rum / mint / lime / prosecco\"), plus a mulled wine; winter_exclude keeps them off the winter list.",
         "location_id": 46058,
         "theme_id": 171746,
-        "venue_type": "taproom"
+        "venue_type": "taproom",
+        "winter_exclude": [
+          "\\s[-–]\\s.*\\s/\\s",
+          "\\bmulled\\s+wine\\b",
+          "\\bgl[uü]h(?:wein)?\\b"
+        ]
       }
     },
     {

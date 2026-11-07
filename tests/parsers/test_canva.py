@@ -103,9 +103,11 @@ def test_ship_canal_layout_with_style_under_abv(html_fixtures_dir: Path) -> None
     )
     events = build_listings(venue, entries, "canva", LOGGER)
     assert [(e.category, e.title, e.description) for e in events] == [
+        ("winter", "Castaway ‘25", "Barrel Aged Barleywine · 13%"),
         ("fresh-hop", "Fresh hop strata", "Fresh Hop West Coast IPA · 7.7%"),
         ("festbier", "OkStoverFest", "Festbier · 6.2%"),
         ("fresh-hop", "Fresh Hop Citra", "Fresh Hop Hazy Pale Ale · 6%"),
+        ("winter", "Quiet eon ‘25", "Barrel Aged Imperial Stout · 14%"),
         ("festbier", "The Claw!", "Cherrywood Smoked Märzen · 5.6%"),
         ("festbier", "BEST DAY Oktoberfest", None),  # non-alcoholic, no ABV line
     ]

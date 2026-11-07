@@ -416,6 +416,7 @@ class TestHtmlTaplistVenues:
         assert [(e.category, e.title) for e in events] == [
             ("festbier", "FESTBIER"),
             ("festbier", "THE CLAW"),
+            ("winter", "2025 CASTAWAY"),  # barrel-aged barleywine
             ("fresh-hop", "STRATA FRESH HOP"),
             ("pumpkin", "PUMPKIN ALE"),
         ]

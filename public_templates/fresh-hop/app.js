@@ -3,7 +3,9 @@
 //   freshhop  fresh hop beers at breweries
 //   festbier  festbiers, Oktoberfests, and Märzens at breweries
 //   pumpkin   pumpkin beers at breweries
-//   taprooms  all three, at bottle shops and taprooms
+//   winter    winter seasonals, holiday beers and ciders, barleywines, and
+//             barrel-aged or spiced stouts at breweries
+//   taprooms  all four, at bottle shops and taprooms
 //   events    upcoming beer events
 
 // Escape text for safe insertion into innerHTML (text nodes and
@@ -28,7 +30,9 @@ function formatDate(dateKey) {
 function count(n, one, many) { return `${n} ${n === 1 ? one : many}`; }
 
 const BREWERIES = n => count(n, 'brewery', 'breweries');
-const CATEGORY_LABELS = { 'fresh-hop': 'Fresh hop', festbier: 'Festbier', pumpkin: 'Pumpkin' };
+const CATEGORY_LABELS = {
+    'fresh-hop': 'Fresh hop', festbier: 'Festbier', pumpkin: 'Pumpkin', winter: 'Winter',
+};
 // A seasonal list has `months`, its season as [first, last] month numbers
 // (inclusive; may wrap the new year), and `offSeason`, shown instead of
 // "Found no …" when the list is empty outside those months. Each page's
@@ -67,14 +71,26 @@ const PAGES = {
         months: [9, 11],
         offSeason: 'Pumpkin beers are out of season.',
     },
+    winter: {
+        href: 'winter-beers.html',
+        label: 'Winter',
+        venueType: type => type !== 'taproom',
+        categories: ['winter'],
+        places: BREWERIES,
+        beers: n => count(n, 'winter beer', 'winter beers'),
+        none: 'no winter beers',
+        months: [11, 2],
+        offSeason: 'Winter beers are out of season.',
+    },
     taprooms: {
         href: 'taprooms.html',
         label: 'Taprooms',
         venueType: type => type === 'taproom',
-        categories: ['fresh-hop', 'festbier', 'pumpkin'],
+        categories: ['fresh-hop', 'festbier', 'pumpkin', 'winter'],
         places: n => count(n, 'bottle shop or taproom', 'bottle shops and taprooms'),
-        beers: n => count(n, 'fresh hop, festbier, or pumpkin beer', 'fresh hop, festbier, and pumpkin beers'),
-        none: 'no fresh hops, festbiers, or pumpkin beers',
+        beers: n => count(n, 'fresh hop, festbier, pumpkin, or winter beer',
+            'fresh hop, festbier, pumpkin, and winter beers'),
+        none: 'no fresh hops, festbiers, pumpkin beers, or winter beers',
         tags: true,
         tabCountsPlaces: true,
     },

@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Taprooms · {{site_name}}</title>
-    <meta name="description" content="Fresh hop beers, festbiers, and pumpkin beers on tap right now at {{area}} bottle shops and taprooms.">
+    <meta name="description" content="Fresh hop beers, festbiers, pumpkin beers, and winter beers on tap right now at {{area}} bottle shops and taprooms.">
     <link rel="canonical" href="{{public_url}}/taprooms.html">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="{{site_name}}">
     <meta property="og:title" content="Taprooms · {{site_name}}">
-    <meta property="og:description" content="Fresh hop beers, festbiers, and pumpkin beers on tap right now at {{area}} bottle shops and taprooms.">
+    <meta property="og:description" content="Fresh hop beers, festbiers, pumpkin beers, and winter beers on tap right now at {{area}} bottle shops and taprooms.">
     <meta property="og:url" content="{{public_url}}/taprooms.html">
     <meta property="og:image" content="{{public_url}}/og-image.png">
     <meta property="og:image:width" content="1200">
@@ -25,8 +25,8 @@
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="stylesheet" href="styles.css">
 </head>
-<!-- fresh-hops.html, festbier.html, pumpkin.html, taprooms.html, and events.html share
-     this layout and differ only in data-page, title, description, URL (canonical, og:*),
+<!-- fresh-hops.html, festbier.html, pumpkin.html, winter-beers.html, taprooms.html, and
+     events.html share this layout and differ only in data-page, title, description, URL (canonical, og:*),
      heading emoji, tagline, and the current tab.
      Keep them in step. -->
 <body data-page="taprooms">
@@ -50,6 +50,7 @@
             <a href="fresh-hops.html">Fresh Hops</a>
             <a href="festbier.html">Festbiers</a>
             <a href="pumpkin.html">Pumpkin</a>
+            <a href="winter-beers.html">Winter</a>
             <a href="taprooms.html" aria-current="page">Taprooms<span class="tab-extra">/Bottle Shops</span></a>
             {{#events}}
             <a href="events.html">Events</a>
@@ -59,7 +60,7 @@
 </header>
 
 <div class="container">
-    <p class="tagline">Fresh hop beers, festbiers, and pumpkin beers on tap right now at {{area}} bottle shops and taprooms.</p>
+    <p class="tagline">Fresh hop beers, festbiers, pumpkin beers, and winter beers on tap right now at {{area}} bottle shops and taprooms.</p>
     <p class="summary" id="summary"></p>
 
     <input class="search" id="search" type="search" placeholder="Search beers, breweries, or places…" aria-label="Search beers, breweries, or places" hidden>

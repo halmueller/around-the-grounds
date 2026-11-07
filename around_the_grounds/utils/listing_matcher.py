@@ -3,7 +3,9 @@
 Parsers pass every text field they have for an entry (name, style,
 description), name first; the entry matches a category when any field hits
 one of its include patterns and no field hits one of the venue's exclude
-patterns. The built-in excludes look at the name only.
+patterns. The name and style are also tried joined (``"name | style"``), so
+a two-part pattern such as "barrel-aged … stout" matches when the two words
+are split between them. The built-in excludes look at the name only.
 
 Built-in categories:
 
@@ -16,6 +18,11 @@ Built-in categories:
   ``festbier_include`` / ``festbier_exclude``.
 - ``pumpkin``: pumpkin beers (pumpkin, gourd, jack-o'-lantern, calabaza).
   Venues extend it with ``pumpkin_include`` / ``pumpkin_exclude``.
+- ``winter``: winter seasonals (winter ales, warmers, IPAs, and lagers;
+  Christmas and holiday beers; named seasonals such as Jubelale, Jolly
+  Roger, and High Camp), holiday-focused ciders (wassail, mulled, hot
+  spiced), barleywines and wheatwines, and barrel-aged or spiced stouts.
+  Venues extend it with ``winter_include`` / ``winter_exclude``.
 
 A beer's description (``matches_description``) is checked against a
 narrower list per category: brewers write "FRESH HOP collab…" or "our
@@ -28,6 +35,7 @@ from typing import Any, Dict, List, Optional, Pattern, Sequence, Tuple
 FRESH_HOP = "fresh-hop"
 FESTBIER = "festbier"
 PUMPKIN = "pumpkin"
+WINTER = "winter"
 
 # "fresh hop", "wet-hop", "Freshhop", "Fresh Hops", "wet-hopped". Requiring
 # "hop" right after "fresh"/"wet" keeps out "Fresh Squeezed IPA" and
@@ -69,12 +77,70 @@ PUMPKIN_INCLUDE = [
     r"\bcalabaza\b",
 ]
 
+# Barrel-aged and spiced stouts. A plain, imperial, coffee, or pastry stout
+# does not count on its own.
+_AGED = (
+    r"(?:barrel|bourbon|whiske?y|rye|rum|brandy|port|peat)"
+    r"[\s-]*(?:barrel[\s-]*)?aged"
+)
+_SPICE = (
+    r"(?:spiced|cinnamon|nutmeg|clove|ginger(?:bread)?|allspice"
+    r"|mexican[\s-]*(?:hot[\s-]*)?chocolate|chai|peppermint)"
+)
+
+# Also the patterns checked in descriptions: phrases a brewer would not use
+# for a year-round beer ("perfect for winter nights" stays out).
+WINTER_CORE = [
+    r"\bwinter[\s-]+(?:ale|warmer|ipa|lager|seasonal|beer)\b",
+    r"\bholiday[\s-]+(?:ale|beer|seasonal)\b",
+    r"\bchristmas[\s-]+(?:ale|beer)\b",
+    r"\bbarley[\s-]*wine",
+    r"\bwheat[\s-]*wine",
+    r"\bwassail",
+    r"\bmulled\b",
+]
+
+# Counted by name or style (alone or joined).
+WINTER_INCLUDE = WINTER_CORE + [
+    r"\bwinter",  # Winter Ale, Winter IPA, "The Wintering", "wintery spices"
+    r"christmas",
+    r"\bxmas",
+    r"holiday",  # Holiday Haze, Festivus Holiday Ale
+    r"\bno[eë]l\b",  # Delirium Noël
+    r"\byule",
+    r"\bjul(?:e|ø)",  # Julebokk, Juleøl, Julebryg
+    r"jubel",  # Jubelale
+    r"sleigh",  # Sleigh'r, Sleighjacker
+    # Saint Nick and Santa; not "Russian River Santa Rosa, CA"
+    r"\bsanta\b(?![\s-]*(?:rosa|cruz|barbara|fe|clara|monica|ana)\b)",
+    r"\b(?:saint|st\.?)[\s-]*nick\b",  # Ol' Saint Nick
+    r"\bscrooge",  # Scrooge McBluffs
+    r"\bkrampus",
+    r"gingerbread",
+    r"\bfa[\s-]*la\b",  # Fa La La
+    r"\bfestive\b",  # Reuben's Festive Ale
+    r"\bfestivus\b",
+    r"\bsnow",  # Snowmotion, Snow Day, Snow Cap
+    r"jolly[\s-]*roger",
+    r"bifrost",
+    r"abominable",
+    r"\bhigh[\s-]*camp\b",  # Bale Breaker
+    r"\bwarmer\b",
+    r"\bhot[\s-]*spiced\b",  # Old Stove Hot Spiced Cider
+    rf"\b{_AGED}\b.*\bstout\b",
+    rf"\bstout\b.*\b{_AGED}\b",
+    r"\bBA\b.*\bstout\b",  # "BA Imperial Stout", "Mayan Chocolate BA Stout"
+    rf"\b{_SPICE}\b.*\bstout\b",
+    rf"\bstout\b.*\b{_SPICE}\b",
+]
+
 # category -> (include patterns, exclude patterns, config key prefix,
 #              include patterns for descriptions)
 CATEGORIES: Dict[str, Tuple[List[str], List[str], str, List[str]]] = {
     FRESH_HOP: (FRESH_HOP_INCLUDE, DEFAULT_EXCLUDE, "listing", DEFAULT_INCLUDE),
     FESTBIER: (FESTBIER_INCLUDE, [], "festbier", FESTBIER_CORE),
     PUMPKIN: (PUMPKIN_INCLUDE, [], "pumpkin", PUMPKIN_INCLUDE),
+    WINTER: (WINTER_INCLUDE, [], "winter", WINTER_CORE),
 }
 
 
@@ -114,9 +180,9 @@ class ListingMatcher:
         """Build a matcher for *category* from a venue's ``parser_config``.
 
         ``<prefix>_include`` / ``<prefix>_exclude`` (``listing_*`` for fresh
-        hop, ``festbier_*`` for festbier, ``pumpkin_*`` for pumpkin) may each
-        be a pattern or a list of patterns; they extend the defaults rather
-        than replace them.
+        hop, ``festbier_*`` for festbier, ``pumpkin_*`` for pumpkin,
+        ``winter_*`` for winter) may each be a pattern or a list of
+        patterns; they extend the defaults rather than replace them.
         """
         if category not in CATEGORIES:
             raise ValueError(f"Unknown listing category {category!r}")
@@ -143,8 +209,15 @@ class ListingMatcher:
         ]
 
     def matches(self, *texts: Optional[str]) -> bool:
-        """*texts* are an entry's fields, name first."""
+        """*texts* are an entry's fields, name first, then style.
+
+        The name and style are also tried joined by " | ", so a pattern
+        with ``.*`` can span them ("Bourbon Barrel Aged Dark Star" with
+        style "Imperial Oatmeal Stout"); ``[\\s-]*`` cannot cross the bar.
+        """
         fields = [t for t in texts if t]
+        if len(texts) >= 2 and texts[0] and texts[1]:
+            fields.append(f"{texts[0]} | {texts[1]}")
         if not any(p.search(t) for p in self._include for t in fields):
             return False
         return not self._excluded(texts)

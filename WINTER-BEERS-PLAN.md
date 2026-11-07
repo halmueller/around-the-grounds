@@ -1,8 +1,19 @@
-# Plan: add a winter ales page to Seattle Freshies
+# Plan: add a winter beers page to every Freshies site
 
-Status: not started. Written 2026-10-01; decisions settled the same day.
+Written 2026-10-01; decisions settled the same day.
+Steps 1, 2, 5, and 6 done 2026-11-06 (step 3 and 4 earlier); left: step 7
+(tune against live lists) and step 8 (ship, then switch the home page).
+Revised 2026-11-06 after the first scan with winter beers pouring (see
+"Findings from the 2026-11-06 scan").
 
-Goal: a fourth seasonal list, winter ales at breweries, at its own permanent
+Scope: all three Freshies sites (Seattle, Portland, and Yakima). They share
+the `fresh-hop` template, the matcher, and one Apache conf, so each step below
+is done once and every site gets the page. Per-site work is limited to venue
+`winter_include` / `winter_exclude` entries, each site's Open Graph card in
+`public_templates/_overlays/<site key>/`, and the live Apache files on the
+droplet (one pair per domain) when the home page switches.
+
+Goal: a fourth seasonal list, winter beers at breweries, at its own permanent
 URL, which becomes the home page (`/` 302) once winter beers are pouring. The
 `pumpkin` category is the model for every step: it was the last one added and
 touches the same files. Two companion changes ride along: an out-of-season
@@ -11,14 +22,21 @@ rather than fresh-hop events only.
 
 ## Decisions (settled)
 
-1. **URL: `winter-ales.html`.** Permanent; no year in the name.
+1. **URL: `winter-beers.html`; label "Winter beers"** (tab, heading, and
+   title; changed from "winter ales" on 2026-11-06, before anything shipped,
+   since winter IPAs and lagers are a large share of the list). Permanent; no
+   year in the name.
 2. **Category key: `winter`**, giving per-venue config keys `winter_include` /
    `winter_exclude`, tag class `tag-winter`, and `data-page="winter"`.
 3. **What counts:** winter ales and warmers, Christmas and holiday beers, named
    seasonals that never say "winter" (Jolly Roger, Jubelale, Bifrost,
    Abominable, and so on), and, on their own, **barleywines, spiced stouts, and
    barrel-aged stouts**, whether or not the venue calls them a winter beer.
-   Borderline beers go on the list, not off it.
+   Borderline beers go on the list, not off it. **Ciders count when they look
+   holiday-focused** (decided 2026-11-06): a wassail, a hot spiced or mulled
+   cider, a cider with a winter or holiday name. A cider with no seasonal word
+   stays off, which the seasonal patterns already ensure; there is no cider
+   exclude.
 4. **Every list gets an out-of-season message** (step 3).
 5. **`events.html` covers all seasonal events**, not only fresh-hop ones
    (step 4).
@@ -36,14 +54,23 @@ winter beers do not reach taps until roughly November. So:
 - The events change (step 4) did not depend on winter and has shipped.
 - Publish the page and its tab a few weeks before making it the home page, so
   it is crawled and indexed with real content first.
-- To check live lists before the category exists, run
-  `uv run python scripts/winter_scan.py` (all Freshies sites, or name one). It
-  registers the first-guess patterns below in its own process only and prints
-  the matches; nothing is written or deployed. Delete it once step 1 ships.
+- `scripts/winter_scan.py` was used to check live lists before the category
+  existed; it was deleted when step 1 shipped. Use `--preview` (step 7) now.
 
 ## Steps
 
 ### 1. Matcher: `around_the_grounds/utils/listing_matcher.py`
+
+Done 2026-11-06 (committed the same day). The `winter` category is
+in `listing_matcher.py` with the patterns below plus the 2026-11-06 additions.
+`matches` now also tries the name and style joined by " | ", which settles the
+"name and style together" question: a `.*` pattern can span the two fields,
+while `[\s-]*` patterns cannot cross the bar, so the other categories behave
+as before. Venue excludes: Big Time (liquor rows) in `seattle-freshies.json`
+and Stein (cocktails and Glühwein) in `yakima-freshies.json`. No venue sets
+`listing_categories`, so every venue picks winter up. Live rescan: Seattle 48,
+Portland 31, Yakima 20 after the Stein exclude. "Snow" names (Snow Wit,
+Snowblind, Snow Miser) are kept under the include-when-unsure rule.
 
 - Add `WINTER = "winter"`, a `WINTER_INCLUDE` list (name and style), and a
   narrower `WINTER_CORE` list for descriptions.
@@ -84,7 +111,8 @@ First-guess patterns, to be checked against live lists:
   lists. That is the existing behavior for a "Fresh Hop Festbier" and is fine.
 - Likely excludes: "Winter Park"-style place names, holiday-hours notices and
   gift cards that some tap lists carry as rows, and non-beer rows (cocktails,
-  as with Old Stove Pike Place's `pumpkin_exclude`).
+  as with Old Stove Pike Place's `pumpkin_exclude`). Holiday-focused ciders
+  are not excluded (decision 3).
 
 Findings from a scan of all 67 live tap lists on 2026-10-05, run with the
 first-guess patterns above (no winter, Christmas, or holiday ales were pouring
@@ -106,15 +134,65 @@ yet; about 14 barleywines and barrel-aged stouts were):
   "Barleywine - English" styles. White Bluffs' "Scrooge McBluffs" (a
   barleywine) suggests `scrooge` as a seasonal name.
 
+Findings from the 2026-11-06 scan (`scripts/winter_scan.py`, all three
+sites; Seattle 44 hits, Portland 27, Yakima 18; three venue 404s, unrelated):
+
+- Winter beers are pouring everywhere. Bale Breaker's High Camp Winter IPA
+  shows at its Ballard and Moxee taprooms and at both Public Houses of Yakima,
+  where the name is just "High Camp" and only the style ("Winter IPA") matches.
+  Other real hits: Fremont Winter Ale, Reuben's Julebokk and Holiday Haze,
+  Black Raven Festivus and Hola Daze, Jubelale, Ol' Saint Nick, Abominable,
+  Sleigh'r, Delirium Noël, pFriem Winter Ale and Belgian Christmas Ale,
+  Seapine Flannel Channel, and many barleywines and barrel-aged stouts.
+- Winter IPAs and winter lagers are common (High Camp, Everglow, Fa La La,
+  Yippee Ki-P-A, Julebokk, Juleøl). `\bwinter` already takes them. See the
+  label decision (decision 1).
+- False positives to fix:
+  - `santa` still matches "Russian River Santa Rosa, CA" (three rows at Über
+    Tavern). Use the negative lookahead from the October findings.
+  - Big Time's spirits rows ("Rum – Jolly Rogers (well)…"): a venue
+    `winter_exclude` on `\bwell\b` or `\brum\b`, or keep `jolly roger` out of
+    the built-ins and add it only for Rooftop Brew Co at the Jolly Roger.
+- Ciders: Old Stove's "Hot Spiced Cider" ("wintery spices") and Yonder's
+  "Wassail" at Bale Breaker Ballard both look holiday-focused, so both stay
+  (decision 3). Hot Spiced Cider matches only because its second field
+  says "wintery spices", which is luck; add `mulled` and `hot[\s-]*spiced` to
+  the name patterns (alongside `wassail`) so ciders like it match on their
+  names.
+- Borderline, keep (include when unsure): Elliott Bay "Better Than Christmas
+  (2026 Fresh Hop)", which is a fresh-hop pale ale that will sit on both
+  lists; Ravenna "Short Days, Long Nights, Let's Party" (fresh-hop winter
+  IPA); Stickmen "Lack-O-Jantern" (pumpkin barleywine, on both lists).
+- Check why these matched before writing tests (probably a description hit):
+  Big Time "Breakfast Cereal Killer Stout", Urban Family "Treehouse In the
+  City '25", and Calapooia "Turkish Coffee Stout".
+- Names to add to the built-ins, since a row with no style would miss them:
+  `high[\s-]*camp`, `scrooge`, `saint[\s-]*nick`, `\bfa[\s-]*la\b`,
+  `festive`, `\bjul(?:e|ø|ebokk)`, `\bsnow` (Snowmotion, New Belgium Snow
+  Day), `festivus`. Skim each venue's full list during step 7 for others.
+
 Also update the category comment on `Event.category` in
 `around_the_grounds/models/schedule.py`.
 
 ### 2. Template: `public_templates/fresh-hop/`
 
-- **`winter-ales.html`**: copy `pumpkin.html`; change `data-page`, title,
+Done 2026-11-06 (committed the same day). `winter-beers.html`
+(❄️, `data-page="winter"`) has a tagline naming what the list holds ("Winter
+warmers, holiday beers and ciders, barleywines, and barrel-aged stouts…") and
+the season (November through February). The "Winter" tab sits between Pumpkin
+and Taprooms on every page. `app.js` has the `winter` page (`months: [11, 2]`)
+and label, and the taprooms page takes winter too. Tag colors: `--winter`
+#2c5d8a light, #8dbbe6 dark (AA on the chip in both). Six tabs fit from 375px
+up as before; a new `max-width: 360px` rule (11px type, 3px padding) fits
+them at 320px. The Open Graph card says "and other seasonal beers", so it is
+unchanged. Step 3's leftover items (season, out-of-season sentence, and the
+parametrized tests) are done here too. Seattle preview: 36 winter beers at 21
+breweries, and 20 winter tags on the taprooms page.
+
+- **`winter-beers.html`**: copy `pumpkin.html`; change `data-page`, title,
   description, canonical, `og:*`, heading emoji, tagline, and the current tab.
 - **Tab bar on every page** (`fresh-hops.html`, `festbier.html`, `pumpkin.html`,
-  `taprooms.html`, `events.html`, and the new page): add the "Winter ales" tab
+  `taprooms.html`, `events.html`, and the new page): add the "Winter beers" tab
   and update the shared-layout comment. That makes six tabs; check that the
   pinned bar still fits at phone width.
 - **`app.js`**: add `winter` to `PAGES` and `CATEGORY_LABELS`, and to the
@@ -126,7 +204,7 @@ Also update the category comment on `Event.category` in
   `.tag-winter` rule, next to `--pumpkin` / `.tag-pumpkin`.
 - **`sitemap.xml`**: add the new URL.
 - **`og-image.png`**: check whether the card text or its alt text should
-  mention winter ales (source in `deploy/images/`, rendered by `render.py`).
+  mention winter beers (source in `deploy/images/`, rendered by `render.py`).
 
 ### 3. Out-of-season message (done 2026-10-02)
 
@@ -143,8 +221,8 @@ Ranges (confirmed 2026-10-02): fresh hops August through October,
 festbier September through October, pumpkin September through November.
 
 Left for the winter work: give the `winter` page `href`, `label`,
-`months: [11, 2]`, and `offSeason: 'Winter ales are out of season.'`; add
-"Winter ale season runs from November through February." to its tagline; and
+`months: [11, 2]`, and `offSeason: 'Winter beers are out of season.'`; add
+"Winter beer season runs from November through February." to its tagline; and
 add the page to the two parametrized tests.
 
 ### 4. Events page: all beer events (done 2026-10-01)
@@ -174,6 +252,8 @@ Left for the winter work:
 
 ### 5. Tests
 
+Done 2026-11-06 with steps 1 and 2 (1427 tests).
+
 - `tests/unit/test_listing_matcher.py`: winter matches, near misses, description
   matching, and `winter_include` / `winter_exclude` from config. Cover
   barleywine spellings; barrel-aged and spiced stouts with the two words in
@@ -186,6 +266,8 @@ Left for the winter work:
   assertions that count categories or matched entries per fixture.
 
 ### 6. Docs
+
+Done 2026-11-06 with steps 1 and 2.
 
 - `CLAUDE.md`: template tree, the category list in the tap-list parser
   paragraph, and the test count.
@@ -207,7 +289,7 @@ Fix with built-in patterns when a term is general, and with per-venue
 ### 8. Ship, then switch the home page
 
 1. Commit, push, and let the cron job publish the new page and tab.
-2. Later, when winter ales are the main thing pouring, follow the steps in the
+2. Later, when winter beers are the main thing pouring, follow the steps in the
    comment above `RedirectMatch` in
    `deploy/digitalocean/freshies-site.conf`: change the page name in both
    live Apache files, reload, then make the same change in the repo conf and in
@@ -215,7 +297,7 @@ Fix with built-in patterns when a term is general, and with per-venue
    `test_home_redirects_to_the_in_season_page` fails if the repo copies disagree.
 
 Expected home page sequence: `fresh-hops.html` now, `festbier.html` or
-`pumpkin.html` when fresh hops fade, then `winter-ales.html`.
+`pumpkin.html` when fresh hops fade, then `winter-beers.html`.
 
 ## Out of scope
 

@@ -3,6 +3,7 @@ collected from Seattle breweries and taprooms in September 2026."""
 
 import pytest
 
+from around_the_grounds.config.loader import load_site_config
 from around_the_grounds.utils.listing_matcher import ListingMatcher
 
 
@@ -228,12 +229,185 @@ class TestPumpkin:
         assert pumpkin.matches("PUMPKIN ALE")
 
 
+class TestWinter:
+    """Cases from live Seattle, Portland, and Yakima tap lists, 2026-11-06."""
+
+    @pytest.fixture
+    def winter(self) -> ListingMatcher:
+        return ListingMatcher(category="winter")
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "High Camp Winter IPA",  # Bale Breaker
+            "Winter Ale",  # Fremont, pFriem
+            "Festivus Holiday Ale",  # Black Raven
+            "Holiday Haze",  # Reuben's
+            "Julebokk Winter Lager (on our Lager Faucet)",  # Reuben's
+            "Juleøl",  # Aass at Stein
+            "Jubelale (2026)",  # Deschutes
+            "Nitro Jubelale",
+            "Sleigh'r",  # Ninkasi
+            "Sleighjacker - Belgian Strong",  # Victor 23
+            "Noël Winter Belgian Ale",  # Delirium
+            "BELGIAN CHRISTMAS ALE",  # pFriem
+            "Better Than Christmas (2026 Fresh Hop)",  # Elliott Bay; on both lists
+            "OL’ SAINT NICK",  # Block 15
+            "Ol' Saint Nick (2026)",
+            "Scrooge Mcbluffs",  # White Bluffs
+            "Nitro: Fa La La",  # Double Mountain
+            "SNOWMOTION WINTER ALE",  # Ravenna at Maize & Barley
+            "Jolly Roger Strong Ale 2026",  # Rooftop Brew Co at the Jolly Roger
+            "Abominable Winter Ale",  # Hopworks
+            "The Wintering - Coffee Stout",  # Kings & Daughters
+            "Festive Ale",  # Reuben's
+            "Gingerbread Cream Stout",  # Lucky Envelope
+        ],
+    )
+    def test_seasonal_names_match(self, winter: ListingMatcher, text: str) -> None:
+        assert winter.matches(text)
+
+    @pytest.mark.parametrize(
+        "name, style",
+        [
+            ("High Camp", "Winter IPA"),  # Public House of Yakima
+            ("Kitten Mittens", "Winter Ale"),  # Kulshan
+            ("Festive Ale", "Winter Warmer"),  # Reuben's at Treebeerd's
+            ("Gods Of Winter", "Weizenbock"),  # White Bluffs
+        ],
+    )
+    def test_style_alone_matches(
+        self, winter: ListingMatcher, name: str, style: str
+    ) -> None:
+        assert winter.matches(name, style)
+
+    @pytest.mark.parametrize(
+        "name, style",
+        [
+            ("Castaway ‘25", "Barrel Aged Barleywine"),  # Old Stove
+            ("Walls of the Cave English Style Barleywine", None),  # Georgetown
+            ("Old Pirates Barrel Aged Barley Wine", "Barleywine - American"),
+            ("Mother of All Storms (2025)", "Barleywine - English"),  # Pelican
+            ("Scrooge Mcbluffs", "2025 Wheatwine"),
+            ("Zvezda", "Barrel Aged Russian Imperial Stout"),  # Burke-Gilman
+            ("Bourbon Barrel Aged Imperial Stout", "Stout - Imperial"),  # Hellbent
+            ("Overstory Rye Reserve '25", "Rye Barrel-Aged Imperial Stout"),
+            ("Overstory Peated Reserve '25", "Peat Barrel-Aged Imperial Stout"),
+            ("Skybreak '25", "Mayan Chocolate BA Stout"),  # Single Hill
+            ("Cherry Decadence - BA Imperial Stout", None),  # Alesong
+            ("The Abyss Port Barrel Aged Stout", "Stout - Imperial"),  # Deschutes
+            ("MEXICAN CHOCOLATE STOUT", None),  # pFriem
+            ("Stout", "Imperial Stout w/ Cinnamon & Vanilla"),
+        ],
+    )
+    def test_barleywines_and_aged_or_spiced_stouts_match(
+        self, winter: ListingMatcher, name: str, style: str
+    ) -> None:
+        assert winter.matches(name, style)
+
+    def test_aged_and_stout_split_across_name_and_style(
+        self, winter: ListingMatcher
+    ) -> None:
+        # Fremont lists the beer as "Bourbon Barrel-Aged Dark Star"; a bar
+        # could carry the style alone as "Imperial Oatmeal Stout".
+        assert winter.matches("Bourbon Barrel-Aged Dark Star", "Imperial Oatmeal Stout")
+        assert winter.matches("Lighthouse In The Woods", "BA Imperial Stout")
+        assert winter.matches("Dark Star", "Imperial Stout · Bourbon Barrel-Aged")
+
+    @pytest.mark.parametrize(
+        "name, style",
+        [
+            ("Wassail", "Cider - Herbed"),  # Yonder at Bale Breaker
+            ("HOT SPICED CIDER", None),  # Old Stove
+            ("Mulled Cider", None),
+        ],
+    )
+    def test_holiday_ciders_match(
+        self, winter: ListingMatcher, name: str, style: str
+    ) -> None:
+        assert winter.matches(name, style)
+
+    @pytest.mark.parametrize(
+        "name, style",
+        [
+            ("Russian Imperial Stout", None),
+            ("Breakfast Stout", "Stout - Coffee"),
+            ("Pastry Stout", "Stout - Imperial / Double Pastry"),
+            ("Tayberry", "Sour - Barrel-Aged"),  # E9: aged, but not a stout
+            ("Resolute", "Porter - Barrel Aged"),  # Dirty Couch
+            ("Premature Celebration", "Festbier"),  # Dirty Couch
+            ("Pliny the Elder", "Russian River Santa Rosa, CA USA"),  # Über Tavern
+            ("Dry Cider", "Cider - Dry"),
+            ("Barrel Aged Saison", None),
+            ("Snoqualmie Pale", None),
+            ("Stoutly Hazy", "IPA - Hazy"),
+        ],
+    )
+    def test_look_alikes_do_not_match(
+        self, winter: ListingMatcher, name: str, style: str
+    ) -> None:
+        assert not winter.matches(name, style)
+
+    def test_aged_and_stout_do_not_span_into_extra_text(
+        self, winter: ListingMatcher
+    ) -> None:
+        # Only the name and style are joined; a description-like third field
+        # mentioning "stout" does not complete "barrel-aged" in the name.
+        assert not winter.matches(
+            "Bourbon Barrel Aged Sour", None, "aged where our stout once rested"
+        )
+
+    def test_join_does_not_change_other_categories(self) -> None:
+        # "[\\s-]*" cannot cross the " | " between name and style.
+        assert not ListingMatcher().matches("Something Fresh", "Hop Water")
+
+    @pytest.mark.parametrize(
+        "description",
+        [
+            "Our winter ale, brewed with toasted malts.",
+            "A holiday beer for the long nights.",
+            "English-style barleywine aged two years.",
+            "A hot mulled cider for cold days.",
+        ],
+    )
+    def test_description_core_matches(
+        self, winter: ListingMatcher, description: str
+    ) -> None:
+        assert winter.matches_description(description, "Seasonal Special")
+
+    @pytest.mark.parametrize(
+        "description",
+        [
+            "Perfect for winter nights.",
+            "Blended with a touch of our barrel-aged stock.",
+            "Closed for the holiday.",
+        ],
+    )
+    def test_loose_description_words_do_not_match(
+        self, winter: ListingMatcher, description: str
+    ) -> None:
+        assert not winter.matches_description(description, "Seasonal Special")
+
+    def test_venue_extras_use_winter_keys(self) -> None:
+        winter = ListingMatcher.from_config(
+            {
+                "winter_include": [r"\bsolstice\b"],
+                "winter_exclude": [r"^rum\b"],
+            },
+            category="winter",
+        )
+        assert winter.matches("Solstice Saison")
+        assert not winter.matches("Rum – Jolly Rogers (well), Bacardi")
+        assert winter.matches("Jolly Roger Strong Ale")
+
+
 class TestVenueCategories:
     def test_default_is_every_category(self) -> None:
         assert [m.category for m in ListingMatcher.for_venue({})] == [
             "fresh-hop",
             "festbier",
             "pumpkin",
+            "winter",
         ]
 
     def test_venue_can_limit_categories(self) -> None:
@@ -243,3 +417,35 @@ class TestVenueCategories:
     def test_unknown_category_raises(self) -> None:
         with pytest.raises(ValueError, match="Unknown listing category"):
             ListingMatcher.for_venue({"listing_categories": ["gose"]})
+
+
+class TestVenueWinterExcludes:
+    """Venue ``winter_exclude`` entries for non-beer rows (2026-11-06)."""
+
+    @staticmethod
+    def _winter(site: str, key: str) -> ListingMatcher:
+        venue = next(v for v in load_site_config(site).venues if v.key == key)
+        return ListingMatcher.from_config(venue.parser_config, category="winter")
+
+    def test_big_time_liquor_rows_stay_off(self) -> None:
+        winter = self._winter("seattle-freshies", "big-time-taps")
+        assert not winter.matches("Rum – Jolly Rogers (well), Jolly Rogers Dark Rum")
+        assert winter.matches("Jolly Roger Christmas Ale")
+
+    @pytest.mark.parametrize(
+        "name",
+        [
+            "Krampus Kaffe - rye whiskey / Campari / Ancho Reyes / cinnamon / coffee",
+            "Old Saint Nick - dark rum / mint / lime / prosecco",
+            "Stein's Gluhwein - house-made German mulled wine",
+        ],
+    )
+    def test_stein_cocktails_stay_off(self, name: str) -> None:
+        assert not self._winter("yakima-freshies", "stein-leavenworth-taps").matches(
+            name
+        )
+
+    def test_stein_winter_beers_stay_on(self) -> None:
+        winter = self._winter("yakima-freshies", "stein-leavenworth-taps")
+        assert winter.matches("Juleøl", "Winter Lager")
+        assert winter.matches("KBS Spicy Chocolate", "Barrel Aged Stout")

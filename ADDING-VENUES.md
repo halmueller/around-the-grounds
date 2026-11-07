@@ -155,16 +155,28 @@ skip the 7-day window and stay out of `events.ics`.
 
 Listings are sorted into **categories**: `fresh-hop` (fresh/wet hop, or the abbreviation "FH" in a name or style),
 `festbier` (Festbier, Oktoberfest/-toberfest, Märzen, Wiesn/Wies'n, plus harvest
-lagers, Dunkels/Munich Dark, and Weizenbocks; not Dunkelweizen), and `pumpkin`
-(pumpkin, gourd, jack-o'-lantern, calabaza).
+lagers, Dunkels/Munich Dark, and Weizenbocks; not Dunkelweizen), `pumpkin`
+(pumpkin, gourd, jack-o'-lantern, calabaza), and `winter` (winter, Christmas,
+holiday, Noël, yule, Jul/Jule, and named seasonals such as Jubelale, Jolly
+Roger, Ol' Saint Nick, and High Camp; holiday ciders: wassail, mulled, hot
+spiced; barleywines and wheatwines; and stouts that are barrel-aged, "BA", or
+spiced, such as cinnamon, gingerbread, or Mexican chocolate. A plain, imperial,
+coffee, or pastry stout does not count).
+
+The name and style are also matched joined, as "name | style", so a winter
+pattern such as barrel-aged … stout matches when "Bourbon Barrel-Aged" is in the
+name and "Imperial Stout" is in the style. Patterns joined by `[\s-]*` cannot
+cross the bar, so the other categories match only within a field.
 
 A parser that supplies beer descriptions (`TapEntry.description`;
 `untappd-embed`, `bevwerk`, and `square-online`) lets a beer match by its description when its
 name and style don't: fresh/wet hop for `fresh-hop` ("FRESH HOP Collab with
 Uprise"), Festbier, Oktoberfest, Märzen, or Wiesn for `festbier` ("our
-yearly golden Festbier"), and any `pumpkin` word ("brewed with roasted
-pumpkin"). Harvest lager, Dunkel, and Weizenbock count only in the name or
-style.
+yearly golden Festbier"), any `pumpkin` word ("brewed with roasted
+pumpkin"), and, for `winter`, only set phrases (winter ale, warmer, IPA, or
+lager; holiday or Christmas ale or beer; barleywine, wheatwine, wassail,
+mulled), so "perfect for winter nights" does not count. Harvest lager,
+Dunkel, and Weizenbock count only in the name or style.
 
 Festivals named on a tap-list page ("Fresh Hop Fest") are dropped from
 `fresh-hop` by the beer's name only, so a beer "brewed for Fresh Hop Ale
@@ -178,6 +190,7 @@ An entry matching several categories yields one listing per category, and each l
 | `listing_include` / `listing_exclude` | Extra fresh-hop patterns (e.g. Bizarre's `"fresh hoppy"`) |
 | `festbier_include` / `festbier_exclude` | Extra festbier patterns |
 | `pumpkin_include` / `pumpkin_exclude` | Extra pumpkin patterns (e.g. Old Stove Pike Place's `"\\bvodka\\b"` drops a cocktail) |
+| `winter_include` / `winter_exclude` | Extra winter patterns (e.g. Big Time drops its liquor menu's "Rum – Jolly Rogers" row; Stein drops cocktails and Glühwein) |
 | `listing_categories` | Limit the venue to some categories (default: all) |
 | `venue_type` | Grouping for templates: `"taproom"` for bottle shops/taprooms (default: brewery) |
 | `timezone` | Site-local "today" for listing dates |
@@ -201,7 +214,7 @@ These `parser_config` options work with every event parser (`html`,
 
 | Option | Effect |
 |--------|--------|
-| `"event_filter": true` | Keep only beer events. Kept and tagged with a category: events whose title/description match one of the venue's listing categories (fresh hop, festbier, pumpkin; narrow with `listing_categories`; the per-category `*_include` / `*_exclude` patterns apply; festivals are kept). Kept untagged: events whose title has a general beer-event word (fest, release, tapping, tap takeover, anniversary, cask, barrel-aged, brewers night, …; `EVENT_INCLUDE` in `scrapers/coordinator.py`). Dropped: titles that say "closed" or "hours" |
+| `"event_filter": true` | Keep only beer events. Kept and tagged with a category: events whose title/description match one of the venue's listing categories (fresh hop, festbier, pumpkin, winter; narrow with `listing_categories`; the per-category `*_include` / `*_exclude` patterns apply; festivals are kept). Kept untagged: events whose title has a general beer-event word (fest, release, tapping, tap takeover, anniversary, cask, barrel-aged, brewers night, …; `EVENT_INCLUDE` in `scrapers/coordinator.py`). Dropped: titles that say "closed" or "hours" |
 | `"event_include": ["bodhi"]` | With `event_filter`: extra patterns that keep an event when its title or description matches. `["."]` keeps everything from a source that lists only beer events, while still tagging the seasonal ones |
 | `"event_exclude": ["fun run"]` | With `event_filter`: extra patterns that drop an event when its title or description matches |
 | `"event_window_days": 365` | Keep events up to this many days ahead instead of the default 7 (fests are announced months out) |
@@ -265,7 +278,7 @@ Available templates in `public_templates/`:
 - `food-trucks` — dark theme, food truck oriented
 - `music` — dark theme, music/show oriented
 - `kids` — bright/playful theme, children's event oriented
-- `fresh-hop` — tap-list ("listing") sites: five pages sharing `app.js`/`styles.css` under a pinned tab bar — fresh hops at breweries (`fresh-hops.html`), festbiers at breweries (`festbier.html`), pumpkin beers at breweries (`pumpkin.html`), all three at bottle shops and taprooms (`taprooms.html`, the "Taprooms" tab, venues with `venue_type: "taproom"`), and dated events (`events.html`). Its `index.html` only redirects to the in-season list, so every list keeps its own URL year-round The pages name the site with `{{site_name}}`, `{{public_url}}`, `{{place}}`, and `{{area}}` placeholders, so a site using this template must set `public_url` and `"template_vars": {"place": "<city or region>", "area": "<the lists' region, such as Seattle area>", "author_home": "<where the byline says the author lives>"}` in its config; values are plain text (no quotes, `&`, or angle brackets). Setting `"ballard_food_trucks": "yes"` as well keeps the header line that points to ballardfoodtrucks.com (Seattle only); it sits between `{{#ballard_food_trucks}}` and `{{/ballard_food_trucks}}` marker lines, and any block marked that way is dropped for sites that do not set the value. The Events tab, `events.html`, and its sitemap entry are published only for a site with at least one event source (the `{{#events}}` blocks; the value is worked out from the venues, and a site can set `"events"` in `template_vars` to override it). Each site also needs its own Open Graph card: run `deploy/images/render.py` (see its docstring) to write `public_templates/_overlays/<site key>/og-image.png`, which is copied over the template when the site is written. A site can also list `"skipped_venues"`: places whose beer menus cannot be read because the brewery, or a service it uses for its tap list (Toast, Taplist.io, checkle), blocks automated access, or because the menu that can be read has no beers in it (The Thirsty Sasquatch's Chowly ordering menu). Each entry has `name`, `url`, `reason` (kept in the config, not published), and optional `"type": "taproom"`; the list pages name them all in one line, "Unable to read beer menus:", with links and no reasons, breweries on the three brewery lists and taprooms on the Taprooms list. Places skipped for other reasons (no list online, image-only lists, a missing parser) do not go here.
+- `fresh-hop` — tap-list ("listing") sites: six pages sharing `app.js`/`styles.css` under a pinned tab bar — fresh hops at breweries (`fresh-hops.html`), festbiers at breweries (`festbier.html`), pumpkin beers at breweries (`pumpkin.html`), winter beers at breweries (`winter-beers.html`, the "Winter" tab), all four at bottle shops and taprooms (`taprooms.html`, the "Taprooms" tab, venues with `venue_type: "taproom"`), and dated events (`events.html`). Its `index.html` only redirects to the in-season list, so every list keeps its own URL year-round The pages name the site with `{{site_name}}`, `{{public_url}}`, `{{place}}`, and `{{area}}` placeholders, so a site using this template must set `public_url` and `"template_vars": {"place": "<city or region>", "area": "<the lists' region, such as Seattle area>", "author_home": "<where the byline says the author lives>"}` in its config; values are plain text (no quotes, `&`, or angle brackets). Setting `"ballard_food_trucks": "yes"` as well keeps the header line that points to ballardfoodtrucks.com (Seattle only); it sits between `{{#ballard_food_trucks}}` and `{{/ballard_food_trucks}}` marker lines, and any block marked that way is dropped for sites that do not set the value. The Events tab, `events.html`, and its sitemap entry are published only for a site with at least one event source (the `{{#events}}` blocks; the value is worked out from the venues, and a site can set `"events"` in `template_vars` to override it). Each site also needs its own Open Graph card: run `deploy/images/render.py` (see its docstring) to write `public_templates/_overlays/<site key>/og-image.png`, which is copied over the template when the site is written. A site can also list `"skipped_venues"`: places whose beer menus cannot be read because the brewery, or a service it uses for its tap list (Toast, Taplist.io, checkle), blocks automated access, or because the menu that can be read has no beers in it (The Thirsty Sasquatch's Chowly ordering menu). Each entry has `name`, `url`, `reason` (kept in the config, not published), and optional `"type": "taproom"`; the list pages name them all in one line, "Unable to read beer menus:", with links and no reasons, breweries on the four brewery lists and taprooms on the Taprooms list. Places skipped for other reasons (no list online, image-only lists, a missing parser) do not go here.
 
 To create a new template, add a directory under `public_templates/` with at least an `index.html`.
 

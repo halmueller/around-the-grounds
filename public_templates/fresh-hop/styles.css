@@ -9,6 +9,7 @@
     --leaf: #4f7a28;
     --chip: #f3e9da;
     --pumpkin: #964f00;
+    --winter: #2c5d8a;
     --radius: 10px;
 }
 @media (prefers-color-scheme: dark) {
@@ -22,6 +23,7 @@
         --leaf: #9cc46b;
         --chip: #32281f;
         --pumpkin: #f0a340;
+        --winter: #8dbbe6;
     }
 }
 
@@ -161,13 +163,14 @@ h2 { font-size: 1.1rem; margin: 28px 0 10px; }
 .tag-fresh-hop { color: var(--leaf); background: var(--chip); }
 .tag-festbier { color: var(--accent); background: var(--chip); }
 .tag-pumpkin { color: var(--pumpkin); background: var(--chip); }
+.tag-winter { color: var(--winter); background: var(--chip); }
 
 /* Narrow screens: the "Taprooms/Bottle Shops" tab reads just "Taprooms". */
 @media (max-width: 600px) {
     .tab-extra { display: none; }
 }
 
-/* Phones: fit all five tabs and keep the credit bar to about two lines. */
+/* Phones: fit all six tabs and keep the credit bar to about two lines. */
 @media (max-width: 480px) {
     .topbar h1 { font-size: 1.25rem; padding-top: 10px; }
     .tabs { gap: 0; align-items: flex-end; }
@@ -176,4 +179,9 @@ h2 { font-size: 1.1rem; margin: 28px 0 10px; }
     .tab-count { display: block; font-size: 11px; line-height: 1.2; }
     .credits { font-size: 11px; gap: 0 10px; padding: 6px 16px; line-height: 1.4; }
     .credits .sep { display: none; }
+}
+
+/* The smallest phones (320px): six tabs need a little less room each. */
+@media (max-width: 360px) {
+    .tabs a { padding: 8px 3px; font-size: 11px; }
 }

@@ -96,7 +96,7 @@ class TestGeorgetownEventList:
         self, venue: Venue, fixtures_dir: Path
     ) -> None:
         # The list is all beer events, so the venue's event_include keeps
-        # everything; only the fresh-hop fest carries a category.
+        # everything; the fresh-hop and winter fests carry a category.
         with aioresponses() as m:
             m.get(
                 venue.url,
@@ -109,8 +109,8 @@ class TestGeorgetownEventList:
         assert [(e.title, e.category) for e in events] == [
             ("Fresh Hop Fest!", "fresh-hop"),
             ("Night of the Bodhi", None),
-            ("PNA Winter Beer Taste", None),
-            ("Winter Beer Fest", None),
+            ("PNA Winter Beer Taste", "winter"),
+            ("Winter Beer Fest", "winter"),
         ]
 
 

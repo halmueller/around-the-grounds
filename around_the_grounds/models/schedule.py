@@ -18,7 +18,7 @@ class Event:
     # calendar feed.
     kind: str = "event"
     # For listings: which list the entry belongs to ("fresh-hop", "festbier",
-    # "pumpkin").
+    # "pumpkin", "winter").
     category: Optional[str] = None
     # The event's own page, when the source links one; templates fall back
     # to the venue URL.

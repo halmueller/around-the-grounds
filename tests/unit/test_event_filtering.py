@@ -87,18 +87,28 @@ class TestEventFilter:
     @pytest.mark.asyncio
     async def test_keeps_beer_events_of_no_season_untagged(self) -> None:
         events = [
-            _event("Winter Beer Fest"),
-            _event("PNA Winter Beer Taste"),
             _event("Harvest Fest"),
             _event("Rusty Nail Barrel-Aged Release"),
             _event("Fremont Brewing 17th Anniversary Party"),
             _event("Brewers Night: Holy Mountain"),
             _event("Cask Tapping"),
-            _event("Barleywine Vertical"),
         ]
         result = await _scrape({"event_filter": True}, events)
         assert [e.title for e in result] == [e.title for e in events]
         assert {e.category for e in result} == {None}
+
+    @pytest.mark.asyncio
+    async def test_tags_winter_events(self) -> None:
+        events = [
+            _event("Winter Beer Fest"),
+            _event("PNA Winter Beer Taste"),
+            _event("Barleywine Vertical"),
+            _event("Holiday Ale Release Party"),
+        ]
+        result = await _scrape({"event_filter": True}, events)
+        assert [(e.title, e.category) for e in result] == [
+            (e.title, "winter") for e in events
+        ]
 
     @pytest.mark.asyncio
     async def test_drops_events_that_are_not_about_beer(self) -> None:

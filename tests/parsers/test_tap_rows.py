@@ -85,6 +85,7 @@ def test_roscoes_fh_names_and_descriptions_match() -> None:
 
     assert [[e.title, e.category] for e in events] == [
         ["F.H. Thunder Blanket", "fresh-hop"],  # by its description
+        ["F.H. Thunder Blanket", "winter"],  # a barleywine, by its description
         ["F.H, Animal Cookies", "fresh-hop"],  # by "F.H," in the name alone
         ["Hollow Jack", "pumpkin"],
     ]
@@ -107,7 +108,11 @@ async def test_parse_fetches_rows_url() -> None:
         async with aiohttp.ClientSession() as session:
             events = await parser.parse(session)
 
-    assert [e.title for e in events] == ["F.H. Thunder Blanket", "Hollow Jack"]
+    assert [e.title for e in events] == [
+        "F.H. Thunder Blanket",
+        "F.H. Thunder Blanket",  # fresh hop and winter (barleywine)
+        "Hollow Jack",
+    ]
     assert all(e.kind == "listing" for e in events)
 
 

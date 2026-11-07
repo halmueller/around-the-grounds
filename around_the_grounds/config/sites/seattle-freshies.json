@@ -206,11 +206,14 @@
       "url": "https://www.bigtimebrewery.com/drinks",
       "source_type": "html-taplist",
       "parser_config": {
-        "note": "Each drinks category is its own Squarespace menu block, and the category headings come before all of the blocks in the page, so every block is read; wine, liquor, and sodas never match.",
+        "note": "Each drinks category is its own Squarespace menu block, and the category headings come before all of the blocks in the page, so every block is read. The liquor block's \"Rum – Jolly Rogers (well)\" row would match the winter list's Jolly Roger; winter_exclude keeps liquor rows out.",
         "item": ".menu-block .menu-item",
         "name": ".menu-item-title",
         "name_pattern": "^(?P<name>.+?)(?:\\s+\\d+\\s*IBU)?\\s*\\(\\d",
-        "match_whole_item": true
+        "match_whole_item": true,
+        "winter_exclude": [
+          "^(?:rum|vodka|gin|tequila|whiske?y|bourbon|scotch)\\s*[–-]"
+        ]
       }
     },
     {

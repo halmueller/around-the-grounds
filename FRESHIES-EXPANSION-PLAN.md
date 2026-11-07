@@ -55,7 +55,7 @@ WA. Items 3 and 4 were built as recommended. The Yakima site is "Yakima Freshies
    stay out; they are their own cluster.
 3. **One template or a copy per city.** Recommended: one template with
    build-time placeholders (phase 0). Copies would drift the first time a page
-   or tab is added, and the winter ales page is about to add one.
+   or tab is added, and the winter beers page is about to add one.
 4. **Same droplet.** Recommended: yes, one more virtual host, cron line, and
    web root per site, under the same `freshies` user.
 5. **Area grouping for the Yakima site.** Its venues are up to 100 miles apart.
@@ -66,7 +66,7 @@ WA. Items 3 and 4 were built as recommended. The Yakima site is "Yakima Freshies
 
 Fresh-hop season is nearly over, and patterns can only be tuned against live
 tap lists (no archived pages). So a site launched this fall opens on the tail
-of festbier and pumpkin, then winter ales, and gets its fresh-hop tuning in
+of festbier and pumpkin, then winter beers, and gets its fresh-hop tuning in
 August 2027. That is fine for Portland, where the point of launching now is to
 be indexed and known before next harvest. The Yakima site is mostly a fresh-hop
 site; building it in summer 2027 loses little.

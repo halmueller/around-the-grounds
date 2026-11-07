@@ -62,6 +62,7 @@ def _render(page: str, month: int, listings: List[Dict[str, Any]]) -> Dict[str, 
         ("freshhop", "Fresh hops are out of season.", [8, 9, 10]),
         ("festbier", "Festbiers are out of season.", [9, 10]),
         ("pumpkin", "Pumpkin beers are out of season.", [9, 10, 11]),
+        ("winter", "Winter beers are out of season.", [11, 12, 1, 2]),
     ],
 )
 def test_empty_list_says_out_of_season_only_outside_its_months(
@@ -141,6 +142,10 @@ def test_taprooms_and_events_never_say_out_of_season() -> None:
         ("fresh-hops.html", "Fresh hop season runs from late August through October."),
         ("festbier.html", "Festbier season runs from September through October."),
         ("pumpkin.html", "Pumpkin beer season runs from September through November."),
+        (
+            "winter-beers.html",
+            "Winter beer season runs from November through February.",
+        ),
     ],
 )
 def test_pages_state_their_season_in_static_html(page: str, sentence: str) -> None:
@@ -167,4 +172,13 @@ def test_tabs_lead_with_their_counts(page: str) -> None:
         ],
     )
     counts = [re.sub(r"<[^>]+>", "", t) for t in rendered["tabCounts"]]
-    assert counts == ["2 ", "1 ", "0 ", "1 ", ""]
+    assert counts == ["2 ", "1 ", "0 ", "0 ", "1 ", ""]
+
+
+def test_winter_beers_at_taprooms_carry_a_winter_tag() -> None:
+    listings = [_listing("winter", "shop"), _listing("winter")]
+    taprooms = _render("taprooms", 12, listings)["listings"]
+    assert '<span class="tag tag-winter">Winter</span>' in taprooms
+    winter = _render("winter", 12, listings)
+    assert "1 winter beer" in winter["summary"]
+    assert "tag-winter" not in winter["listings"]
