@@ -577,6 +577,16 @@ Franklin county towns, plus tourism-board and Washington Beer Blog lists.
   (Untappd embed), and Saddle Rock Pub & Brewery (Wenatchee; names only, on
   its home page).
 
+**Changes on 2026-11-11:**
+
+- Whipsaw (Ellensburg) added at Hal's request. Its Beer page does list what
+  is on tap, but it is edited by hand (last on 2026-06-25) and had no
+  seasonal beers that day; it is kept in case seasonals are posted.
+- Moonshot (Kennewick) moved to `skipped_venues`. Its site was replaced that
+  day with a placeholder ("New website on the way") and the On Tap page is
+  gone (404). Recheck once the new site is up; the old config is in git
+  history.
+
 **No list of what is pouring now:**
 
 - Dru Bru (Cle Elum): the site has a beer catalogue ("check each product for
@@ -711,5 +721,13 @@ Roughly 30 to 40 venues; includes Sisters, Redmond, and Sunriver.
 ## Out of scope
 
 - New parsers, until the surveys show a platform that needs one.
-- OCR for image-only tap lists (deferred 2026-10-10).
+- OCR for image-only tap lists (deferred 2026-10-10). Hal, 2026-11-11: when
+  this is picked up, do Fast Fashion Brewing together with Salish Sea,
+  Halcyon, and Ounces. Fast Fashion (SoDo, 1723 1st Ave S, and Lower Queen
+  Anne, 16 Roy St.) posts each taproom's tap list only as a PNG on
+  themasonryseattle.com (`/fast-fashion/`, section 4, and
+  `/fast-fashion-lqa/`, section 2), clean text on black. The SoDo image of
+  2026-10-20 had a Fresh Hop section, so it is worth reading. Until then it
+  is left out entirely, not in `skipped_venues`. The Masonry Queen Anne's
+  own beer list is only in Toast, which blocks the droplet.
 - A combined all-regions site.
