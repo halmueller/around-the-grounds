@@ -31,6 +31,9 @@ _ABV_PATTERNS = [
     re.compile(r"(\d+(?:\.\d+)?)\s*%"),
 ]
 
+# "MARZEN - 5.8%", "Hazy IPA, 6.5% ABV": an ABV at the end of a style.
+_TRAILING_ABV = re.compile(r"\s*[-–—,|/·]?\s*(\d+(?:\.\d+)?)\s*%(?:\s*ABV)?\s*$", re.I)
+
 # "Marzen" / "Maerzen" in any case; the vowel is respelled "ä".
 _MARZEN = re.compile(r"(m)(ae?)(rzen)", re.I)
 # "11. Volcano Envy", "2. 🌿Fresh Hop Cumulus": a tap number set before the name.
@@ -80,6 +83,20 @@ def strip_tap_number(name: str) -> str:
     """Drop a leading tap number ("11. ") and any symbols left in front."""
     stripped = _TAP_NUMBER.sub("", name, count=1)
     return strip_symbols(stripped) if stripped != name else name
+
+
+def strip_trailing_abv(style: Optional[str], abv: Optional[str]) -> Optional[str]:
+    """Drop an ABV ending *style* when it repeats *abv* ("MARZEN - 5.8%").
+
+    Here Today's menu sets style and ABV in one element, so the listing would
+    otherwise read "MÄRZEN - 5.8% · 5.8%". A different number is kept.
+    """
+    if not style or not abv:
+        return style
+    match = _TRAILING_ABV.search(style)
+    if not match or f"{float(match.group(1)):g}%" != normalize_abv(abv):
+        return style
+    return style[: match.start()].strip() or None
 
 
 def spell_marzen(name: str) -> str:
@@ -186,7 +203,8 @@ def build_listings(
     for entry in entries:
         total += 1
         name = spell_marzen(strip_tap_number(entry.name))
-        style = spell_marzen(entry.style) if entry.style else entry.style
+        style = strip_trailing_abv(entry.style, entry.abv)
+        style = spell_marzen(style) if style else style
         details = [d for d in (entry.brewery, style, entry.abv) if d]
         for matcher in matchers:
             fields = (entry.name, entry.style, entry.match_text)

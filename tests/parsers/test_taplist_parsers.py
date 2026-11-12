@@ -30,6 +30,7 @@ from around_the_grounds.parsers.generic.listing_common import (
     build_listings,
     normalize_abv,
     spell_marzen,
+    strip_trailing_abv,
 )
 from around_the_grounds.parsers.generic.text_taplist import (
     TextTaplistParser,
@@ -138,6 +139,33 @@ def test_normalize_abv(text: Any, expected: Any) -> None:
 )
 def test_spell_marzen(name: str, expected: str) -> None:
     assert spell_marzen(name) == expected
+
+
+@pytest.mark.parametrize(
+    "style,abv,expected",
+    [
+        ("MARZEN - 5.8%", "5.8%", "MARZEN"),
+        ("Hazy IPA, 6.5% ABV", "6.5%", "Hazy IPA"),
+        ("Pilsner 4.90%", "4.9%", "Pilsner"),
+        ("Pilsner - 4.9%", "4.90%", "Pilsner"),  # raw ABV from a sheet
+        ("FRESH HOP PALE ALE – 5.9 %", "5.9%", "FRESH HOP PALE ALE"),
+        ("Strong Ale - 9%", "6%", "Strong Ale - 9%"),  # a different number
+        ("5.8%", "5.8%", None),  # nothing left but the ABV
+        ("EXTRA PALE ALE - 5.1% (COLLAB)", "5.1%", "EXTRA PALE ALE - 5.1% (COLLAB)"),
+        ("Märzen", "5.8%", "Märzen"),
+        ("Märzen - 5.8%", None, "Märzen - 5.8%"),
+        (None, "5.8%", None),
+    ],
+)
+def test_strip_trailing_abv(style: Any, abv: Any, expected: Any) -> None:
+    assert strip_trailing_abv(style, abv) == expected
+
+
+def test_listing_description_does_not_repeat_the_abv() -> None:
+    venue = Venue("some-taproom", "Some Taproom", "https://example.com", "html")
+    entries = [TapEntry("Hall of Mirrors", style="Marzen - 5.8%", abv="5.8%")]
+    events = build_listings(venue, entries, "html", LOGGER)
+    assert [e.description for e in events] == ["Märzen · 5.8%"]
 
 
 def test_listing_titles_spell_marzen() -> None:

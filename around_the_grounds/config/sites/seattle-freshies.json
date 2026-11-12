@@ -552,6 +552,32 @@
       }
     },
     {
+      "key": "here-today-taps",
+      "name": "Here Today",
+      "url": "https://www.heretodayseattle.com/menu",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "Squarespace Menu page (the Beer page is only the year-round lineup). Each beer is a paragraph: the name in <strong>, 'STYLE - ABV%' in <em>, then a line of prices. Only <main> is read (the footer has its own bold lines). The guest cider has no <em> ('NAME - </strong>6.6%'), so the name is trimmed of a trailing dash. Items take the nearest heading as their section, so the food subheadings are excluded as well as COCKTAILS, WINE, and FOOD. The Event Calendar page is only images linking to Instagram posts, so there is no events source.",
+        "item": "main p:has(> strong)",
+        "name": "strong",
+        "name_pattern": "^(?P<name>.+?)[\\s\\-–]*$",
+        "style": "em",
+        "exclude_sections": [
+          "^COCKTAIL",
+          "^WINE$",
+          "^FOOD$",
+          "^Apps",
+          "^Burgers",
+          "^Brunch",
+          "Tacos",
+          "snacks$",
+          "^LUNCH$",
+          "^Happy Hour",
+          "great food"
+        ]
+      }
+    },
+    {
       "key": "holy-mountain-interbay-taps",
       "name": "Holy Mountain Brewing (Interbay)",
       "url": "https://holymountainbrewing.com/location/interbay-taproom/",

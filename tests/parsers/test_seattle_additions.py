@@ -456,6 +456,34 @@ class TestConfiguredVenues:
             ["Fresh Nooky Fresh Hop IPA", "fresh-hop", None],
         ]
 
+    def test_here_today_strong_name_em_style(self, html_fixtures_dir: Path) -> None:
+        # Menu page saved 2026-11-11; scripts, images, and most attributes removed.
+        # The footer is kept: its bold "Hours" and "Follow" lines are not taps.
+        venue = VENUES["here-today-taps"]
+        entries = parse_html_taplist(
+            (html_fixtures_dir / "taplist_here_today.html").read_text(),
+            venue.parser_config or {},
+        )
+        names = [e.name for e in entries]
+        # Thirteen beers and the guest cider; cocktails, wine, and food are
+        # under excluded headings.
+        assert len(names) == 14
+        assert names[0] == "RUNNER’S HIGH"
+        by_name = {e.name: e for e in entries}
+        # The cider's ABV is outside its <strong>, after a dash.
+        cider = by_name["ALPENFIRE HEIRLOOM CIDER"]
+        assert (cider.style, cider.abv) == (None, "6.6%")
+        assert (by_name["HALL OF MIRRORS"].style, by_name["HALL OF MIRRORS"].abv) == (
+            "MARZEN - 5.8%",
+            "5.8%",
+        )
+        events = build_listings(venue, entries, "html", LOGGER)
+        # The ABV in the style is not repeated in the description.
+        assert summary(events) == [
+            ["HALL OF MIRRORS", "festbier", "MÄRZEN · 5.8%"],
+            ["FRESH HOP SUN KASTLE", "fresh-hop", "FRESH HOP PALE ALE · 5.9%"],
+        ]
+
     def test_crown_heading_per_tap(self, html_fixtures_dir: Path) -> None:
         venue = VENUES["crown-taps"]
         entries = parse_text_taplist(
