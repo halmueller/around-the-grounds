@@ -1,6 +1,7 @@
 """Parser features added for the Yakima Freshies site."""
 
 import logging
+from pathlib import Path
 
 import pytest
 
@@ -150,3 +151,43 @@ def test_atomic_ale_menu_items_and_abv_without_percent() -> None:
         ("Fresh Hop Pale", "5.5%"),
     ]
     assert [[e.title, e.category] for e in events] == [["Fresh Hop Pale", "fresh-hop"]]
+
+
+class TestWhipsaw:
+    """Whipsaw's beer page, saved 2026-11-11 (scripts, images, and most
+    attributes removed). The page is edited by hand; it had no seasonal
+    beers that day."""
+
+    @pytest.fixture
+    def html(self, html_fixtures_dir: Path) -> str:
+        return (html_fixtures_dir / "taplist_whipsaw.html").read_text()
+
+    def test_on_tap_blocks_without_cans_or_style_headings(self, html: str) -> None:
+        venue = VENUES["whipsaw-taps"]
+        entries = parse_html_taplist(html, venue.parser_config or {})
+        names = [e.name for e in entries]
+        assert names[:3] == [
+            "Buzz on Blackberry Wheat",
+            "Stumpblower IPA",
+            "Prospect Pilsner",
+        ]
+        assert len(names) == 17
+        assert "Flagship Beers" not in names  # a style heading
+        assert "Coconut Cream (Seasonal)" not in names  # Cans List only
+        assert entries[0].abv == "4.5%"
+        assert build_listings(venue, entries, "html", logging.getLogger(__name__)) == []
+
+    def test_a_seasonal_beer_is_found_by_its_description(self, html: str) -> None:
+        venue = VENUES["whipsaw-taps"]
+        block = (
+            '<div class="sqs-html-content"><p><strong>Timber Harvest</strong></p>'
+            "<p><em>6.2% ABV | 45 IBU</em></p>"
+            "<p>Fresh hop pale ale with Centennial picked that morning.</p></div>"
+        )
+        first = '<div class="sqs-html-content">'
+        html = html.replace(first, block + first, 1)
+        entries = parse_html_taplist(html, venue.parser_config or {})
+        events = build_listings(venue, entries, "html", logging.getLogger(__name__))
+        assert [(e.title, e.category, e.description) for e in events] == [
+            ("Timber Harvest", "fresh-hop", "6.2%")
+        ]

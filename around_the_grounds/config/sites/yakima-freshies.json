@@ -39,6 +39,11 @@
       "reason": "Its tap room page has no list, only a link to its untappd.com page, and untappd.com is blocked from the droplet (Cloudflare)."
     },
     {
+      "name": "Moonshot Brewing (Kennewick)",
+      "url": "https://moonshotbrewing.com/",
+      "reason": "Its site was replaced on 2026-11-11 with a placeholder (\"New website on the way\") that has no beer list, and the old On Tap page is gone (404). Recheck when the new site is up; the earlier text-taplist config is in git history."
+    },
+    {
       "name": "Snipes Mountain Brewing (Sunnyside)",
       "url": "https://snipesmountain.com/",
       "reason": "Its own site answers with a Cloudflare challenge (403)."
@@ -142,17 +147,6 @@
         "location_id": 33049,
         "theme_id": 127725,
         "venue_type": "taproom"
-      }
-    },
-    {
-      "key": "moonshot-taps",
-      "name": "Moonshot Brewing (Kennewick)",
-      "url": "https://moonshotbrewing.com/on-tap/",
-      "source_type": "text-taplist",
-      "parser_config": {
-        "note": "'Name 6.9% ABV' in bold, then a paragraph saying what the beer is.",
-        "line_pattern": "^(?P<name>.{2,60}?)\\s+(?P<abv>\\d+(?:\\.\\d+)?%)(?:\\s*ABV)?\\s*$",
-        "detail_lines": 1
       }
     },
     {
@@ -279,6 +273,21 @@
       "parser_config": {
         "location_id": 38378,
         "theme_id": 149033
+      }
+    },
+    {
+      "key": "whipsaw-taps",
+      "name": "Whipsaw Brewing (Ellensburg)",
+      "url": "https://www.whipsawbrewing.com/beer",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "Squarespace page updated by hand, not in real time (last edited 2026-06-25 when added on 2026-11-11). Each beer is a text block: the name in bold, then 'ABV | IBU', then a description, all matched. Style headings ('Flagship Beers') are bold inside a span and are not items. Only the On Tap section is read; the Cans List below it is skipped.",
+        "item": "main .sqs-html-content:has(> p > strong)",
+        "name": "strong",
+        "match_whole_item": true,
+        "exclude_sections": [
+          "^Cans"
+        ]
       }
     },
     {

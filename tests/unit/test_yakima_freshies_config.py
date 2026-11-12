@@ -4,6 +4,8 @@ What every Freshies site must satisfy is in test_freshies_sites.py, which
 runs for this site too. This file holds what is true of Yakima only.
 """
 
+import re
+
 import pytest
 
 from around_the_grounds.config.loader import load_site_config
@@ -42,8 +44,10 @@ def test_covers_the_valley_the_tri_cities_and_wenatchee(site: SiteConfig) -> Non
         "Pasco",
         "Leavenworth",
         "Wenatchee",
+        "Ellensburg",
     ):
-        assert f"({area})" in names, area
+        # "(Kennewick)" or "(Downtown Kennewick)"
+        assert re.search(rf"\([^)]*\b{area}\)", names), area
 
 
 def test_dru_bru_is_left_out(site: SiteConfig) -> None:
