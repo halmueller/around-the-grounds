@@ -196,6 +196,7 @@ An entry matching several categories yields one listing per category, and each l
 | `pumpkin_include` / `pumpkin_exclude` | Extra pumpkin patterns (e.g. Old Stove Pike Place's `"\\bvodka\\b"` drops a cocktail) |
 | `winter_include` / `winter_exclude` | Extra winter patterns (e.g. Big Time drops its liquor menu's "Rum – Jolly Rogers" row; Stein drops cocktails and Glühwein) |
 | `listing_categories` | Limit the venue to some categories (default: all) |
+| `title_case` | `true` capitalizes all-lowercase words in the name, brewery, and style ("hoo’s on first" → "Hoo’s on First"); words with a capital and minor words ("and", "on", "the") after the first are kept. For menus typed in lowercase (Lowlander) |
 | `venue_type` | Grouping for templates: `"taproom"` for bottle shops/taprooms (default: brewery) |
 | `timezone` | Site-local "today" for listing dates |
 

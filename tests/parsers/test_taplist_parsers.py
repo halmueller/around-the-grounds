@@ -31,6 +31,7 @@ from around_the_grounds.parsers.generic.listing_common import (
     normalize_abv,
     spell_marzen,
     strip_trailing_abv,
+    title_case,
 )
 from around_the_grounds.parsers.generic.text_taplist import (
     TextTaplistParser,
@@ -166,6 +167,45 @@ def test_listing_description_does_not_repeat_the_abv() -> None:
     entries = [TapEntry("Hall of Mirrors", style="Marzen - 5.8%", abv="5.8%")]
     events = build_listings(venue, entries, "html", LOGGER)
     assert [e.description for e in events] == ["Märzen · 5.8%"]
+
+
+@pytest.mark.parametrize(
+    "text,expected",
+    [
+        ("hoo’s on first", "Hoo’s on First"),
+        ("on the button", "On the Button"),
+        ("Fresh hop citra IPA", "Fresh Hop Citra IPA"),
+        ("MMIW Tribal pale ale", "MMIW Tribal Pale Ale"),
+        (
+            "Kolsch Weisse w/ coriander & lemon peel",
+            "Kolsch Weisse w/ Coriander & Lemon Peel",
+        ),
+        ("43-8", "43-8"),
+        ("McMenamins", "McMenamins"),
+        ("", ""),
+    ],
+)
+def test_title_case(text: str, expected: str) -> None:
+    assert title_case(text) == expected
+
+
+def test_title_case_is_opt_in() -> None:
+    entries = [
+        TapEntry(
+            "on the button", brewery="lowlander brewing", style="Fresh hop pale ale"
+        )
+    ]
+    plain = Venue("plain", "Plain", "https://example.com", "html")
+    titled = Venue(
+        "titled", "Titled", "https://example.com", "html", {"title_case": True}
+    )
+    assert [
+        (e.title, e.description) for e in build_listings(plain, entries, "html", LOGGER)
+    ] == [("on the button", "lowlander brewing · Fresh hop pale ale")]
+    assert [
+        (e.title, e.description)
+        for e in build_listings(titled, entries, "html", LOGGER)
+    ] == [("On the Button", "Lowlander Brewing · Fresh Hop Pale Ale")]
 
 
 def test_listing_titles_spell_marzen() -> None:

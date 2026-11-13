@@ -38,6 +38,10 @@ _TRAILING_ABV = re.compile(r"\s*[-–—,|/·]?\s*(\d+(?:\.\d+)?)\s*%(?:\s*ABV)?
 _MARZEN = re.compile(r"(m)(ae?)(rzen)", re.I)
 # "11. Volcano Envy", "2. 🌿Fresh Hop Cumulus": a tap number set before the name.
 _TAP_NUMBER = re.compile(r"^\d{1,3}\.\s+(?=\S)")
+# Left lowercase by title_case unless first ("Fest and Ten").
+_MINOR_WORDS = frozenset(
+    "a an and as at but by for in of on or the to vs w/ with".split()
+)
 
 
 @dataclass
@@ -105,6 +109,23 @@ def spell_marzen(name: str) -> str:
         lambda m: m.group(1) + ("Ä" if m.group(2).isupper() else "ä") + m.group(3),
         name,
     )
+
+
+def title_case(text: str) -> str:
+    """Capitalize the all-lowercase words of *text* ("hoo’s on first").
+
+    Words with a capital already ("IPA", "MMIW", "McMenamins") are kept, and
+    so are minor words after the first ("Hoo’s on First"). Unlike
+    ``str.title`` it leaves "hoo’s" as "Hoo’s", not "Hoo’S".
+    """
+    words = text.split(" ")
+    for index, word in enumerate(words):
+        if not word or not word[0].isalpha() or word != word.lower():
+            continue
+        if index and word in _MINOR_WORDS:
+            continue
+        words[index] = word[0].upper() + word[1:]
+    return " ".join(words)
 
 
 async def _fetch_listing(
@@ -196,6 +217,7 @@ def build_listings(
     (Ravenna's "Wet Season: Amarillo" IPA and Hazy IPA).
     """
     matchers = ListingMatcher.for_venue(venue.parser_config)
+    titled = bool((venue.parser_config or {}).get("title_case"))
     date = listing_date(venue)
     events: List[Event] = []
     seen = set()
@@ -205,7 +227,13 @@ def build_listings(
         name = spell_marzen(strip_tap_number(entry.name))
         style = strip_trailing_abv(entry.style, entry.abv)
         style = spell_marzen(style) if style else style
-        details = [d for d in (entry.brewery, style, entry.abv) if d]
+        brewery = entry.brewery
+        if titled:
+            # Shown as written otherwise; a menu typed in lowercase opts in.
+            name = title_case(name)
+            style = title_case(style) if style else style
+            brewery = title_case(brewery) if brewery else brewery
+        details = [d for d in (brewery, style, entry.abv) if d]
         for matcher in matchers:
             fields = (entry.name, entry.style, entry.match_text)
             if not matcher.matches(*fields) and not matcher.matches_description(
@@ -214,7 +242,7 @@ def build_listings(
                 continue
             identity = tuple(
                 (field or "").casefold()
-                for field in (name, entry.brewery, style, matcher.category)
+                for field in (name, brewery, style, matcher.category)
             )
             if identity in seen:
                 continue
