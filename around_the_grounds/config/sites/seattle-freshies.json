@@ -646,6 +646,18 @@
       }
     },
     {
+      "key": "lowlander-taps",
+      "name": "Lowlander Brewing (Pioneer Square)",
+      "url": "https://lowlanderbrewing.com/menu",
+      "source_type": "pdf-taplist",
+      "parser_config": {
+        "note": "The menu page's 'Drink menu' button links a Google Docs PDF that stores each word separately, so it is read by layout. A draft is 'Style - Name - Brewery' (one guest line is 'Name - Brewery'); cans, cocktails, and NA lines end in a price and are left out.",
+        "link_pattern": "^drink menu",
+        "layout": true,
+        "line_pattern": "^(?:(?P<style>[^$]+?) - )?(?P<name>[^$]+?) - (?P<brewery>[^$-]*?(?i:brewing|brewery|company))$"
+      }
+    },
+    {
       "key": "lucky-envelope-taps",
       "name": "Lucky Envelope Brewing (Ballard)",
       "url": "https://www.luckyenvelopebrewing.com/currentlyontap",

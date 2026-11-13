@@ -1,6 +1,7 @@
-"""Tests for the PDF-menu (pdf-taplist) tap-list parser. The text fixture is
-El Sueñito's live menu PDF as extracted on 2026-10-01; PDFs fetched in tests
-are built here, since the real one is several megabytes of artwork."""
+"""Tests for the PDF-menu (pdf-taplist) tap-list parser. The text fixtures are
+live menu PDFs as extracted (El Sueñito's on 2026-10-01; Lowlander's on
+2026-11-12, by layout); PDFs fetched in tests are built here, since the real
+ones can be several megabytes of artwork."""
 
 from pathlib import Path
 from typing import Any, Dict, Iterator, List
@@ -107,6 +108,9 @@ class TestExtractPdfLines:
     def test_reads_lines(self) -> None:
         assert extract_pdf_lines(make_pdf(MENU)) == MENU
 
+    def test_reads_lines_by_layout(self) -> None:
+        assert extract_pdf_lines(make_pdf(MENU), layout=True) == MENU
+
     def test_not_a_pdf(self) -> None:
         with pytest.raises(ValueError, match="Could not read PDF"):
             extract_pdf_lines(b"<html>Not found</html>")
@@ -153,6 +157,29 @@ class TestParsePdfTaplist:
             ("JUICE ALMIGHTY I.P.A.", "District Brewing", "Hazy IPA", "5.6%"),
             ("SIERRA NEVADA PALE ALE", "Sierra Nevada", "American Pale Ale", "5.6%"),
             ("GEORGETOWN TAVERN BEER", None, "Light American Lager", "4.2%"),
+        ]
+
+    def test_lowlander_menu(self, fixtures_dir: Path) -> None:
+        # Drafts only; cans, cocktails, and NA drinks end in a price.
+        lines = (fixtures_dir / "text" / "pdf_lowlander.txt").read_text().splitlines()
+        config = dict(VENUES["lowlander-taps"].parser_config or {})
+        entries = parse_pdf_taplist(lines, config)
+        assert [(e.name, e.brewery, e.style) for e in entries] == [
+            ("43-8", "Lowlander Brewing", "German pilsner"),
+            ("perfect game", "Lowlander Brewing", "Helles lager"),
+            ("fest and ten", "Lowlander Brewing", "Festbier"),
+            ("on the button", "Lowlander Brewing", "Fresh hop pale ale"),
+            ("Green Bird", "Lowlander Brewing", "Fresh hop citra IPA"),
+            ("hoo’s on first", "Lowlander Brewing", "Pumpkin spice ale"),
+            ("ghost signs", "Lowlander Brewing", "Stout"),
+            ("MMIW Tribal pale ale", "talking cedar brewing company", None),
+            ("the white lodge", "holy mountain brewing company", "Belgian wit"),
+            ("robust porter", "stoup brewing", "Porter"),
+            (
+                "Television people",
+                "Bizarre brewing",
+                "Kolsch Weisse w/ coriander & lemon peel",
+            ),
         ]
 
     def test_detail_pattern_requires_the_next_line_to_match(self) -> None:

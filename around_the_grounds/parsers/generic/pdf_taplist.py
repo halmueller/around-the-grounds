@@ -15,6 +15,10 @@ A menu that sometimes wraps an entry ("STICKY HANDS: FRESH HOP" /
 "/ Hop Experience Ale - 8.10%") can set ``join_pattern``: a line matching it
 is appended to the line before it, before any matching.
 
+Some PDFs (Google Docs exports) place each word separately, so the plain
+text comes out one word per line. ``"layout": true`` reads the page by
+position instead, which keeps each printed line together.
+
 Site builders (Wix) give every upload a new file name, so the PDF is usually
 found through the page linking to it rather than addressed directly.
 
@@ -24,7 +28,8 @@ Config (``source_type: "pdf-taplist"``)::
       "line_pattern": "^(?P<name>[^|]+)\\\\|(?P<style>[^|]+)$",  # needs name
       "detail_pattern": "^(?P<style>.+) (?P<abv>[\\\\d.]+%)$",  # optional
       "join_pattern": "^/ ",   # optional: join to the line before
-      "link_pattern": "beer"   # optional regex, case-insensitive
+      "link_pattern": "beer",  # optional regex, case-insensitive
+      "layout": true           # optional: read text by position
     }
 
 With ``link_pattern``, the venue ``url`` is a web page: its first link to a
@@ -74,11 +79,23 @@ def find_pdf_link(html: str, base_url: str, link_pattern: str) -> str:
     raise ValueError(f"No PDF link matching {link_pattern!r} on: {base_url}")
 
 
-def extract_pdf_lines(data: bytes) -> List[str]:
-    """Return the PDF's text as whitespace-normalized, non-empty lines."""
+def extract_pdf_lines(data: bytes, layout: bool = False) -> List[str]:
+    """Return the PDF's text as whitespace-normalized, non-empty lines.
+
+    With *layout*, text is read by its position on the page, which keeps a
+    printed line together when the PDF stores each word on its own.
+    """
     try:
         reader = PdfReader(io.BytesIO(data))
-        text = "\n".join(page.extract_text() or "" for page in reader.pages)
+        text = "\n".join(
+            (
+                page.extract_text(extraction_mode="layout")
+                if layout
+                else page.extract_text()
+            )
+            or ""
+            for page in reader.pages
+        )
     except Exception as e:  # pypdf raises many types on damaged files
         raise ValueError(f"Could not read PDF: {e}") from e
     lines = (" ".join(line.split()) for line in text.split("\n"))
@@ -167,7 +184,9 @@ class PdfTaplistParser(BaseParser):
             html = await fetch_listing_text(session, self.venue.url)
             pdf_url = find_pdf_link(html, self.venue.url, link_pattern)
         data = await fetch_listing_bytes(session, pdf_url)
-        entries = parse_pdf_taplist(extract_pdf_lines(data), config)
+        entries = parse_pdf_taplist(
+            extract_pdf_lines(data, layout=bool(config.get("layout"))), config
+        )
         if not entries:
             self.logger.warning(f"{self.venue.name}: no tap-list lines matched")
         return build_listings(self.venue, entries, "pdf", self.logger)
