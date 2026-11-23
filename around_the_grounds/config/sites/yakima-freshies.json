@@ -299,6 +299,22 @@
         "location_id": "5025724534226944",
         "menu_id": "6676782004174848"
       }
+    },
+    {
+      "key": "yonder-east-taps",
+      "name": "Yonder East (Cashmere)",
+      "url": "https://www.yondercider.com/yonder-east-menu",
+      "source_type": "html-taplist",
+      "parser_config": {
+        "note": "Yonder Cider's Cashmere taproom: a Squarespace menu block with ciders, guest beers, slushies, and hot cider. Section titles are divs, not headings, so the non-alcoholic section is left out by the item selector rather than exclude_sections. Cider names are place names with the flavors in the description: Cashmere (cranberry, dark cherry, orange peel) is added to the winter list by name, anchored because Cashmere is also a hop variety, and the hot cider (\"Spice Apple\", \"Chai spice and vantage cider\") by its description.",
+        "item": ".menu-section:not(:has(.menu-section-title:-soup-contains(\"NON-ALCOHOLIC\"))) .menu-item",
+        "name": ".menu-item-title",
+        "match_whole_item": true,
+        "winter_include": [
+          "^cashmere$",
+          "\\bspiced?\\b.*\\bcider\\b"
+        ]
+      }
     }
   ]
 }

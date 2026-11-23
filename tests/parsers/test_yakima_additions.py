@@ -191,3 +191,43 @@ class TestWhipsaw:
         assert [(e.title, e.category, e.description) for e in events] == [
             ("Timber Harvest", "fresh-hop", "6.2%")
         ]
+
+
+class TestYonderEast:
+    """Yonder Cider's Cashmere taproom menu, saved 2026-11-22 (menu block
+    only). Ciders, guest beers, slushies, hot cider, and a non-alcoholic
+    section, each a Squarespace menu section whose title is a div."""
+
+    @pytest.fixture
+    def html(self, html_fixtures_dir: Path) -> str:
+        return (html_fixtures_dir / "taplist_yonder_east.html").read_text()
+
+    def test_non_alcoholic_section_is_left_out(self, html: str) -> None:
+        venue = VENUES["yonder-east-taps"]
+        names = [e.name for e in parse_html_taplist(html, venue.parser_config or {})]
+        assert len(names) == 19
+        assert names[:3] == ["Dry", "Vantage", "Palisades"]
+        assert "Bale Breaker Brewing - Top Cutter Fresh Hop IPA" in names
+        assert names[-1] == "Spice Apple"
+        for drink in ("Strawberry Lemonade Slushie", "A&W Rootbeer"):
+            assert drink not in names
+
+    def test_matches(self, html: str) -> None:
+        venue = VENUES["yonder-east-taps"]
+        entries = parse_html_taplist(html, venue.parser_config or {})
+        events = build_listings(venue, entries, "html", logging.getLogger(__name__))
+        assert [(e.title, e.category, e.description) for e in events] == [
+            ("Cashmere", "winter", "6.9%"),
+            ("Bale Breaker Brewing - Top Cutter Fresh Hop IPA", "fresh-hop", "6.8%"),
+            ("Spice Apple", "winter", "6.5%"),
+        ]
+
+    def test_cashmere_hops_are_not_the_cider(self, html: str) -> None:
+        # Cashmere is also a hop; only the cider of that exact name is winter.
+        venue = VENUES["yonder-east-taps"]
+        html = html.replace(
+            "Uprise Brewing - Pilsner", "Uprise Brewing - Cashmere Pale", 1
+        )
+        entries = parse_html_taplist(html, venue.parser_config or {})
+        events = build_listings(venue, entries, "html", logging.getLogger(__name__))
+        assert "Uprise Brewing - Cashmere Pale" not in [e.title for e in events]

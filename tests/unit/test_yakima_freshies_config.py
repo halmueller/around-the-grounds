@@ -45,6 +45,7 @@ def test_covers_the_valley_the_tri_cities_and_wenatchee(site: SiteConfig) -> Non
         "Leavenworth",
         "Wenatchee",
         "Ellensburg",
+        "Cashmere",
     ):
         # "(Kennewick)" or "(Downtown Kennewick)"
         assert re.search(rf"\([^)]*\b{area}\)", names), area

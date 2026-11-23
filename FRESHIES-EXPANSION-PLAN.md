@@ -587,6 +587,17 @@ Franklin county towns, plus tourism-board and Washington Beer Blog lists.
   gone (404). Recheck once the new site is up; the old config is in git
   history.
 
+**Changes on 2026-11-22:**
+
+- Yonder East (Cashmere), Yonder Cider's taproom, added at Hal's request;
+  it is the site's first Cashmere venue. Its menu page is a Squarespace menu
+  block (ciders, guest beers, slushies, hot cider; the non-alcoholic section
+  is skipped). Cider names are place names, so the Cashmere cider
+  (cranberry, dark cherry, orange peel) is on the winter list by name, at
+  Hal's direction, and the hot cider by its "spice … cider" description.
+  First run: Cashmere and Spice Apple (winter) and a guest Bale Breaker
+  Top Cutter Fresh Hop IPA.
+
 **No list of what is pouring now:**
 
 - Dru Bru (Cle Elum): the site has a beer catalogue ("check each product for
@@ -626,7 +637,8 @@ printed-menu draft list, not what is pouring), The Taproom by Hellbent at
 Pybus Market (Hellbent's site shows only its Seattle list), and Yodelin (no
 list). No working site found for Columbia Valley Brewing, Milepost 111
 (Cashmere), Brew Haven, Burch Mountain, or Rhein Haus Leavenworth. Dog and
-Pony (Cashmere) is on Facebook only, so Cashmere has no venue. Badger
+Pony (Cashmere) is on Facebook only; Cashmere's one venue is Yonder East
+(added 2026-11-22). Badger
 Mountain and Triune are closed.
 
 **Blocked or unreachable:** Snipes Mountain (Sunnyside) and HopTown Pizza
