@@ -301,6 +301,21 @@ function renderListingsPage(data, venueInfo, listingsEl, summaryEl) {
     return pageVenues;
 }
 
+// On phones only the tab bar stays pinned: the header sticks at minus the
+// height of everything above the tabs (title, bylines, preferred-source
+// badge), so that part scrolls away. styles.css applies --pin-offset below
+// 600px; without this script the whole header stays pinned. Measured again
+// whenever the header changes size (rotation, text wrapping).
+if (typeof ResizeObserver === 'function') {
+    const topbar = document.querySelector('.topbar');
+    const tabs = topbar && topbar.querySelector('.tabs');
+    if (tabs) {
+        new ResizeObserver(() => {
+            topbar.style.setProperty('--pin-offset', `${-tabs.offsetTop}px`);
+        }).observe(topbar);
+    }
+}
+
 fetch('data.json')
     .then(r => r.json())
     .then(data => {

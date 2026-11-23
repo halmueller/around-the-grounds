@@ -172,9 +172,14 @@ h2 { font-size: 1.1rem; margin: 28px 0 10px; }
 .tag-pumpkin { color: var(--pumpkin); background: var(--chip); }
 .tag-winter { color: var(--winter); background: var(--chip); }
 
-/* Narrow screens: the "Taprooms/Bottle Shops" tab reads just "Taprooms". */
+/* Phones: the "Taprooms/Bottle Shops" tab reads just "Taprooms"; only the
+   tab bar stays pinned (the title, bylines, and badge above it scroll away;
+   app.js sets --pin-offset); and the credit bar sits at the end of the page
+   instead of staying on screen. */
 @media (max-width: 600px) {
     .tab-extra { display: none; }
+    .topbar { top: var(--pin-offset, 0px); }
+    .creditbar { position: static; }
 }
 
 /* Phones: fit all six tabs and keep the credit bar to about two lines. */

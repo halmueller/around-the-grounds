@@ -10,6 +10,8 @@
 //   - Google's preferred-source badge links to this site's domain, loads, and
 //     follows the light/dark color scheme
 //   - phones (390, 360, 320px) never scroll sideways, and the tab bar fits
+//   - on phones only the tab bar stays pinned, and the credit bar is not;
+//     desktops keep the whole header and the credit bar pinned
 // Usage: node check_fresh_hop.mjs <rendered dir> <expectations JSON>
 // where the JSON is {"domain": ..., "site_name": ..., "pages": [...]}.
 // Invoked by tests/integration/test_templates_browser.py.
@@ -278,6 +280,36 @@ async function checkPhone(browser, server, width) {
   }
 }
 
+// After scrolling, phones keep only the tab bar on screen; desktops keep
+// the whole header and the credit bar.
+async function checkPinning(browser, server, width, phone) {
+  for (const page of EXPECT.pages) {
+    await withPage(browser, server, page, { viewport: { width, height: 800 } }, async (tab) => {
+      await waitForRender(tab);
+      await tab.evaluate(() => {
+        document.getElementById('listings').style.minHeight = '4000px';
+        window.scrollTo(0, 1500);
+      });
+      // Let the ResizeObserver and the scroll settle.
+      await tab.waitForTimeout(100);
+      const got = await tab.evaluate(() => ({
+        tabs: document.querySelector('nav.tabs').getBoundingClientRect().top,
+        title: document.querySelector('.topbar h1').getBoundingClientRect().bottom,
+        credit: getComputedStyle(document.querySelector('.creditbar')).position,
+      }));
+      const where = `[${page} @${width}px]`;
+      if (phone) {
+        assert(got.tabs >= -1 && got.tabs <= 1, `${where} tabs not pinned at the top (${got.tabs})`);
+        assert(got.title <= 0, `${where} title still on screen (${got.title})`);
+        assert(got.credit === 'static', `${where} credit bar is ${got.credit}`);
+      } else {
+        assert(got.title > 0, `${where} header scrolled away on a desktop (${got.title})`);
+        assert(got.credit === 'sticky', `${where} credit bar is ${got.credit}`);
+      }
+    });
+  }
+}
+
 async function checkHome(browser, server) {
   // index.html is the redirect for hosts without the Apache rule.
   await withPage(browser, server, '', {}, async (tab) => {
@@ -294,6 +326,8 @@ try {
   await checkBadgeScheme(browser, server, 'light');
   await checkBadgeScheme(browser, server, 'dark');
   for (const width of [390, 360, 320]) await checkPhone(browser, server, width);
+  await checkPinning(browser, server, 390, true);
+  await checkPinning(browser, server, 1000, false);
   await checkHome(browser, server);
   console.log('fresh-hop: ok');
 } finally {
