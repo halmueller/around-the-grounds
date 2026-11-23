@@ -482,6 +482,10 @@ Hal, 2026-11-06: Seattle's six event sources are back in
 its Events tab, page, and sitemap entry again. Portland and Yakima still list
 beers on tap only.
 
+Hal, 2026-11-22: the Events section is gone from all three sites again. The
+six Seattle sources are back in `tests/fixtures/config/seattle_event_sources.json`
+(the 2026-10-15 change, reapplied). No site has an Events page now.
+
 Original notes:
 
 

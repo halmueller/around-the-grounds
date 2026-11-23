@@ -36,18 +36,13 @@ def test_bale_breaker_is_the_seattle_taproom_not_yakima(site: SiteConfig) -> Non
     assert [v.parser_config["location_id"] for v in bale_breaker] == [36760]
 
 
-def test_event_sources(site: SiteConfig) -> None:
-    event_sources = [
+def test_no_event_sources(site: SiteConfig) -> None:
+    # Hal, 2026-10-15: too many event sources to cover well, so the Events
+    # page is gone. The old sources are in
+    # tests/fixtures/config/seattle_event_sources.json.
+    assert not [
         v for v in site.venues if v.source_type in ("html", "squarespace-events")
     ]
-    assert {v.key for v in event_sources} == {
-        "fremont-events",
-        "fremont-columbia-city-events",
-        "georgetown-event-list",
-        "beveridge-place-events",
-        "stoup-ballard-events",
-        "stoup-capitol-hill-events",
-    }
 
 
 def test_bottle_shops_and_taprooms_are_typed(site: SiteConfig) -> None:

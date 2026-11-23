@@ -1,0 +1,92 @@
+{
+  "_comment": "Seattle Freshies beer-event sources, taken off the site 2026-10-15 (too many sources to cover well). Kept for the event-source parser tests and in case the Events page returns.",
+  "venues": [
+    {
+      "key": "fremont-events",
+      "name": "Fremont Brewing (Fremont)",
+      "url": "https://www.fremontbrewing.com/fremont-ubg-events",
+      "source_type": "squarespace-events",
+      "parser_config": {
+        "event_filter": true,
+        "event_window_days": 365
+      }
+    },
+    {
+      "key": "fremont-columbia-city-events",
+      "name": "Fremont Brewing (Columbia City)",
+      "url": "https://www.fremontbrewing.com/columbia-city-ubg-events",
+      "source_type": "squarespace-events",
+      "parser_config": {
+        "event_filter": true,
+        "event_window_days": 365
+      }
+    },
+    {
+      "key": "georgetown-event-list",
+      "name": "Georgetown Brewing",
+      "url": "https://georgetownbeer.com/",
+      "source_type": "html",
+      "parser_config": {
+        "event_filter": true,
+        "event_window_days": 365,
+        "event_include": ["."],
+        "note": "Georgetown's list of events pouring its beer, so every entry is kept (event_include matches anything); the host venue is read as the event's place. Seattle-tagged items only, minus Beveridge Place Pub, which is read from its own events page (beveridge-place-events).",
+        "event_container": "article.article-event-item[data-tags*=\"Seattle\"]:not(:has(.article-location:-soup-contains(\"Beveridge Place\")))",
+        "title_selector": ".article__title",
+        "link_selector": ".article__title a",
+        "date_selector": "time.article-event-date",
+        "date_attribute": "datetime",
+        "place_selector": ".article-location",
+        "timezone": "America/Los_Angeles"
+      }
+    },
+    {
+      "key": "beveridge-place-events",
+      "name": "Beveridge Place Pub",
+      "url": "https://beveridgeplacepub.com/events/",
+      "source_type": "html",
+      "parser_config": {
+        "event_filter": true,
+        "event_window_days": 365,
+        "note": "WordPress (Elementor) event cards; the date and hours start the card's excerpt, e.g. 'Saturday, Oct 17, 1-7pm'. Cards without a date (weekly quiz, monthly book club) are skipped.",
+        "event_container": ".premium-blog-content-wrapper-inner",
+        "title_selector": ".premium-blog-entry-title",
+        "link_selector": ".premium-blog-entry-title a",
+        "date_selector": ".premium-blog-post-content",
+        "date_pattern": "\\b(?:mon|tues?|wed(?:nes)?|thu(?:rs)?|fri|sat(?:ur)?|sun)(?:day)?,?\\s+([a-z]{3,9}\\.?\\s+\\d{1,2}(?:,\\s*\\d{4})?)",
+        "time_selector": ".premium-blog-post-content",
+        "time_pattern": "\\b\\d{1,2}(?::\\d{2})?\\s*(?:am|pm)?\\s*[-–]\\s*\\d{1,2}(?::\\d{2})?\\s*(?:am|pm)\\b"
+      }
+    },
+    {
+      "key": "stoup-ballard-events",
+      "name": "Stoup Brewing (Ballard)",
+      "url": "https://www.stoupbrewing.com/stoup-events/",
+      "source_type": "html",
+      "parser_config": {
+        "event_filter": true,
+        "event_window_days": 365,
+        "event_container": ".location-events[data-location=\"ballard\"] a.event",
+        "title_selector": ".event-title",
+        "link_selector": "a",
+        "date_selector": ".date-date",
+        "time_selector": ".event-time"
+      }
+    },
+    {
+      "key": "stoup-capitol-hill-events",
+      "name": "Stoup Brewing (Capitol Hill)",
+      "url": "https://www.stoupbrewing.com/stoup-events/",
+      "source_type": "html",
+      "parser_config": {
+        "event_filter": true,
+        "event_window_days": 365,
+        "event_container": ".location-events[data-location=\"capitol-hill\"] a.event",
+        "title_selector": ".event-title",
+        "link_selector": "a",
+        "date_selector": ".date-date",
+        "time_selector": ".event-time"
+      }
+    }
+  ]
+}
