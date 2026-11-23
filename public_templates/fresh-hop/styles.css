@@ -116,6 +116,11 @@ h2 { font-size: 1.1rem; margin: 28px 0 10px; }
 .about p + p { margin-top: 6px; }
 [hidden] { display: none !important; }
 
+/* Google's "Add as a preferred source" badge (official artwork, light and
+   dark), linked to Google's source-preference page for this site's domain. */
+.preferred-source { margin-top: 6px; line-height: 0; }
+.preferred-source a { display: inline-block; }
+.preferred-source img { width: 114px; height: auto; }
 
 .tabs {
     display: flex;

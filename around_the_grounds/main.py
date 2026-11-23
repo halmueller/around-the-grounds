@@ -11,6 +11,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path, PureWindowsPath
 from typing import Dict, List, Optional
+from urllib.parse import urlsplit
 
 # Load environment variables from .env file
 try:
@@ -460,15 +461,18 @@ def _placeholder_values(web_data: dict) -> Dict[str, str]:
     """Values for a template's {{name}} placeholders, or {} when the site has none.
 
     Only a site that sets ``template_vars`` gets substitution, so templates of
-    other sites are copied byte for byte. ``site_name`` and ``public_url`` come
-    from the site itself and cannot be overridden.
+    other sites are copied byte for byte. ``site_name``, ``public_url``, and
+    ``domain`` (the host name in ``public_url``, such as ``seattlefreshies.com``)
+    come from the site itself and cannot be overridden.
     """
     custom = web_data.get("template_vars") or {}
     if not custom:
         return {}
+    public_url = (web_data.get("public_url") or "").rstrip("/")
     values = {
         "site_name": web_data.get("site_name") or "",
-        "public_url": (web_data.get("public_url") or "").rstrip("/"),
+        "public_url": public_url,
+        "domain": urlsplit(public_url).hostname or "",
     }
     for name, value in custom.items():
         if name in values:

@@ -173,14 +173,20 @@ def test_page_layout(
     if not site.template_vars.get("ballard_food_trucks"):
         assert "ballardfoodtrucks" not in html
         food_trucks = ""
-    # Then one line linking the other Freshies sites.
+    # Then one line linking the other Freshies sites, then Google's
+    # preferred-source badge just above the tabs.
     sister_sites = r'<p class="byline">For [^<]*, see <a [^\n]*</a>\.</p>\s*'
+    preferred = r'<p class="preferred-source">[^\n]*</p>\s*'
     assert re.search(
         r'</h1>\s*<p class="byline">By '
         + re.escape(site.template_vars["author_home"])
         + r' resident <a href="https://www.linkedin.com/in/halmueller/">'
         r'Hal Mueller</a> with the help of <a href="https://claude.ai">'
-        r"Claude Code</a></p>\s*" + food_trucks + sister_sites + r'<nav class="tabs"',
+        r"Claude Code</a></p>\s*"
+        + food_trucks
+        + sister_sites
+        + preferred
+        + r'<nav class="tabs"',
         html,
     ), page
     tabs = re.findall(r'<nav class="tabs".*?</nav>', html, re.S)[0]
@@ -195,7 +201,11 @@ def test_header_links_every_other_freshies_site(
         return
     html = (rendered / page).read_text()
     header = html[html.index("</h1>") : html.index('<nav class="tabs"')]
-    lines = [line for line in header.splitlines() if "freshies.com" in line]
+    lines = [
+        line
+        for line in header.splitlines()
+        if "freshies.com" in line and 'class="byline"' in line
+    ]
     assert len(lines) == 1, page
     # The other sites, in alphabetical order, named by place in the same order.
     others = [s for s in SITES if s.key != site.key]
@@ -204,6 +214,27 @@ def test_header_links_every_other_freshies_site(
     ], page
     places = " and ".join(s.template_vars["place"] for s in others)
     assert lines[0].strip().startswith(f'<p class="byline">For {places}, see '), page
+
+
+@pytest.mark.parametrize("page", [name for name, _ in PAGES])
+def test_preferred_source_badge(site: SiteConfig, rendered: Path, page: str) -> None:
+    # Google's deeplink form of the "Add as a preferred source" button, with
+    # its official light and dark badges; no Google script is loaded.
+    if page not in _pages(site):
+        return
+    html = (rendered / page).read_text()
+    domain = site.public_url.split("://", 1)[1].rstrip("/")
+    assert "news.google.com" not in html
+    badges = re.findall(r'<p class="preferred-source">.*?</p>', html)
+    assert badges == [
+        '<p class="preferred-source"><a href="https://www.google.com/preferences/'
+        f'source?q={domain}"><picture><source srcset="preferred-source-dark.png" '
+        'media="(prefers-color-scheme: dark)"><img src="preferred-source-light.png"'
+        ' width="114" height="36" alt="Add '
+        f'{site.name} as a preferred source on Google"></picture></a></p>'
+    ], page
+    for name in ("preferred-source-light.png", "preferred-source-dark.png"):
+        assert _png_size(rendered / name) == (338, 107), name
 
 
 def test_template_ships_the_shared_files(rendered: Path) -> None:
