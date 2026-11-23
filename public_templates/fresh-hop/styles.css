@@ -36,7 +36,9 @@ body {
     background: var(--bg);
 }
 
-.container { max-width: 820px; margin: 0 auto; padding: 16px 16px 24px; }
+/* A very long word (a URL-like beer or venue name) wraps rather than
+   widening the page on a phone. */
+.container { max-width: 820px; margin: 0 auto; padding: 16px 16px 24px; overflow-wrap: anywhere; }
 
 /* Pinned top bar (title + page tabs) and bottom credit bar. */
 .topbar, .creditbar {
@@ -186,7 +188,14 @@ h2 { font-size: 1.1rem; margin: 28px 0 10px; }
     .credits .sep { display: none; }
 }
 
-/* The smallest phones (320px): six tabs need a little less room each. */
-@media (max-width: 360px) {
+/* Most phones (360-400px wide): six tabs need a little less room each. */
+@media (max-width: 400px) {
     .tabs a { padding: 8px 3px; font-size: 11px; }
+}
+
+/* The smallest phones (320px): narrower side margins in the bars, and
+   tighter tabs still. */
+@media (max-width: 340px) {
+    .bar-inner { padding: 0 10px; }
+    .tabs a { padding: 8px 2px; font-size: 10.5px; }
 }
